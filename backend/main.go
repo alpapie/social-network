@@ -18,11 +18,11 @@ func init() {
 
 	controller.DB, err = conf.GetDB()
 	if err != nil {
-		fmt.Println("connection database Error",err)
+		fmt.Println("connection database Error", err)
 		os.Exit(0)
 	}
 
-	if err_migr:= migr.ApplyMigrations();err_migr!=nil{
+	if err_migr := migr.ApplyMigrations(); err_migr != nil {
 		//rendre un json pour dire que le server est down
 		os.Exit(0)
 	}
@@ -30,9 +30,9 @@ func init() {
 }
 
 func main() {
-	
+
 	fmt.Println("Listening in http://localhost" + port)
-	fmt.Println(helper.LognToken("alpapie","pasword"))
+	fmt.Println(helper.LognToken("alpapie", "pasword"))
 	route.Routes()
 	http.ListenAndServe(port, nil)
 }

@@ -8,4 +8,5 @@ import (
 
 func Routes() {
 	http.HandleFunc("/", middleware.CheckMethod(controller.Login, "get"))
+	http.HandleFunc("/server/post", middleware.IsAuth(middleware.CheckMethod(controller.PostHandler, "post")))
 }

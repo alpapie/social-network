@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 )
+
 func SessionAddOrUpdate(db *sql.DB, sssid, useremail string) error {
 	req := `SELECT sessionId,email,datefin from Session Where email='` + useremail + `';`
 	// req:=fmt.Sprintf(`SELECT * from Session Where email=?;`)
