@@ -1,20 +1,24 @@
 
 /*==============================================================*/
 /* Table : AllowedPost                                          */
-/*==============================================================*/
+-- /*==============================================================*/
 create table AllowedPost 
 (
-   id                   integer                        not null,
-   type                 integer                        null,
-   constraint PK_ALLOWEDPOST primary key (id)
+    Post_id              integer                        not null,
+    User_id              integer                         not null,
+    constraint PK_ALLOWEDPOST primary key (Post_id , User_id),
+    FOREIGN KEY (Post_id) REFERENCES Post(id) ON DELETE SET NULL,
+    FOREIGN KEY (User_id) REFERENCES User (id) ON DELETE SET NULL
 );
+
+
 
 /*==============================================================*/
 /* Index : ALLOWEDPOST_PK                                       */
 /*==============================================================*/
-create unique index ALLOWEDPOST_PK on AllowedPost (
-id ASC
-);
+-- create unique index ALLOWEDPOST_PK on AllowedPost (
+-- id ASC
+-- );
 
 /*==============================================================*/
 /* Table : "Comment"                                            */
@@ -308,16 +312,16 @@ User_id ASC
 /* Table : Post                                                 */
 /*==============================================================*/
 create table Post 
-( 
+(
    id                   integer                        not null,
-   Group_id               integer                        null,
-   User_id               integer                        not null,
+   Group_id             integer                        null,
+   User_id              integer                        not null,
    titre                varchar(254)                   null,
    image                varchar(254)                   null,
    content              varchar(254)                   null,
-   privacy              varchar(254)    CHECK (primary IN ('public', 'private' , 'almostprivate'))   null,
+   privacy              varchar(254)    CHECK (privacy IN ('public', 'private' , 'almostprivate'))   null,
    postGroup            varchar(254)                   null,
-   creationDate         numeric                         null,
+   creationDate         numeric                        null,
    constraint PK_POST primary key (id),
    FOREIGN KEY (User_id) REFERENCES User (id) ON DELETE SET NULL,
    FOREIGN KEY (Group_id) REFERENCES "Group" (id) ON DELETE SET NULL
@@ -395,3 +399,17 @@ create table "User"
 create unique index USER_PK on "User" (
 id ASC
 );
+
+   -- Post_id              integer                        not null,
+   -- User_id              integer                         not null,
+   -- constraint PK_ALLOWEDPOST primary key (Post_id , User_id),
+   -- FOREIGN KEY (Post_id) REFERENCES Post(id) ON DELETE SET NULL,
+   -- FOREIGN KEY (User_id) REFERENCES User (id) ON DELETE SET NULL
+
+-- ALTER TABLE AllowedPost ADD Post_id integer;
+-- ALTER TABLE AllowedPost ADD User_id integer;
+-- ALTER TABLE AllowedPost DROP COLUMN type;
+-- ALTER TABLE AllowedPost DROP PRIMARY KEY;
+-- ALTER TABLE AllowedPost ADD PRIMARY KEY (Post_id, User_id);
+-- ALTER TABLE AllowedPost ADD CONSTRAINT  FOREIGN KEY (Post_id) REFERENCES Post(id);
+-- ALTER TABLE AllowedPost ADD CONSTRAINT  FOREIGN KEY (User_id) REFERENCES User(id);
