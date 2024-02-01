@@ -1,53 +1,21 @@
 <script>
-	import Header from './Header.svelte';
-	import './styles.css';
+// @ts-nocheck 
 </script>
 
-<div class="app">
-	<Header />
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>Elomoas - Online Course and LMS HTML Template</title>
 
-	<main>
-		<slot />
-	</main>
+	<link rel="stylesheet" href="css/themify-icons.css" />
+	<link rel="stylesheet" href="css/feather.css" />
+	<!-- Favicon icon -->
+	<link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
+	<!-- Custom Stylesheet -->
+	<link rel="stylesheet" href="css/style.css" />
+</head>
 
-	<footer>
-		<p>visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to learn SvelteKit</p>
-	</footer>
-</div>
-
-<style>
-	.app {
-		display: flex;
-		flex-direction: column;
-		min-height: 100vh;
-	}
-
-	main {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		padding: 1rem;
-		width: 100%;
-		max-width: 64rem;
-		margin: 0 auto;
-		box-sizing: border-box;
-	}
-
-	footer {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		padding: 12px;
-	}
-
-	footer a {
-		font-weight: bold;
-	}
-
-	@media (min-width: 480px) {
-		footer {
-			padding: 12px 0;
-		}
-	}
-</style>
+<body class="color-theme-blue">
+	<slot />
+</body>

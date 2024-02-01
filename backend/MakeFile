@@ -1,0 +1,2 @@
+CREAT_MIGRATION:
+	migrate create -ext sql -dir db/migrations/sqlite/ -seq $(migration_name)
