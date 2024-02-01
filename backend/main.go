@@ -1,16 +1,38 @@
 package main
 
 import (
-	"crypto/sha256"
 	"fmt"
+	"net/http"
+	"os"
+	conf "social_network/config"
+	"social_network/controller"
+	migr "social_network/db/sqlite"
+	"social_network/helper"
+	route "social_network/routes"
 )
 
+var port = ":8080"
+
+func init() {
+	var err error
+
+	controller.DB, err = conf.GetDB()
+	if err != nil {
+		fmt.Println("connection database Error",err)
+		os.Exit(0)
+	}
+
+	if err_migr:= migr.ApplyMigrations();err_migr!=nil{
+		//rendre un json pour dire que le server est down
+		os.Exit(0)
+	}
+
+}
+
 func main() {
-	h := sha256.New()
-	h.Write([]byte("alpapie"))
-	fmt.Printf("%x", h.Sum([]byte("a")))
-	fmt.Println()
-	sum := sha256.Sum256([]byte("alpapie"))
-	fmt.Printf("%x", sum)
-	fmt.Println()
+	
+	fmt.Println("Listening in http://localhost" + port)
+	fmt.Println(helper.LognToken("alpapie","pasword"))
+	route.Routes()
+	http.ListenAndServe(port, nil)
 }
