@@ -1,9 +1,14 @@
 <script>
-  // @ts-nocheck
+import { enhance } from "$app/forms";
 import Login_header from "../login-header.svelte";
 
 export let form 
 </script>
+<style>
+	.pbg-dark{
+		color: brown  !important;; 
+	}
+</style>
 
 <!-- <div class="preloader"></div> -->
 
@@ -26,10 +31,10 @@ export let form
           <h2 class="fw-700 display1-size display2-md-size mb-3">
             Login into <br />your account
           </h2>
-          <form method="POST" >
+          <form method="POST" use:enhance >
             <div class="form-group icon-input mb-3">
               <i class="font-sm ti-email text-grey-500 pe-0"></i>
-              <input
+              <input required
                 type="text"
                 class="style2-input ps-5 form-control text-grey-900 font-xsss fw-600"
                 placeholder="Your Email Address" name="email"
@@ -37,7 +42,7 @@ export let form
             </div>
             <div class="form-group icon-input mb-1">
               <input
-                type="Password"
+                type="Password" required
                 class="style2-input ps-5 form-control text-grey-900 font-xss ls-3"
                 placeholder="Password" name="password"
               />

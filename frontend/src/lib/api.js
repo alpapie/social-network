@@ -3,19 +3,20 @@ import { SERVER_URL } from "$env/static/private";
 import { redirect } from "@sveltejs/kit";
 
 export async function makeRequest(endpoint, method, data = {}, headers = {}) {
-    let url = `${SERVER_URL}/sever/${endpoint}/`;
+    let url = `${SERVER_URL}/server/${endpoint}`;
+    console.log(url)
   const config = { method, headers };
   if (method !== "GET") {
-    const formData = new FormData();
-    for (const [key, value] of Object.entries(data)) {
-      if (key === "file") {
-        formData.append(key, value, value.name);
-        config.headers["Content-Type"] = "multipart/form-data";
-      } else {
-        formData.append(key, value);
-      }
-    }
-    
+    const formData = data;
+    // for (const [key, value] of Object.entries(data)) {
+    //   if (key === "file") {
+    //     formData.append(key, value, value.name);
+    //     config.headers["Content-Type"] = "multipart/form-data";
+    //   } else {
+    //     formData.append(key, value);
+    //   }
+    // }
+    // console.log(formData.get("email"))
     config.data = formData;
   }
   // else {
@@ -27,8 +28,8 @@ export async function makeRequest(endpoint, method, data = {}, headers = {}) {
     const response = await axios(url, config);
     return response;
   } catch (error) {
-    console.error("Error occurred during request: ", error);
-    redirect(301,'/error')
-    return
+    // console.error("Error occurred during request: ", error);
+    // redirect(301,'/error')
+    return error
   }
 }

@@ -2,6 +2,7 @@ package middleware
 
 import (
 	// "social_network/controllers"
+	"fmt"
 	"net/http"
 	"social_network/controller"
 	helper "social_network/helper"
@@ -52,9 +53,10 @@ func IsAuth(next http.HandlerFunc) http.HandlerFunc {
 
 func Ispath(next http.HandlerFunc, path string) http.HandlerFunc {
 	fnt := func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path == path {
+		if r.URL.Path == "/server/"+ path {
 			next.ServeHTTP(w, r)
 		} else {
+			fmt.Println("error 404")
 			w.WriteHeader(404)
 			w.Write([]byte(`{"error":"page not found","success":false}`))
 		}

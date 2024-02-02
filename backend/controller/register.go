@@ -1,28 +1,24 @@
 package controller
 
 import (
-	"database/sql"
 	"fmt"
 	"html"
 	"net/http"
 	"regexp"
 	helper "social_network/helper"
 	"social_network/models"
-	"strconv"
 	"strings"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
-
-
 func RegisterUser(w http.ResponseWriter, r *http.Request) {
 	var user = models.User{}
-	
+
 	erf := r.ParseMultipartForm(64)
 	if erf != nil {
-		// helper.ErrorPage(w, 500)
-		return 
+		helper.ErrorPage(w, 500)
+		return
 	}
 	user.Email = html.EscapeString(strings.TrimSpace(r.FormValue("email")))
 	password := html.EscapeString(r.FormValue("password"))
@@ -37,11 +33,11 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if !isEmailValid(user.Email) {
-		// helper.ErrorMessage(w, "bad format of email")
+		helper.ErrorMessage(w, "bad format of email")
 		return
 	}
 	haspassword, errCrypt := bcrypt.GenerateFromPassword([]byte(password), 5)
-	user.TokenLogin = helper.LognToken(user.Email, haspassword)
+	user.TokenLogin = helper.LognToken(user.Email, string(haspassword))
 	user.IsPublic = 0
 	err := user.CreateUser(DB)
 
@@ -49,18 +45,18 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 		if strings.HasPrefix(err.Error(), "UNIQUE constraint failed:") {
 			fmt.Println(err.Error())
 			contraint := "email or username"
-			tab:=strings.Split(err.Error(), ":")
-			if len(tab)>1 {
-				getContrain:=strings.Split(tab[1],".")
-				if len(getContrain)>1 {
-					contraint=getContrain[1]
+			tab := strings.Split(err.Error(), ":")
+			if len(tab) > 1 {
+				getContrain := strings.Split(tab[1], ".")
+				if len(getContrain) > 1 {
+					contraint = getContrain[1]
 				}
 			}
-			helper.ErrorMessage(w,  contraint+" already exists")
+			helper.ErrorMessage(w, contraint+" already exists")
 			return
 		} else {
 			fmt.Println(err)
-			// helper.ErrorPage(w, 400)
+			helper.ErrorPage(w, 400)
 			return
 		}
 	}

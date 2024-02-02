@@ -10,7 +10,7 @@ require (
 	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20200410134404-eec4a21b6bb0 // indirect
 	golang.org/x/mod v0.11.0 // indirect
-	golang.org/x/sys v0.15.0 // indirect
+	golang.org/x/sys v0.16.0 // indirect
 	golang.org/x/tools v0.10.0 // indirect
 	lukechampine.com/uint128 v1.2.0 // indirect
 	modernc.org/cc/v3 v3.36.3 // indirect
@@ -30,4 +30,5 @@ require (
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/mattn/go-sqlite3 v1.14.21
 	go.uber.org/atomic v1.7.0 // indirect
+	golang.org/x/crypto v0.18.0
 )

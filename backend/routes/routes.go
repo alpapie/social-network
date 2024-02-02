@@ -7,5 +7,8 @@ import (
 )
 
 func Routes() {
-	http.HandleFunc("/", middleware.CheckMethod(controller.Login, "get"))
+	http.HandleFunc("/", middleware.CheckMethod(controller.Home, "get"))
+	
+	http.HandleFunc("/server/login", middleware.Ispath( middleware.CheckMethod(controller.Login, "post"),"login"))
+	http.HandleFunc("/server/register", middleware.Ispath( middleware.CheckMethod(controller.RegisterUser, "post"),"register"))
 }

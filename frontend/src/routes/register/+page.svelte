@@ -2,6 +2,11 @@
 	// @ts-nocheck
     import Login_header from '../login-header.svelte'
 </script>
+<style>
+    .form-group{
+        display: flex;
+    }
+</style>
 <div class="main-wrap">
 
     <Login_header/>
@@ -15,21 +20,25 @@
                     <form>
                         
                         <div class="form-group icon-input mb-3">
-                            <i class="font-sm ti-user text-grey-500 pe-0"></i>
-                            <input type="text" class="style2-input ps-5 form-control text-grey-900 font-xsss fw-600" placeholder="Your Name">                        
-                        </div>
-                        <div class="form-group icon-input mb-3">
                             <i class="font-sm ti-email text-grey-500 pe-0"></i>
-                            <input type="text" class="style2-input ps-5 form-control text-grey-900 font-xsss fw-600" placeholder="Your Email Address">                        
+                            <input type="text" class="style2-input ps-5 form-control text-grey-900 font-xsss fw-600" placeholder="Your Email Address">  
+                            
+                            <i class="font-sm ti-email text-grey-500 pe-0"></i>
+                            <input type="text" class="style2-input ps-5 form-control text-grey-900 font-xsss fw-600" placeholder="Your Email Address">  
                         </div>
                         <div class="form-group icon-input mb-3">
                             <input type="Password" class="style2-input ps-5 form-control text-grey-900 font-xss ls-3" placeholder="Password">
                             <i class="font-sm ti-lock text-grey-500 pe-0"></i>
                         </div>
-                        <div class="form-group icon-input mb-1">
-                            <input type="Password" class="style2-input ps-5 form-control text-grey-900 font-xss ls-3" placeholder="Confirm Password">
-                            <i class="font-sm ti-lock text-grey-500 pe-0"></i>
+                        <div class="form-group icon-input mb-3">
+                            <i class="font-sm ti-user text-grey-500 pe-0"></i>
+                            <input type="text" class="style2-input ps-5 form-control text-grey-900 font-xsss fw-600" placeholder="First Name">                        
                         </div>
+                        <div class="form-group icon-input mb-3">
+                            <i class="font-sm ti-user text-grey-500 pe-0"></i>
+                            <input type="text" class="style2-input ps-5 form-control text-grey-900 font-xsss fw-600" placeholder="Last Name">                        
+                        </div>
+                        
                     </form>
                      <br>
                     <div class="col-sm-12 p-0 text-left">
