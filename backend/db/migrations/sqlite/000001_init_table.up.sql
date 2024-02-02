@@ -12,7 +12,6 @@ create table AllowedPost
 );
 
 
-
 /*==============================================================*/
 /* Index : ALLOWEDPOST_PK                                       */
 /*==============================================================*/
@@ -100,10 +99,12 @@ Group_id ASC
 create table Follow 
 (
    id                   integer                        not null,
-   User_id               integer                        not null,
-   isfollowing          smallint                       null,
+   User_id              integer                        not null,
+   Follower_id        integer                          null,
    constraint PK_FOLLOW primary key (id),
-   FOREIGN KEY (User_id) REFERENCES User (id) ON DELETE SET NULL
+   FOREIGN KEY (User_id) REFERENCES User (id) ON DELETE SET NULL,
+   FOREIGN KEY (Follower_id) REFERENCES User (id) ON DELETE SET NULL
+
 );
 
 /*==============================================================*/
@@ -186,7 +187,7 @@ User_id ASC
 /*==============================================================*/
 /* Table : Joinner                                              */
 /*==============================================================*/
-create table Joinner 
+create table Joinner
 (
    id                   integer                        not null,
    Group_id               integer                        not null,
@@ -195,7 +196,6 @@ create table Joinner
    constraint PK_JOINNER primary key (id),
    FOREIGN KEY (Group_id) REFERENCES "Group" (id) ON DELETE SET NULL,
    FOREIGN KEY (User_id) REFERENCES User (id) ON DELETE SET NULL
-
 );
 
 /*==============================================================*/
@@ -319,7 +319,7 @@ create table Post
    titre                varchar(254)                   null,
    image                varchar(254)                   null,
    content              varchar(254)                   null,
-   privacy              varchar(254)    CHECK (privacy IN ('public', 'private' , 'almostprivate'))   null,
+   privacy              varchar(254)    CHECK (privacy IN ('public', 'private' , 'almostprivate' , 'groupe'))   null,
    postGroup            varchar(254)                   null,
    creationDate         numeric                        null,
    constraint PK_POST primary key (id),

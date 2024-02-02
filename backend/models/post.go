@@ -2,9 +2,7 @@ package models
 
 import (
 	"database/sql"
-	"fmt"
 	"time"
-
 )
 
 type Post struct {
@@ -17,8 +15,19 @@ type Post struct {
 	Privacy      string    `json:"privacy"`
 	PostGroup    string    `json:"postGroup"`
 	CreationDate time.Time `json:"creationDate"`
-	AllowedUsers  []int
+	AllowedUsers []int
 }
+
+//
+
+type FeedPost struct {
+	Post
+	GroupName   string `json:"groupName"`
+	Description string `json:"description"`
+}
+
+// func (P *Post) GetAll(controllerDB *sql.DB) ([]Post,error) {
+// }
 
 func (P *Post) Create(controllerDB *sql.DB) (int, error) {
 
@@ -38,24 +47,22 @@ func (P *Post) Create(controllerDB *sql.DB) (int, error) {
 	}
 	var idPost = int(lastInsertedId)
 
-	if (P.Privacy == "almostprivate") {
-		er :=RegisterAllowedUsers(P.AllowedUsers , idPost , controllerDB)
+	if P.Privacy == "almostprivate" {
+		er := RegisterAllowedUsers(P.AllowedUsers, idPost, controllerDB)
 		if er != nil {
 			return -1, er
 		}
 	}
-
-	return idPost , nil
+	return idPost, nil
 }
 
-func RegisterAllowedUsers(users []int , idPost int , controllerDB *sql.DB ) error {
+func RegisterAllowedUsers(users []int, idPost int, controllerDB *sql.DB) error {
 	statement, err := controllerDB.Prepare("INSERT INTO AllowedPost (Post_id , User_id) VALUES (?,?)")
-	if (err != nil ) {
+	if err != nil {
 		return err
 	}
-
-	for User_id := range users {
-		_, er :=statement.Exec(idPost,User_id)
+	for _, User_id := range users {
+		_, er := statement.Exec(idPost, User_id)
 		if er != nil {
 			return er
 		}
@@ -63,6 +70,20 @@ func RegisterAllowedUsers(users []int , idPost int , controllerDB *sql.DB ) erro
 	return nil
 }
 
-func (P *Post) Check() {
-	fmt.Println("the post " , P.User_id , P.User_id == 0)
+func (P *Post) Check() bool {
+	return P.User_id != 0 && P.Content != "" && P.Titre != "" && P.CheckPrivacy()
+}
+
+func (P *Post) CheckPrivacy() bool {
+	return P.Privacy == "public" || P.Privacy == "private" || P.Privacy == "almostprivate" || P.Privacy == "groupe"
+}
+
+func (P *Post) CheckGroupMember(DB *sql.DB) (int, error) {
+	statement, err := DB.Prepare("select COUNT(id) from Joinner where User_id = ? and Group_id = ? ")
+	if err != nil {
+		return 0, err
+	}
+	var num int
+	statement.QueryRow(P.User_id, P.Group_id).Scan(&num)
+	return num, nil
 }
