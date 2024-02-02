@@ -2,7 +2,9 @@ package helper
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
+
 	// "forum/models"
 	"net/http"
 	"strconv"
@@ -116,5 +118,27 @@ func ParseCatId(cat []string) ([]int, error) {
 		catid = append(catid, a)
 	}
 	return catid, nil
+}
+
+func ErrorMessage(w http.ResponseWriter,message string,) error{
+	w.WriteHeader(200)
+	return WriteJSON(w, 0, map[string]interface{}{"error": message,"success":false,}, nil)
+}
+
+func WriteJSON(w http.ResponseWriter, status int, data map[string]interface{}, headers http.Header) error {
+	js, err := json.MarshalIndent(data, "", "\t")
+	if err != nil {
+		return err
+	}
+	js = append(js, '\n')
+
+	for key, value := range headers {
+		w.Header()[key] = value
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(js)
+
+	return nil
 }
 
