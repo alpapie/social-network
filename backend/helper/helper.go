@@ -25,7 +25,6 @@ func SessionAddOrUpdate(db *sql.DB, sssid, useremail string) error {
 
 	for row.Next() {
 		row.Scan(&sessionid, &email, &datef)
-
 	}
 	
 	if email == useremail {
