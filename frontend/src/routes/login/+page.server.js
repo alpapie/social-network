@@ -13,6 +13,7 @@ export const actions = {
         // data={
         //     email:formDatas.get()
         // }
+        console.log(formDatas);
         let response= await makeRequest("login","POST",formDatas)
         console.log("eeeerrrrrrrrrrrrrrrr alpapie " +response)
         // return response
