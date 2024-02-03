@@ -53,7 +53,7 @@ func IsAuth(next http.HandlerFunc) http.HandlerFunc {
 
 func Ispath(next http.HandlerFunc, path string) http.HandlerFunc {
 	fnt := func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path == "/server/"+ path {
+		if r.URL.Path == "/server/"+path {
 			next.ServeHTTP(w, r)
 		} else {
 			fmt.Println("error 404")
@@ -66,6 +66,7 @@ func Ispath(next http.HandlerFunc, path string) http.HandlerFunc {
 
 func CheckMethod(next http.HandlerFunc, methode string) http.HandlerFunc {
 	fnt := func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println(r.Method)
 		if strings.ToLower(r.Method) == methode {
 			next.ServeHTTP(w, r)
 			return

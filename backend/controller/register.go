@@ -15,7 +15,7 @@ import (
 func RegisterUser(w http.ResponseWriter, r *http.Request) {
 	var user = models.User{}
 
-	erf := r.ParseMultipartForm(64)
+	erf := r.ParseMultipartForm(64 << 20)
 	if erf != nil {
 		helper.ErrorPage(w, 500)
 		return
@@ -25,7 +25,7 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 	user.FirstName = html.EscapeString(strings.TrimSpace(r.FormValue("firstname")))
 	user.LastName = html.EscapeString(strings.TrimSpace(r.FormValue("lastname")))
 	user.BirthName = html.EscapeString(strings.TrimSpace(r.FormValue("birthdate")))
-	user.Avatar = html.EscapeString(strings.TrimSpace(r.FormValue("avatar")))
+	user.Avatar = helper.UploadImage(r)
 	user.NickName = html.EscapeString(strings.TrimSpace(r.FormValue("nickname")))
 	user.AboutMe = html.EscapeString(strings.TrimSpace(r.FormValue("aboutme")))
 	if !verifLen(password, user.FirstName, user.LastName, user.Email, user.BirthName) {
@@ -42,17 +42,8 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 	err := user.CreateUser(DB)
 
 	if errCrypt != nil || err != nil {
-		if strings.HasPrefix(err.Error(), "UNIQUE constraint failed:") {
-			fmt.Println(err.Error())
-			contraint := "email or username"
-			tab := strings.Split(err.Error(), ":")
-			if len(tab) > 1 {
-				getContrain := strings.Split(tab[1], ".")
-				if len(getContrain) > 1 {
-					contraint = getContrain[1]
-				}
-			}
-			helper.ErrorMessage(w, contraint+" already exists")
+		if strings.HasPrefix(err.Error(), "email already exists") {
+			helper.ErrorMessage(w, "email already exists")
 			return
 		} else {
 			fmt.Println(err)
