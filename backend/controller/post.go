@@ -1,10 +1,12 @@
 package controller
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"social_network/models"
+	"strconv"
 )
 
 func PostHandler(w http.ResponseWriter, r *http.Request) {
@@ -69,7 +71,7 @@ func GetPost(w http.ResponseWriter, r *http.Request) {
 	posts := []models.FeedPost{}
 
 	lines, er := statement.Query(UserID, UserID, UserID, 0)
-	if err != nil {
+	if er != nil {
 		Error(w, er, 500)
 		return
 	}
@@ -90,4 +92,42 @@ func Error(w http.ResponseWriter, er error, statusCode int) {
 	fmt.Println("Error ", statusCode, er)
 	http.Error(w, "Error ", statusCode)
 	return
+}
+
+func PostDetail(w http.ResponseWriter, r *http.Request) {
+	post_id , er := strconv.Atoi(r.URL.Query().Get("postid"))
+	if er != nil {
+		Error(w, er, 400)
+		return
+	}
+// variable temporaire
+	UserID := 2
+
+	post := models.PostDetails{}
+	
+	Er := post.GetPost(DB , UserID , post_id)
+	
+	if Er != nil {
+		// You don't have acces to this post or the post does not exist
+		if Er == sql.ErrNoRows {
+			Error(w, Er, 400)
+			return
+		} 
+		// Internal server error
+		Error(w , Er , 500)
+		return
+	}
+	// Get comments of the post
+	ComErr := post.Getcomments(DB)
+	if ComErr != nil {
+		Error(w , ComErr , 500)
+		return
+	}
+
+	data, err := json.Marshal(post)
+	if err != nil {
+		Error(w, err, 500)
+		return
+	}
+	w.Write(data)
 }
