@@ -2,6 +2,7 @@
     import { enhance } from "$app/forms";
 	// @ts-nocheck
     import Login_header from '../login-header.svelte'
+    export let form;
 </script>
 <style>
     .form{
@@ -23,7 +24,7 @@
                         <div class="left-column" style="flex: 1; padding-right: 10px;">
                         <div class="form-group icon-input mb-3">
                             <i class="font-sm ti-email text-grey-500 pe-0"></i>
-                            <input type="text" class="style2-input ps-5 form-control text-grey-900 font-xsss fw-600" placeholder="Your Email Address" name="email">                        
+                            <input type="text" value={form?.email??''} class="style2-input ps-5 form-control text-grey-900 font-xsss fw-600" placeholder="Your Email Address" name="email">                        
                         </div>
                         <div class="form-group icon-input mb-3">
                             <input type="Password" class="style2-input ps-5 form-control text-grey-900 font-xss ls-3" placeholder="Password" name="password">
@@ -31,18 +32,18 @@
                         </div>
                         <div class="form-group icon-input mb-3">
                             <i class="font-sm ti-user text-grey-500 pe-0"></i>
-                            <input type="text" class="style2-input ps-5 form-control text-grey-900 font-xsss fw-600" placeholder="First Name" name="firstname">                        
+                            <input type="text" value={form?.firstname??''} class="style2-input ps-5 form-control text-grey-900 font-xsss fw-600" placeholder="First Name" name="firstname">                        
                         </div>
                         <div class="form-group icon-input mb-3">
                             <i class="font-sm ti-user text-grey-500 pe-0"></i>
-                            <input type="text" class="style2-input ps-5 form-control text-grey-900 font-xsss fw-600" placeholder="Last Name" name="lastname">                        
+                            <input type="text" value={form?.lastname??''} class="style2-input ps-5 form-control text-grey-900 font-xsss fw-600" placeholder="Last Name" name="lastname">                        
                         </div>
                     </div>
                         
                     <div class="right-column" style="flex: 1; padding-left: 10px;">
                         <div class="form-group icon-input mb-3">
                             <i class="font-sm ti-calendar text-grey-500 pe-0"></i>
-                            <input type="date" class="style2-input ps-5 form-control text-grey-900 font-xsss fw-600" name="birthdate">
+                            <input type="date" value={form?.birth??''} class="style2-input ps-5 form-control text-grey-900 font-xsss fw-600" name="birthdate">
                         </div>
                         <div class="form-group icon-input mb-3">
                             <i class="font-sm ti-upload text-grey-500 pe-0"></i>
@@ -50,16 +51,21 @@
                         </div>
                         <div class="form-group icon-input mb-3">
                             <i class="font-sm ti-user text-grey-500 pe-0"></i>
-                            <input type="text" class="style2-input ps-5 form-control text-grey-900 font-xsss fw-600" placeholder="Nickname" name="nickname">                        
+                            <input type="text" value={form?.nickname??''} class="style2-input ps-5 form-control text-grey-900 font-xsss fw-600" placeholder="Nickname" name="nickname">                        
                         </div>
                         <div class="form-group icon-input mb-3">
                             <i class="font-sm ti-comment text-grey-500 pe-0"></i>
-                            <textarea class="style2-input ps-5 form-control text-grey-900 font-xsss fw-600" placeholder="Bio" style="line-height: 1.5;" name="bio"></textarea>
+                            <textarea value={form?.bio??''} class="style2-input ps-5 form-control text-grey-900 font-xsss fw-600" placeholder="Bio" style="line-height: 1.5;" name="bio"></textarea>
                         </div>
                     </div>
                 </div>
+                {#if form}
+                    <div class="alert alert-danger">
+                        {form.error}
+                    </div>
+                {/if}
                     <div class="form-group mb-1">
-                        <button t class="form-control text-center style2-input text-white fw-600 bg-dark border-0 p-0">Register</button>
+                        <button type="submit" class="form-control text-center style2-input text-white fw-600 bg-dark border-0 p-0">Register</button>
                     </div>  
                     </form>
                     
