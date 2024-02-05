@@ -26,6 +26,21 @@ type FeedPost struct {
 	Description string `json:"description"`
 }
 
+type Comment struct {
+	IdComment int `json:"id"`
+	FirtsName string
+	LastName  string
+	Content   string
+	Type      string
+}
+
+type PostDetails struct {
+	Post
+	GroupName   string `json:"groupName"`
+	Description string `json:"description"`
+	Comments    []Comment
+}
+
 // func (P *Post) GetAll(controllerDB *sql.DB) ([]Post,error) {
 // }
 
@@ -86,4 +101,49 @@ func (P *Post) CheckGroupMember(DB *sql.DB) (int, error) {
 	var num int
 	statement.QueryRow(P.User_id, P.Group_id).Scan(&num)
 	return num, nil
+}
+
+func (P *PostDetails) GetPost(DB *sql.DB ,UserID, post_id int ) error {
+	statement, err := DB.Prepare(`
+	SELECT P.id , P.Group_id , P.titre , P.image , P.content , P.privacy , P.creationDate , G.titre , G.description
+	FROM Post as P 
+   	LEFT JOIN "Group" as G on P.Group_id = G.id
+   	WHERE P.id = ? and ( P.privacy = "public" or (P.privacy = "private" and P.User_id in 
+	   (SELECT F.User_id from Follow F WHERE F.Follower_id = ? )) or
+	   		P.privacy = "almostprivate" and P.id in 
+		   (SELECT A.Post_id  from AllowedPost as A WHERE A.User_id = ? ) or
+			P.Group_id in 
+			   (SELECT J.Group_id from Joinner as J WHERE J.User_id = ?)) 
+	`)
+	if err != nil {
+		return err
+	}
+	var sqler error
+	sqler = statement.QueryRow( post_id ,UserID, UserID , UserID ).Scan(&P.Post.Id, &P.Post.Group_id, &P.Post.Titre, &P.Post.Image, &P.Post.Content, &P.Post.Privacy, &P.Post.CreationDate, &P.GroupName, &P.Description )
+
+	if sqler == sql.ErrNoRows {
+		return sqler
+	}	
+	return nil
+}
+
+func (P *PostDetails) Getcomments(DB *sql.DB) error {
+	statement, err := DB.Prepare(`
+	select C.id , U.firstName , U.lastName , C.comment , C.type from Comment as C 
+JOIN User as U on U.id = C.User_id
+where C.Post_id = ?
+	`)
+	if err != nil {
+		return err
+	}
+	lines, er := statement.Query(P.Post.Id)
+	if er != nil {
+		return er
+	}
+	for lines.Next() {
+		com := Comment{}
+		lines.Scan(&com.IdComment, &com.FirtsName, &com.LastName, &com.Content, &com.Type)
+		P.Comments = append(P.Comments, com)
+	}
+	return nil
 }
