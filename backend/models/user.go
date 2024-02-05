@@ -56,10 +56,10 @@ func (u *User) CreateUser(db *sql.DB) error {
 func (u *User) GetUserByToken(db *sql.DB, token string) error {
 	query := `SELECT id, firstName, lastName, email, nickName, birthName, avatar, aboutMe, ispublic FROM User WHERE tokenLogin = ?`
 
-	err := db.QueryRow(query, token).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.NickName, &u.BirthName, &u.Avatar, &u.AboutMe, &u.IsPublic, &u.TokenLogin)
+	err := db.QueryRow(query, token).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.NickName, &u.BirthName, &u.Avatar, &u.AboutMe, &u.IsPublic)
 	if err != nil {
 		return fmt.Errorf("GetUserById %d: %v", token, err)
 	}
-
+	
 	return nil
 }

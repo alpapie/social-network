@@ -8,12 +8,12 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-
 	"github.com/gofrs/uuid"
 )
 
 func LognToken(username, password string) string {
-	sum := sha256.Sum256([]byte(username))
+
+	sum := sha256.Sum256([]byte(username+password))
 	return fmt.Sprintf("%x", sum)
 }
 

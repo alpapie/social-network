@@ -11,26 +11,21 @@ import (
 	"strings"
 	"time"
 )
-func SessionAddOrUpdate(db *sql.DB, sssid, useremail string) error {
-	req := `SELECT sessionId,email,datefin from Session Where email='` + useremail + `';`
-	// req:=fmt.Sprintf(`SELECT * from Session Where email=?;`)
-	row, err := db.Query(req)
+func SessionAddOrUpdate(db *sql.DB, sssid, useremail string,user_id int) error {
+	req := `SELECT uiSession,email,datefin from Session Where email='` + useremail + `';`
 	var sessionid, email string
 	var datef time.Time
 	var errsession error
+	err := db.QueryRow(req).Scan(&sessionid, &email, &datef)
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-
-	for row.Next() {
-		row.Scan(&sessionid, &email, &datef)
-	}
 	
 	if email == useremail {
-		_, errsession = db.Exec("UPDATE Session SET sessionId=?, datefin=? where email=?;", sssid, time.Now().Add(time.Hour*24*3) ,email)
+		_, errsession = db.Exec("UPDATE Session SET uiSession=?, datefin=? where email=?;", sssid, time.Now().Add(time.Hour*24*3) ,email)
 	} else {
-		_, errsession = db.Exec("INSERT INTO Session (sessionId,email,datefin) VALUES(?,?,?);", sssid, useremail, time.Now().Add(time.Hour*24*3))
+		_, errsession = db.Exec("INSERT INTO Session (User_id,uiSession,email,datefin) VALUES(?,?,?,?);",user_id, sssid, useremail, time.Now().Add(time.Hour*24*3))
 	}
 	return errsession
 
@@ -38,22 +33,22 @@ func SessionAddOrUpdate(db *sql.DB, sssid, useremail string) error {
 
 func Auth(Db *sql.DB, r *http.Request) (bool, string) {
 
-	sessionpi, err := r.Cookie("sessionid")
+	sessionpi, err := r.Cookie("sessionId")
+	fmt.Println(sessionpi.Value)
 	if err != nil || sessionpi.String() == "" {
 		return false, ""
 	}
-	var Id int
+
 	var sessionId, email string
 	var datef time.Time
-	req := `SELECT * from Session Where sessionId=?;`
-	row, err := Db.Query(req, sessionpi.Value)
+	req := `SELECT uiSession,email,datefin from Session Where uiSession=?`
+	err = Db.QueryRow(req, sessionpi.Value).Scan(&sessionId, &email, &datef)
 
 	if err != nil {
 		return false, ""
 	}
-	for row.Next() {
-		row.Scan(&Id, &sessionId, &email, &datef)
-	}
+
+	fmt.Println(email)
 
 	if sessionId != "" && email != "" && datef.After(time.Now()) {
 		return true, email
@@ -76,7 +71,7 @@ func Getmethode(r *http.Request, methode string) bool {
 	return true
 }
 func DeleteSessio(db *sql.DB, ssid string) error {
-	req := `DELETE from Session Where sessionId=?;`
+	req := `DELETE from Session Where uiSession=?;`
 	_, err := db.Exec(req, ssid)
 	return err
 }
@@ -130,7 +125,7 @@ func WriteJSON(w http.ResponseWriter, status int, data map[string]interface{}, h
 	for key, value := range headers {
 		w.Header()[key] = value
 	}
-
+	// fmt.Println(js)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(js)
 

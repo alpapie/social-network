@@ -1,22 +1,36 @@
 import { makeRequest } from "$lib/api.js";
 import { authenticateUser } from "$lib/auth/auth.js";
 import { redirect } from "@sveltejs/kit";
+import { DB, localStorageObj } from "../../db.js";
 
 
-export const load =(event)=>{
-    authenticateUser(event)
+export const load = async ({cookies})=>{
+    const IsAuth= await authenticateUser(cookies)
+    if (IsAuth) {
+        redirect(302,"/")
+    }
 }
 
 export const actions = {
-	default: async ({request,}) => {
+	default: async ({request,cookies}) => {
+        
 		const formDatas= await request.formData()
-        // data={
-        //     email:formDatas.get()
-        // }
-        console.log(formDatas);
-        let response= await makeRequest("login","POST",formDatas)
-        console.log("eeeerrrrrrrrrrrrrrrr alpapie " +response)
-        // return response
+
+        let response= await makeRequest("login","POST",formDatas,{},cookies)
+
+        if (response?.data?.success) {
+            DB("set","user",response?.data?.user)            
+           console.log(localStorageObj)
+            cookies.set('sessionId',response?.data?.data, {
+                httpOnly: true,
+                sameSite: 'strict',
+                secure: false,
+                path: '/',
+                maxAge: 3600*24 * 3,
+              });
+            redirect(302,"/")
+        }
+
+        return {error:response?.data?.error,email:formDatas.get("email")}
 	}
 };
-

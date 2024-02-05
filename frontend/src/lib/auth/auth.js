@@ -1,6 +1,7 @@
-import  { RequestEvent } from '@sveltejs/kit'
+import { makeRequest } from '$lib/api'
 
-export const authenticateUser =  async (event=RequestEvent) => {
-    
-    
+export const authenticateUser =  async (Cookies) => {
+
+    let resp=await makeRequest("","GET",{},{},Cookies) 
+    return resp?.data?.isauth
 }

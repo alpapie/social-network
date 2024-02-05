@@ -354,6 +354,7 @@ create table "Session"
    User_id               integer                        not null,
    uiSession            integer                        null,
    email                varchar(254)                   null,
+   datefin              timestamp                        not null,
    constraint PK_SESSION primary key (id),
    FOREIGN KEY (User_id) REFERENCES User (id) ON DELETE SET NULL
 );

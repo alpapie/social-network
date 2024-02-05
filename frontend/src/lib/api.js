@@ -1,19 +1,20 @@
 import axios from "axios";
-import { SERVER_URL } from "$env/static/private";
-import { redirect } from "@sveltejs/kit";
-export async function makeRequest(endpoint, method, data = {}, headers = {}) {
-    let url = `http://localhost:8080/server/${endpoint}`;
-    console.log(url)
-  const config = { method, headers };
-  if (method !== "GET") {
+import { GetCookies } from "../db";
 
-    config.data = data;
-  }
-  
+export async function makeRequest(endpoint, method, data = {}, headers = {},cookies) {
   try {
-    const response = await axios(url, config);
+    
+  let url = `http://localhost:8080/server/${endpoint}`;
+  if (cookies){
+    headers.Cookie=GetCookies(cookies)
+  }
+  const config = { withCredentials: true ,method, headers };
+    if (method !== "GET") {
+      config.data = data;
+    }
+    const response = await axios(url,config);
     return response;
   } catch (error) {
-    return error
+    return error?.response
   }
 }

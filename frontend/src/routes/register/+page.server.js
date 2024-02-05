@@ -3,20 +3,22 @@ import { authenticateUser } from "$lib/auth/auth.js";
 import { redirect } from "@sveltejs/kit";
 
 
-export const load =(event)=>{
-    authenticateUser(event)
+export const load = async ({cookies})=>{
+    const IsAuth= await authenticateUser(cookies)
+    if (IsAuth) {
+        redirect(302,"/")
+    }
 }
 
 export const actions = {
 	default: async ({request,}) => {
 		const formDatas= await request.formData()
-        // data={
-        //     email:formDatas.get()
-        // }
-        console.log(formDatas);
         let response= await makeRequest("register","POST",formDatas)
-        console.log(response)
-        // return response
+        console.log(response.data)
+        if(response?.data?.success){
+            redirect(301,"/login")
+        }
+        return response.data
 	}
 };
 
