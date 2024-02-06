@@ -17,18 +17,18 @@ type Group struct {
 func (g *Group) CreateGroup(db *sql.DB) (int64, error) {
 	stmt, err := db.Prepare("INSERT INTO \"Group\" (User_id, titre, description) VALUES (?, ?, ?)")
 	if err != nil {
-		return   0, fmt.Errorf("could not prepare statement: %v", err)
+		return 0, fmt.Errorf("could not prepare statement: %v", err)
 	}
 	defer stmt.Close()
 
 	res, err := stmt.Exec(g.UserID, g.Title, g.Description)
 	if err != nil {
-		return   0, fmt.Errorf("failed to execute statement: %v", err)
+		return 0, fmt.Errorf("failed to execute statement: %v", err)
 	}
 
 	lastInsertId, err := res.LastInsertId()
 	if err != nil {
-		return   0, fmt.Errorf("failed to retrieve last insert ID: %v", err)
+		return 0, fmt.Errorf("failed to retrieve last insert ID: %v", err)
 	}
 
 	return lastInsertId, nil

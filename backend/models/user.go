@@ -32,6 +32,17 @@ func (u *User) GetUserById(db *sql.DB, id int) error {
 	return nil
 }
 
+func (u *User) GetUserByEmail(db *sql.DB, email string) error {
+	query := `SELECT id, firstName, lastName, email, nickName, birthName, avatar, aboutMe, ispublic FROM User WHERE email = ?`
+
+	err := db.QueryRow(query, email).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.NickName, &u.BirthName, &u.Avatar, &u.AboutMe, &u.IsPublic, &u.TokenLogin)
+	if err != nil {
+		return fmt.Errorf("GetUserById %s: %v", email, err)
+	}
+
+	return nil
+}
+
 func (u *User) CreateUser(db *sql.DB) error {
 	// Vérifier si l'email existe déjà
 	var count int
@@ -58,7 +69,7 @@ func (u *User) GetUserByToken(db *sql.DB, token string) error {
 
 	err := db.QueryRow(query, token).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.NickName, &u.BirthName, &u.Avatar, &u.AboutMe, &u.IsPublic)
 	if err != nil {
-		return fmt.Errorf("GetUserById %d: %v", token, err)
+		return fmt.Errorf("GetUserById %s: %v", token, err)
 	}
 	
 	return nil
