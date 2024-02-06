@@ -8,4 +8,5 @@ export const load = async ({cookies})=>{
     if (!IsAuth) {
         redirect(302,"/login")
     }
+    redirect(302,"/main")
 }

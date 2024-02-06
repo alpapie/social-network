@@ -2,7 +2,7 @@ import { makeRequest } from "$lib/api.js";
 import { authenticateUser } from "$lib/auth/auth.js";
 import { redirect } from "@sveltejs/kit";
 import { DB, localStorageObj } from "../../db.js";
-
+import { error } from '@sveltejs/kit';
 
 export const load = async ({cookies})=>{
     const IsAuth= await authenticateUser(cookies)
@@ -17,10 +17,10 @@ export const actions = {
 		const formDatas= await request.formData()
 
         let response= await makeRequest("login","POST",formDatas,{},cookies)
-
+        console.log(response.data);
         if (response?.data?.success) {
             DB("set","user",response?.data?.user)            
-           console.log(localStorageObj)
+        //    console.log(localStorageObj)
             cookies.set('sessionId',response?.data?.data, {
                 httpOnly: true,
                 sameSite: 'strict',
@@ -30,7 +30,10 @@ export const actions = {
               });
             redirect(302,"/")
         }
-
+        if (response?.data?.error.Code) {
+            console.log(response.data.error.Code);
+            throw  error(response?.data?.error.Code, response?.data?.error.Message);
+        }
         return {error:response?.data?.error,email:formDatas.get("email")}
 	}
 };

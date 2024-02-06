@@ -1,4 +1,5 @@
 import axios from "axios";
+
 import { GetCookies } from "../db";
 
 export async function makeRequest(endpoint, method, data = {}, headers = {},cookies) {
@@ -14,7 +15,7 @@ export async function makeRequest(endpoint, method, data = {}, headers = {},cook
     }
     const response = await axios(url,config);
     return response;
-  } catch (error) {
-    return error?.response
+  } catch (err) {
+    return err?.response
   }
 }

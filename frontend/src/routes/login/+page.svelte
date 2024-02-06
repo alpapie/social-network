@@ -30,9 +30,11 @@ export let form
             Login into <br />your account
           </h2>
           <p class="danger fw-300 text-danger">
+            
             {#if form}
               {form.error ?? "server error"}
             {/if}
+
           </p>
           <form method="POST" use:enhance >
             <div class="form-group icon-input mb-3">

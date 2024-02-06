@@ -8,8 +8,6 @@ import (
 	helper "social_network/helper"
 	"social_network/models"
 	"strings"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 func RegisterUser(w http.ResponseWriter, r *http.Request) {
@@ -36,12 +34,12 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 		helper.ErrorMessage(w, "bad format of email")
 		return
 	}
-	haspassword, errCrypt := bcrypt.GenerateFromPassword([]byte(password), 5)
-	user.TokenLogin = helper.LognToken(user.Email, string(haspassword))
+	// haspassword, errCrypt := bcrypt.GenerateFromPassword([]byte(password), 5)
+	user.TokenLogin = helper.LognToken(user.Email, password)
 	user.IsPublic = 0
 	err := user.CreateUser(DB)
 
-	if errCrypt != nil || err != nil {
+	if err != nil {
 		if strings.HasPrefix(err.Error(), "email already exists") {
 			helper.ErrorMessage(w, "email already exists")
 			return

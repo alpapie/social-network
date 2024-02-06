@@ -16,13 +16,9 @@ func SessionAddOrUpdate(db *sql.DB, sssid, useremail string,user_id int) error {
 	var sessionid, email string
 	var datef time.Time
 	var errsession error
-	err := db.QueryRow(req).Scan(&sessionid, &email, &datef)
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
+	_= db.QueryRow(req).Scan(&sessionid, &email, &datef)
 	
-	if email == useremail {
+	if  email == useremail {
 		_, errsession = db.Exec("UPDATE Session SET uiSession=?, datefin=? where email=?;", sssid, time.Now().Add(time.Hour*24*3) ,email)
 	} else {
 		_, errsession = db.Exec("INSERT INTO Session (User_id,uiSession,email,datefin) VALUES(?,?,?,?);",user_id, sssid, useremail, time.Now().Add(time.Hour*24*3))
