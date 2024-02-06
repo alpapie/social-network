@@ -5,11 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"social_network/helper"
 	"social_network/models"
 	"strconv"
 )
 
-func PostHandler(w http.ResponseWriter, r *http.Request) {
+func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	NewPost := models.Post{}
@@ -19,10 +20,10 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil || !NewPost.Check() {
 		fmt.Println("Error decoding JSON:", err)
 		http.Error(w, "400 bad request.", http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]interface{}{"Error": err})
 		return
 	}
-	// if the Post belong to a group Check fist if the user is member of the group
+
+	// if the Post belong to a group Check first if the user is member of the group
 	if NewPost.Group_id != 0 {
 		num, Err := NewPost.CheckGroupMember(DB)
 		if Err != nil {
@@ -41,93 +42,101 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 	if creationError != nil {
 		fmt.Println("Error creating post :", creationError)
 		http.Error(w, "400 bad request.", http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]interface{}{"Error": creationError})
 		return
 	}
 
 	json.NewEncoder(w).Encode(map[string]interface{}{"success": idPost})
 }
 
-func GetPost(w http.ResponseWriter, r *http.Request) {
-	//variable temporaire
-	UserID := 2
-	statement, err := DB.Prepare(`
-	SELECT P.id , P.Group_id , P.titre , P.image , P.content , P.privacy , P.creationDate , G.titre , G.description
-	FROM Post as P 
-   	LEFT JOIN "Group" as G on P.Group_id = G.id
-   	WHERE P.privacy = "public" or (P.privacy = "private" and P.User_id in 
-	   (SELECT F.User_id from Follow F WHERE F.Follower_id = ? )) or
-	   		P.privacy = "almostprivate" and P.id in 
-		   (SELECT A.Post_id  from AllowedPost as A WHERE A.User_id = ? ) or
-			P.Group_id in 
-			   (SELECT J.Group_id from Joinner as J WHERE J.User_id = ?) LIMIT 10 OFFSET ?
-			
-	`)
+func PostsByUserHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	user := models.User{}
+
+	posts, err := user.GetPosts(DB)
 	if err != nil {
-		Error(w, err, 500)
+		helper.Error(w, err, 500)
 		return
 	}
 
-	posts := []models.FeedPost{}
-
-	lines, er := statement.Query(UserID, UserID, UserID, 0)
-	if er != nil {
-		Error(w, er, 500)
+	err = json.NewEncoder(w).Encode(posts)
+	if err != nil {
+		helper.Error(w, err, 500)
 		return
 	}
-	for lines.Next() {
-		post := models.FeedPost{}
-		lines.Scan(&post.Post.Id, &post.Post.Group_id, &post.Post.Titre, &post.Post.Image, &post.Post.Content, &post.Post.Privacy, &post.Post.CreationDate, &post.GroupName, &post.Description)
-		posts = append(posts, post)
-	}
-	data, err := json.Marshal(posts)
-	if err != nil {
-		Error(w, err, 500)
-	}
-	w.Write(data)
-	fmt.Println("here are the users", string(data))
-}
-
-func Error(w http.ResponseWriter, er error, statusCode int) {
-	fmt.Println("Error ", statusCode, er)
-	http.Error(w, "Error ", statusCode)
-	return
 }
 
 func PostDetail(w http.ResponseWriter, r *http.Request) {
-	post_id , er := strconv.Atoi(r.URL.Query().Get("postid"))
+	post_id, er := strconv.Atoi(r.URL.Query().Get("postid"))
 	if er != nil {
-		Error(w, er, 400)
+		helper.Error(w, er, 400)
 		return
 	}
-// variable temporaire
+	// variable temporaire
 	UserID := 2
 
 	post := models.PostDetails{}
-	
-	Er := post.GetPost(DB , UserID , post_id)
-	
+
+	Er := post.GetPost(DB, UserID, post_id)
+
 	if Er != nil {
 		// You don't have acces to this post or the post does not exist
 		if Er == sql.ErrNoRows {
-			Error(w, Er, 400)
+			helper.Error(w, Er, 400)
 			return
-		} 
+		}
 		// Internal server error
-		Error(w , Er , 500)
+		helper.Error(w, Er, 500)
 		return
 	}
+
 	// Get comments of the post
-	ComErr := post.Getcomments(DB)
+	ComErr := post.GetComments(DB)
 	if ComErr != nil {
-		Error(w , ComErr , 500)
+		helper.Error(w, ComErr, 500)
 		return
 	}
 
 	data, err := json.Marshal(post)
 	if err != nil {
-		Error(w, err, 500)
+		helper.Error(w, err, 500)
 		return
+	}
+	w.Write(data)
+}
+
+func GroupPost(w http.ResponseWriter, r *http.Request) {
+	// variable temporaire
+	UserID := 2
+	group_id, er := strconv.Atoi(r.URL.Query().Get("groupid"))
+	if er != nil {
+		helper.Error(w, er, 400)
+		return
+	}
+	group := models.GroupeInfo{
+		Id: group_id,
+	}
+	ismenber, Er := group.IsMember(DB, UserID)
+
+	// internal server error
+	if Er != nil && Er != sql.ErrNoRows {
+		helper.Error(w, Er, 500)
+		return
+	}
+
+	// you're not a member of this group
+	if !ismenber {
+		helper.Error(w, Er, 400)
+		return
+	}
+	PostEr := group.GetGroupPost(DB, UserID)
+	if PostEr != nil {
+		helper.Error(w, PostEr, 500)
+		return
+	}
+	data, err := json.Marshal(group)
+	if err != nil {
+		helper.Error(w, err, 500)
 	}
 	w.Write(data)
 }

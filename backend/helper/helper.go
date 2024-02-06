@@ -3,7 +3,7 @@ package helper
 import (
 	"database/sql"
 	"fmt"
-	// "forum/models"
+
 	"net/http"
 	"strconv"
 	"strings"
