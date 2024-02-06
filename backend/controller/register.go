@@ -22,11 +22,11 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 	password := html.EscapeString(r.FormValue("password"))
 	user.FirstName = html.EscapeString(strings.TrimSpace(r.FormValue("firstname")))
 	user.LastName = html.EscapeString(strings.TrimSpace(r.FormValue("lastname")))
-	user.BirthName = html.EscapeString(strings.TrimSpace(r.FormValue("birthdate")))
+	user.BirthDate = html.EscapeString(strings.TrimSpace(r.FormValue("birthdate")))
 	user.Avatar = helper.UploadImage(r)
 	user.NickName = html.EscapeString(strings.TrimSpace(r.FormValue("nickname")))
 	user.AboutMe = html.EscapeString(strings.TrimSpace(r.FormValue("aboutme")))
-	if !verifLen(password, user.FirstName, user.LastName, user.Email, user.BirthName) {
+	if !verifLen(password, user.FirstName, user.LastName, user.Email, user.BirthDate) {
 		helper.ErrorMessage(w, "Enter at least 2 input characters")
 		return
 	}

@@ -14,7 +14,7 @@ type User struct {
 	Email      string
 	Pasword    string
 	NickName   string
-	BirthName  string
+	BirthDate  string
 	Avatar     string
 	AboutMe    string
 	IsPublic   int
@@ -22,9 +22,9 @@ type User struct {
 }
 
 func (u *User) GetUserById(db *sql.DB, id int) error {
-	query := `SELECT id, firstName, lastName, email, nickName, birthName, avatar, aboutMe, ispublic FROM User WHERE id = ?`
+	query := `SELECT id, firstName, lastName, email, nickName, birthDate, avatar, aboutMe, ispublic FROM User WHERE id = ?`
 
-	err := db.QueryRow(query, id).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.NickName, &u.BirthName, &u.Avatar, &u.AboutMe, &u.IsPublic, &u.TokenLogin)
+	err := db.QueryRow(query, id).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.NickName, &u.BirthDate, &u.Avatar, &u.AboutMe, &u.IsPublic, &u.TokenLogin)
 	if err != nil {
 		return fmt.Errorf("GetUserById %d: %v", id, err)
 	}
@@ -44,8 +44,8 @@ func (u *User) CreateUser(db *sql.DB) error {
 		return fmt.Errorf("email already exists")
 	}
 
-	query = `INSERT INTO User (firstName, lastName, email, nickName, birthName, avatar, aboutMe, ispublic, tokenLogin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
-	_, err = db.Exec(query, u.FirstName, u.LastName, u.Email, u.NickName, u.BirthName, u.Avatar, u.AboutMe, u.IsPublic, u.TokenLogin)
+	query = `INSERT INTO User (firstName, lastName, email, nickName, birthDate, avatar, aboutMe, ispublic, tokenLogin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+	_, err = db.Exec(query, u.FirstName, u.LastName, u.Email, u.NickName, u.BirthDate, u.Avatar, u.AboutMe, u.IsPublic, u.TokenLogin)
 	if err != nil {
 		return fmt.Errorf("CreateU: %v", err)
 	}
@@ -54,12 +54,12 @@ func (u *User) CreateUser(db *sql.DB) error {
 }
 
 func (u *User) GetUserByToken(db *sql.DB, token string) error {
-	query := `SELECT id, firstName, lastName, email, nickName, birthName, avatar, aboutMe, ispublic FROM User WHERE tokenLogin = ?`
+	query := `SELECT id, firstName, lastName, email, nickName, birthDate, avatar, aboutMe, ispublic FROM User WHERE tokenLogin = ?`
 
-	err := db.QueryRow(query, token).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.NickName, &u.BirthName, &u.Avatar, &u.AboutMe, &u.IsPublic)
+	err := db.QueryRow(query, token).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.NickName, &u.BirthDate, &u.Avatar, &u.AboutMe, &u.IsPublic)
 	if err != nil {
-		return fmt.Errorf("GetUserById %d: %v", token, err)
+		return fmt.Errorf("GetUserById %s: %v", token, err)
 	}
-	
+
 	return nil
 }
