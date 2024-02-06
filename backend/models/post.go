@@ -17,7 +17,6 @@ type Post struct {
 	Image        string `json:"image"`
 	Content      string `json:"content"`
 	Privacy      string `json:"privacy"`
-	PostGroup    string `json:"postGroup"`
 	CreationDate string `json:"creationDate"`
 	AllowedUsers []int
 }
@@ -43,7 +42,7 @@ type GroupeInfo struct {
 
 func (P *PostDetails) GetPost(DB *sql.DB, UserID, post_id int) error {
 	statement, err := DB.Prepare(`
-	SELECT U.id , U.firstName , U.lastName , P.id , coalesce(P.Group_id,0) as Group_id , P.titre ,  coalesce(P.image, '') as image , P.content , P.privacy , coalesce(P.creationDate,'') as creationDate , coalesce(G.titre,'') as titre , coalesce(G.description,'') as description
+	SELECT U.id , U.firstName , U.lastName , P.id , coalesce(P.Group_id,0) as Group_id , P.titre ,  coalesce(P.image, '') as image , P.content , P.privacy , coalesce(P.creationDate,'') as creationDate , coalesce(G.title,'') as title , coalesce(G.description,'') as description
 	FROM Post as P 
 	JOIN User as U on U.id = P.User_id
    	LEFT JOIN "Group" as G on P.Group_id = G.id
@@ -66,7 +65,7 @@ func (P *PostDetails) GetPost(DB *sql.DB, UserID, post_id int) error {
 
 func (P *PostDetails) GetComments(DB *sql.DB) error {
 	statement, err := DB.Prepare(`
-	select C.id , U.firstName , U.lastName , C.comment , C.type from Comment as C 
+	select C.id , U.firstName , U.lastName , C.comment ,C.creationDate, C.User_id, C.Post_id from Comment as C 
 JOIN User as U on U.id = C.User_id
 where C.Post_id = ?
 	`)
@@ -79,7 +78,7 @@ where C.Post_id = ?
 	}
 	for lines.Next() {
 		com := Comment{}
-		lines.Scan(&com.Id, &com.FirstName, &com.LastName, &com.Comment, &com.Type)
+		lines.Scan(&com.Id, &com.FirstName, &com.LastName, &com.Comment, &com.CreationDate, &com.UserId, &com.PostId)
 		P.Comments = append(P.Comments, com)
 	}
 	return nil
@@ -90,7 +89,7 @@ func (U *User) GetPosts(controllerDB *sql.DB) ([]FeedPost, error) {
 	UserID := 2
 
 	statement, err := controllerDB.Prepare(`
-	SELECT U.id , U.firstName , U.lastName , P.id , coalesce(P.Group_id,0) as Group_id , P.titre , coalesce(P.image ,'') as image , P.content , P.privacy , coalesce(P.creationDate,"") as creationDate ,coalesce(G.titre,"") as groupName ,coalesce(G.description,"") as description
+	SELECT U.id , U.firstName , U.lastName , P.id , coalesce(P.Group_id,0) as Group_id , P.titre , coalesce(P.image ,'') as image , P.content , P.privacy , coalesce(P.creationDate,"") as creationDate ,coalesce(G.title,"") as groupName ,coalesce(G.description,"") as description
 	FROM Post as P 
 	JOIN User as U on U.id = P.User_id
    	LEFT JOIN "Group" as G on P.Group_id = G.id
@@ -126,12 +125,12 @@ func (U *User) GetPosts(controllerDB *sql.DB) ([]FeedPost, error) {
 
 func (P *Post) Create(controllerDB *sql.DB) (int, error) {
 
-	statement, err := controllerDB.Prepare("INSERT INTO Post (Group_id, User_id, titre, image, content, privacy, postGroup,creationDate) VALUES (?,?,?,?,?,?,?,?)")
+	statement, err := controllerDB.Prepare("INSERT INTO Post (Group_id, User_id, titre, image, content, privacy, creationDate) VALUES (?,?,?,?,?,?,?)")
 	if err != nil {
 		return -1, err
 	}
 
-	sqlResult, err := statement.Exec(P.Group_id, P.User_id, P.Titre, P.Image, P.Content, P.Privacy, P.PostGroup, time.Now().String())
+	sqlResult, err := statement.Exec(P.Group_id, P.User_id, P.Titre, P.Image, P.Content, P.Privacy, time.Now().String())
 	if err != nil {
 		return -1, err
 	}
@@ -189,7 +188,7 @@ func (P *Post) CheckGroupMember(DB *sql.DB) (int, error) {
 
 func (G *GroupeInfo) IsMember(DB *sql.DB, UserId int) (bool, error) {
 	statement, err := DB.Prepare(`
-	SELECT  G.titre , G.description from Joinner as J JOIN "Group" as G 
+	SELECT  G.title , G.description from Joinner as J JOIN "Group" as G 
 	on G.id = J.Group_id
 	WHERE J.Group_id = ? and J.User_id = ?
 	`)

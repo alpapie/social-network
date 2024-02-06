@@ -7,14 +7,13 @@ import (
 )
 
 type Comment struct {
-	Id        int    `json:"id"`
-	Comment   string `json:"comment"`
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
-	UserId    int    `json:"userId"`
-	PostId    int    `json:"postId"`
-	Date      string `json:"date"`
-	Type      string
+	Id           int    `json:"id"`
+	Comment      string `json:"comment"`
+	FirstName    string `json:"firstName"`
+	LastName     string `json:"lastName"`
+	UserId       int    `json:"userId"`
+	PostId       int    `json:"postId"`
+	CreationDate string `json:"creationDate"`
 }
 
 func (C *Comment) Create(DB *sql.DB) (int, error) {
@@ -62,6 +61,6 @@ func (C *Comment) IsAllowedToComment(DB *sql.DB) (int, error) {
 }
 
 func (c *Comment) ValidateComment() bool {
-	comment := html.EscapeString(c.Comment)
-	return strings.TrimSpace(comment) != "" && c.PostId != 0
+	c.Comment = html.EscapeString(c.Comment)
+	return strings.TrimSpace(c.Comment) != "" && c.PostId != 0
 }
