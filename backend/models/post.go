@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"html"
 	"strings"
 	"time"
 )
@@ -165,7 +166,10 @@ func RegisterAllowedUsers(users []int, idPost int, controllerDB *sql.DB) error {
 }
 
 func (P *Post) Check() bool {
-	return P.User_id != 0 && strings.TrimSpace(P.Content) != "" && strings.TrimSpace(P.Titre) != "" && P.CheckPrivacy()
+	content := html.EscapeString(strings.TrimSpace(P.Content))
+	titre := html.EscapeString(strings.TrimSpace(P.Titre))
+
+	return P.User_id != 0 && content != "" && titre != "" && P.CheckPrivacy()
 }
 
 func (P *Post) CheckPrivacy() bool {
@@ -216,7 +220,7 @@ func (G *GroupeInfo) GetGroupPost(DB *sql.DB, userId int) error {
 	}
 	for posts.Next() {
 		p := Post{}
-		posts.Scan(&p.User_id ,&p.FirstName , &p.LastName ,&p.Id, &p.Group_id, &p.Titre, &p.Image, &p.Content, &p.Privacy, &p.CreationDate)
+		posts.Scan(&p.User_id, &p.FirstName, &p.LastName, &p.Id, &p.Group_id, &p.Titre, &p.Image, &p.Content, &p.Privacy, &p.CreationDate)
 		G.Posts = append(G.Posts, p)
 	}
 	return nil

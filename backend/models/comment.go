@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"html"
 	"strings"
 )
 
@@ -61,5 +62,6 @@ func (C *Comment) IsAllowedToComment(DB *sql.DB) (int, error) {
 }
 
 func (c *Comment) ValidateComment() bool {
-	return strings.TrimSpace(c.Comment) != "" && c.PostId != 0
+	comment := html.EscapeString(c.Comment)
+	return strings.TrimSpace(comment) != "" && c.PostId != 0
 }
