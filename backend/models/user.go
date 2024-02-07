@@ -35,7 +35,7 @@ func (u *User) GetUserById(db *sql.DB, id int) error {
 func (u *User) GetUserByEmail(db *sql.DB, email string) error {
 	query := `SELECT id, firstName, lastName, email, nickName, birthDate, avatar, aboutMe, ispublic FROM User WHERE email = ?`
 
-	err := db.QueryRow(query, email).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.NickName, &u.BirthDate, &u.Avatar, &u.AboutMe, &u.IsPublic, &u.TokenLogin)
+	err := db.QueryRow(query, email).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.NickName, &u.BirthDate, &u.Avatar, &u.AboutMe, &u.IsPublic)
 	if err != nil {
 		return fmt.Errorf("GetUserById %s: %v", email, err)
 	}

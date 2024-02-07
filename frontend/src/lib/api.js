@@ -14,6 +14,7 @@ export async function makeRequest(endpoint, method, data = {}, headers = {},cook
       config.data = data;
     }
     const response = await axios(url,config);
+    
     return response;
   } catch (err) {
     return err?.response
