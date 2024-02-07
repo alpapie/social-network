@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"social_network/helper"
+	helper "social_network/helper"
 	"social_network/models"
 )
 
@@ -17,24 +17,24 @@ func AddCommentHandler(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&newComment)
 	fmt.Println("here is the comment ", newComment)
 	if err != nil || !newComment.ValidateComment() {
-		helper.Error(w, err, 400)
+		helper.ErrorPage(w, 400)
 		return
 	}
 
 	res, err := newComment.IsAllowedToComment(DB)
 	if err != nil {
-		helper.Error(w, err, 500)
+		helper.ErrorPage(w, 500)
 		return
 	}
 
 	if res == 0 {
-		helper.Error(w, err, 401)
+		helper.ErrorPage(w,  401)
 		return
 	}
 
 	newCommentId, err := newComment.Create(DB)
 	if err != nil {
-		helper.Error(w, err, 500)
+		helper.ErrorPage(w, 500)
 		return
 	}
 

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"social_network/helper"
+	helper "social_network/helper"
 	"social_network/models"
 	"strconv"
 )
@@ -55,13 +55,13 @@ func PostsByUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	posts, err := user.GetPosts(DB)
 	if err != nil {
-		helper.Error(w, err, 500)
+		helper.ErrorPage(w, 500)
 		return
 	}
 
 	err = json.NewEncoder(w).Encode(posts)
 	if err != nil {
-		helper.Error(w, err, 500)
+		helper.ErrorPage(w, 500)
 		return
 	}
 }
@@ -69,7 +69,7 @@ func PostsByUserHandler(w http.ResponseWriter, r *http.Request) {
 func PostDetail(w http.ResponseWriter, r *http.Request) {
 	post_id, er := strconv.Atoi(r.URL.Query().Get("postid"))
 	if er != nil {
-		helper.Error(w, er, 400)
+		helper.ErrorPage(w, 400)
 		return
 	}
 	// variable temporaire
@@ -82,24 +82,24 @@ func PostDetail(w http.ResponseWriter, r *http.Request) {
 	if Er != nil {
 		// You don't have acces to this post or the post does not exist
 		if Er == sql.ErrNoRows {
-			helper.Error(w, Er, 400)
+			helper.ErrorPage(w, 400)
 			return
 		}
 		// Internal server error
-		helper.Error(w, Er, 500)
+		helper.ErrorPage(w, 500)
 		return
 	}
 
 	// Get comments of the post
 	ComErr := post.GetComments(DB)
 	if ComErr != nil {
-		helper.Error(w, ComErr, 500)
+		helper.ErrorPage(w, 500)
 		return
 	}
 
 	data, err := json.Marshal(post)
 	if err != nil {
-		helper.Error(w, err, 500)
+		helper.ErrorPage(w, 500)
 		return
 	}
 	w.Write(data)
@@ -110,7 +110,7 @@ func GroupPost(w http.ResponseWriter, r *http.Request) {
 	UserID := 2
 	group_id, er := strconv.Atoi(r.URL.Query().Get("groupid"))
 	if er != nil {
-		helper.Error(w, er, 400)
+		helper.ErrorPage(w, 400)
 		return
 	}
 	group := models.GroupeInfo{
@@ -120,23 +120,23 @@ func GroupPost(w http.ResponseWriter, r *http.Request) {
 
 	// internal server error
 	if Er != nil && Er != sql.ErrNoRows {
-		helper.Error(w, Er, 500)
+		helper.ErrorPage(w, 500)
 		return
 	}
 
 	// you're not a member of this group
 	if !ismenber {
-		helper.Error(w, Er, 400)
+		helper.ErrorPage(w, 400)
 		return
 	}
 	PostEr := group.GetGroupPost(DB, UserID)
 	if PostEr != nil {
-		helper.Error(w, PostEr, 500)
+		helper.ErrorPage(w, 500)
 		return
 	}
 	data, err := json.Marshal(group)
 	if err != nil {
-		helper.Error(w, err, 500)
+		helper.ErrorPage(w, 500)
 	}
 	w.Write(data)
 }

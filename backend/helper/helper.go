@@ -2,35 +2,26 @@ package helper
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 
+	// "forum/models"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
 )
-
-func SessionAddOrUpdate(db *sql.DB, sssid, useremail string) error {
-	req := `SELECT sessionId,email,datefin from Session Where email='` + useremail + `';`
-	// req:=fmt.Sprintf(`SELECT * from Session Where email=?;`)
-	row, err := db.Query(req)
+func SessionAddOrUpdate(db *sql.DB, sssid, useremail string,user_id int) error {
+	req := `SELECT uiSession,email,datefin from Session Where email='` + useremail + `';`
 	var sessionid, email string
 	var datef time.Time
 	var errsession error
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-
-	for row.Next() {
-		row.Scan(&sessionid, &email, &datef)
-
-	}
-
-	if email == useremail {
-		_, errsession = db.Exec("UPDATE Session SET sessionId=?, datefin=? where email=?;", sssid, time.Now().Add(time.Hour*24*3), email)
+	_= db.QueryRow(req).Scan(&sessionid, &email, &datef)
+	
+	if  email == useremail {
+		_, errsession = db.Exec("UPDATE Session SET uiSession=?, datefin=? where email=?;", sssid, time.Now().Add(time.Hour*24*3) ,email)
 	} else {
-		_, errsession = db.Exec("INSERT INTO Session (sessionId,email,datefin) VALUES(?,?,?);", sssid, useremail, time.Now().Add(time.Hour*24*3))
+		_, errsession = db.Exec("INSERT INTO Session (User_id,uiSession,email,datefin) VALUES(?,?,?,?);",user_id, sssid, useremail, time.Now().Add(time.Hour*24*3))
 	}
 	return errsession
 
@@ -38,29 +29,28 @@ func SessionAddOrUpdate(db *sql.DB, sssid, useremail string) error {
 
 func Auth(Db *sql.DB, r *http.Request) (bool, string) {
 
-	sessionpi, err := r.Cookie("sessionid")
+	sessionpi, err := r.Cookie("sessionId")
+	fmt.Println(sessionpi.Value)
 	if err != nil || sessionpi.String() == "" {
 		return false, ""
 	}
-	var Id int
+
 	var sessionId, email string
 	var datef time.Time
-	req := `SELECT * from Session Where sessionId=?;`
-	row, err := Db.Query(req, sessionpi.Value)
+	req := `SELECT uiSession,email,datefin from Session Where uiSession=?`
+	err = Db.QueryRow(req, sessionpi.Value).Scan(&sessionId, &email, &datef)
 
 	if err != nil {
 		return false, ""
 	}
-	for row.Next() {
-		row.Scan(&Id, &sessionId, &email, &datef)
-	}
+
+	fmt.Println(email)
 
 	if sessionId != "" && email != "" && datef.After(time.Now()) {
 		return true, email
 	}
 	return false, ""
 }
-
 func CheckRequest(r *http.Request, path, methode string) (bool, int) {
 	if strings.ToLower(r.Method) == methode && r.URL.Path == path {
 		return true, 0
@@ -70,7 +60,6 @@ func CheckRequest(r *http.Request, path, methode string) (bool, int) {
 		return false, 404
 	}
 }
-
 func Getmethode(r *http.Request, methode string) bool {
 	if strings.ToLower(r.Method) != methode {
 		return false
@@ -78,7 +67,7 @@ func Getmethode(r *http.Request, methode string) bool {
 	return true
 }
 func DeleteSessio(db *sql.DB, ssid string) error {
-	req := `DELETE from Session Where sessionId=?;`
+	req := `DELETE from Session Where uiSession=?;`
 	_, err := db.Exec(req, ssid)
 	return err
 }
@@ -86,10 +75,10 @@ func DeleteSessio(db *sql.DB, ssid string) error {
 // ******************************* PARSE FILE IN URL *****************
 func PArseUlr(r *http.Request, match string) (bool, int) {
 	index := strings.Split(r.URL.Path[1:], "/")
-	fmt.Println(index[0] + "/" + index[1])
+	fmt.Println(index[0]+"/"+index[1])
 	fmt.Println(len(index))
 	fmt.Println(match)
-	if len(index) == 3 && index[0]+"/"+index[1] == match {
+	if len(index) == 3 && index[0]+"/"+index[1]== match {
 		id, err := strconv.Atoi(index[2])
 		if err == nil {
 			return true, id
@@ -108,6 +97,7 @@ func FecthError(ch []error) bool {
 	return false
 }
 
+
 func ParseCatId(cat []string) ([]int, error) {
 	catid := []int{}
 	for _, v := range cat {
@@ -119,3 +109,22 @@ func ParseCatId(cat []string) ([]int, error) {
 	}
 	return catid, nil
 }
+
+
+func WriteJSON(w http.ResponseWriter, status int, data map[string]interface{}, headers http.Header) error {
+	js, err := json.MarshalIndent(data, "", "\t")
+	if err != nil {
+		return err
+	}
+	js = append(js, '\n')
+
+	for key, value := range headers {
+		w.Header()[key] = value
+	}
+	// fmt.Println(js)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(js)
+
+	return nil
+}
+

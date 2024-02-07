@@ -2,7 +2,10 @@ module social_network
 
 go 1.18
 
-require github.com/golang-migrate/migrate/v4 v4.17.0
+require (
+	github.com/gofrs/uuid v4.4.0+incompatible
+	github.com/golang-migrate/migrate/v4 v4.17.0
+)
 
 require (
 	github.com/google/uuid v1.4.0 // indirect
@@ -25,7 +28,6 @@ require (
 )
 
 require (
-	github.com/golang-migrate/migrate v3.5.4+incompatible
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/mattn/go-sqlite3 v1.14.21
