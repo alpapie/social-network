@@ -61,6 +61,6 @@ func (C *Comment) IsAllowedToComment(DB *sql.DB) (int, error) {
 }
 
 func (c *Comment) ValidateComment() bool {
-	c.Comment = html.EscapeString(c.Comment)
-	return strings.TrimSpace(c.Comment) != "" && c.PostId != 0
+	c.Comment = html.EscapeString(strings.TrimSpace(c.Comment))
+	return c.Comment != "" && c.PostId != 0
 }

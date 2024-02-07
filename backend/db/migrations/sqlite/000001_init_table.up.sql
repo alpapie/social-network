@@ -25,10 +25,10 @@ create table AllowedPost
 create table "Comment" 
 (
    id                   integer                        not null,
-   Post_id               integer                        not null,
-   User_id               integer                        not null,
+   Post_id              integer                        not null,
+   User_id              integer                        not null,
    "comment"            varchar(254)                   null,
-   creationdate         CURRENT_TIMESTAMP                     not null,
+   creationdate        	time DEFAULT CURRENT_TIMESTAMP not null,
    constraint PK_COMMENT primary key (id),
    FOREIGN KEY (Post_id) REFERENCES Post (id) ON DELETE SET NULL,
    FOREIGN KEY (User_id) REFERENCES User (id) ON DELETE SET NULL
@@ -153,10 +153,10 @@ User_id ASC
 create table GroupMessage 
 (
    id                   integer                        not null,
-   User_id               integer                        not null,
-   Group_id               integer                        not null,
+   User_id              integer                        not null,
+   Group_id             integer                        not null,
    content              varchar(254)                   not null,
-   dateCreation         CURRENT_TIMESTAMP                    not null,
+   dateCreation         time DEFAULT CURRENT_TIMESTAMP not null,
    constraint PK_GROUPMESSAGE primary key (id),
    FOREIGN KEY (Group_id) REFERENCES "Group" (id) ON DELETE SET NULL,
    FOREIGN KEY (User_id) REFERENCES User (id) ON DELETE SET NULL
@@ -188,10 +188,10 @@ User_id ASC
 /*==============================================================*/
 create table Joinner 
 (
-   id                   integer                         not null,
-   Group_id               integer                       not null,
-   User_id               integer                        not null,
-   "date"               CURRENT_TIMESTAMP                    not null,
+   id                   integer                        not null,
+   Group_id             integer                        not null,
+   User_id              integer                        not null,
+   "date"               time DEFAULT CURRENT_TIMESTAMP not null,
    constraint PK_JOINNER primary key (id),
    FOREIGN KEY (Group_id) REFERENCES "Group" (id) ON DELETE SET NULL,
    FOREIGN KEY (User_id) REFERENCES User (id) ON DELETE SET NULL
@@ -227,7 +227,7 @@ create table "Message"
    id                   integer                        not null,
    Follow_id            integer                        not null,
    content              varchar(254)                   null,
-   dateCreation         CURRENT_TIMESTAMP                      null,
+   dateCreation         time DEFAULT CURRENT_TIMESTAMP null,
    constraint PK_MESSAGE primary key (id),
    FOREIGN KEY (Follow_id) REFERENCES Follow (id) ON DELETE SET NULL
 );
@@ -315,13 +315,13 @@ User_id ASC
 create table Post 
 (
    id                   integer                        not null,
-   Group_id               integer                        null,
-   User_id               integer                        not null,
+   Group_id             integer                        null,
+   User_id              integer                        not null,
    titre                varchar(254)                   null,
    image                varchar(254)                   null,
    content              varchar(254)                   null,
-   privacy              varchar(254)    CHECK (privacy IN ('public', 'private' , 'almostprivate' , 'groupe'))   null,
-   creationDate         CURRENT_TIMESTAMP                    not null,
+   privacy              varchar(254)    CHECK (privacy IN ('public', 'private' , 'almostprivate' , 'groupe')) null,
+   creationDate         time DEFAULT CURRENT_TIMESTAMP not null,
    constraint PK_POST primary key (id),
    FOREIGN KEY (User_id) REFERENCES User (id) ON DELETE SET NULL,
    FOREIGN KEY (Group_id) REFERENCES "Group" (id) ON DELETE SET NULL

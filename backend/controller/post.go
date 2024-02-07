@@ -13,7 +13,7 @@ import (
 func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	NewPost := models.Post{}
+	NewPost := models.Post{User_id: 2}
 
 	err := json.NewDecoder(r.Body).Decode(&NewPost)
 

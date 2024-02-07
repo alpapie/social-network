@@ -12,7 +12,7 @@ type Post struct {
 	FirstName    string `json:"firstName"`
 	LastName     string `json:"lastName"`
 	Group_id     int    `json:"Group_id"`
-	User_id      int    `json:"User_id" `
+	User_id      int    `json:"User_id"`
 	Titre        string `json:"titre"`
 	Image        string `json:"image"`
 	Content      string `json:"content"`
@@ -33,6 +33,7 @@ type PostDetails struct {
 	Description string `json:"description"`
 	Comments    []Comment
 }
+
 type GroupeInfo struct {
 	Id          int
 	Title       string
@@ -141,6 +142,13 @@ func (P *Post) Create(controllerDB *sql.DB) (int, error) {
 	}
 	var idPost = int(lastInsertedId)
 
+	// Add the post creator to allowed users
+	P.AllowedUsers = append(P.AllowedUsers, P.User_id)
+
+	if P.Group_id != 0 {
+		P.Privacy = "groupe"
+	}
+
 	if P.Privacy == "almostprivate" {
 		er := RegisterAllowedUsers(P.AllowedUsers, idPost, controllerDB)
 		if er != nil {
@@ -165,10 +173,10 @@ func RegisterAllowedUsers(users []int, idPost int, controllerDB *sql.DB) error {
 }
 
 func (P *Post) Check() bool {
-	content := html.EscapeString(strings.TrimSpace(P.Content))
-	titre := html.EscapeString(strings.TrimSpace(P.Titre))
+	P.Content = html.EscapeString(strings.TrimSpace(P.Content))
+	P.Titre = html.EscapeString(strings.TrimSpace(P.Titre))
 
-	return P.User_id != 0 && content != "" && titre != "" && P.CheckPrivacy()
+	return P.User_id != 0 && P.Content != "" && P.Titre != "" && P.CheckPrivacy()
 }
 
 func (P *Post) CheckPrivacy() bool {
