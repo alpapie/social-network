@@ -1,0 +1,234 @@
+package models
+
+import (
+	"database/sql"
+	"html"
+	"strings"
+	"time"
+)
+
+type Post struct {
+	Id           int    `json:"id"`
+	FirstName    string `json:"firstName"`
+	LastName     string `json:"lastName"`
+	Group_id     int    `json:"Group_id"`
+	User_id      int    `json:"User_id"`
+	Titre        string `json:"titre"`
+	Image        string `json:"image"`
+	Content      string `json:"content"`
+	Privacy      string `json:"privacy"`
+	CreationDate string `json:"creationDate"`
+	AllowedUsers []int
+}
+
+type FeedPost struct {
+	Post
+	GroupName   string `json:"groupName"`
+	Description string `json:"description"`
+}
+
+type PostDetails struct {
+	Post
+	GroupName   string `json:"groupName"`
+	Description string `json:"description"`
+	Comments    []Comment
+}
+
+type GroupeInfo struct {
+	Id          int
+	Title       string
+	Description string
+	Posts       []Post
+}
+
+func (P *PostDetails) GetPost(DB *sql.DB, UserID, post_id int) error {
+	statement, err := DB.Prepare(`
+	SELECT U.id , U.firstName , U.lastName , P.id , coalesce(P.Group_id,0) as Group_id , P.titre ,  coalesce(P.image, '') as image , P.content , P.privacy , coalesce(P.creationDate,'') as creationDate , coalesce(G.title,'') as title , coalesce(G.description,'') as description
+	FROM Post as P 
+	JOIN User as U on U.id = P.User_id
+   	LEFT JOIN "Group" as G on P.Group_id = G.id
+   	WHERE P.id = ? and ( P.privacy = "public" or (P.privacy = "private" and P.User_id in 
+	   (SELECT F.User_id from Follow F WHERE F.Follower_id = ? )) or
+	   		P.privacy = "almostprivate" and P.id in 
+		   (SELECT A.Post_id  from AllowedPost as A WHERE A.User_id = ? ) or
+			P.Group_id in 
+			   (SELECT J.Group_id from Joinner as J WHERE J.User_id = ?)) 
+	`)
+	if err != nil {
+		return err
+	}
+	sqlErr := statement.QueryRow(post_id, UserID, UserID, UserID).Scan(&P.Post.User_id, &P.Post.FirstName, &P.Post.LastName, &P.Post.Id, &P.Post.Group_id, &P.Post.Titre, &P.Post.Image, &P.Post.Content, &P.Post.Privacy, &P.Post.CreationDate, &P.GroupName, &P.Description)
+	if sqlErr == sql.ErrNoRows {
+		return sqlErr
+	}
+	return nil
+}
+
+func (P *PostDetails) GetComments(DB *sql.DB) error {
+	statement, err := DB.Prepare(`
+	select C.id , U.firstName , U.lastName , C.comment ,C.creationDate, C.User_id, C.Post_id from Comment as C 
+JOIN User as U on U.id = C.User_id
+where C.Post_id = ?
+	`)
+	if err != nil {
+		return err
+	}
+	lines, er := statement.Query(P.Post.Id)
+	if er != nil {
+		return er
+	}
+	for lines.Next() {
+		com := Comment{}
+		lines.Scan(&com.Id, &com.FirstName, &com.LastName, &com.Comment, &com.CreationDate, &com.UserId, &com.PostId)
+		P.Comments = append(P.Comments, com)
+	}
+	return nil
+}
+
+func (U *User) GetPosts(controllerDB *sql.DB) ([]FeedPost, error) {
+	// variable temporaire
+	UserID := 2
+
+	statement, err := controllerDB.Prepare(`
+	SELECT U.id , U.firstName , U.lastName , P.id , coalesce(P.Group_id,0) as Group_id , P.titre , coalesce(P.image ,'') as image , P.content , P.privacy , coalesce(P.creationDate,"") as creationDate ,coalesce(G.title,"") as groupName ,coalesce(G.description,"") as description
+	FROM Post as P 
+	JOIN User as U on U.id = P.User_id
+   	LEFT JOIN "Group" as G on P.Group_id = G.id
+   	WHERE P.privacy = "public" or (P.privacy = "private" and P.User_id in 
+	   (SELECT F.User_id from Follow as F WHERE F.Follower_id = ? )) or
+	   		P.privacy = "almostprivate" and P.id in 
+		   (SELECT A.Post_id  from AllowedPost as A WHERE A.User_id = ? ) or
+			P.Group_id in 
+			   (SELECT J.Group_id from Joinner as J WHERE J.User_id = ?) LIMIT 10 OFFSET ?;
+	`)
+	if err != nil {
+		return []FeedPost{}, err
+	}
+
+	posts := []FeedPost{}
+
+	lines, err := statement.Query(UserID, UserID, UserID, 0)
+	if err != nil {
+		return []FeedPost{}, err
+	}
+	defer lines.Close()
+
+	for lines.Next() {
+		post := FeedPost{}
+		err = lines.Scan(&post.User_id, &post.FirstName, &post.LastName, &post.Id, &post.Group_id, &post.Titre, &post.Image, &post.Content, &post.Privacy, &post.CreationDate, &post.GroupName, &post.Description)
+		if err != nil {
+			return []FeedPost{}, err
+		}
+		posts = append(posts, post)
+	}
+	return posts, nil
+}
+
+func (P *Post) Create(controllerDB *sql.DB) (int, error) {
+
+	statement, err := controllerDB.Prepare("INSERT INTO Post (Group_id, User_id, titre, image, content, privacy, creationDate) VALUES (?,?,?,?,?,?,?)")
+	if err != nil {
+		return -1, err
+	}
+
+	sqlResult, err := statement.Exec(P.Group_id, P.User_id, P.Titre, P.Image, P.Content, P.Privacy, time.Now().String())
+	if err != nil {
+		return -1, err
+	}
+
+	lastInsertedId, err := sqlResult.LastInsertId()
+	if err != nil {
+		return -1, err
+	}
+	var idPost = int(lastInsertedId)
+
+	// Add the post creator to allowed users
+	P.AllowedUsers = append(P.AllowedUsers, P.User_id)
+
+	if P.Group_id != 0 {
+		P.Privacy = "groupe"
+	}
+
+	if P.Privacy == "almostprivate" {
+		er := RegisterAllowedUsers(P.AllowedUsers, idPost, controllerDB)
+		if er != nil {
+			return -1, er
+		}
+	}
+	return idPost, nil
+}
+
+func RegisterAllowedUsers(users []int, idPost int, controllerDB *sql.DB) error {
+	statement, err := controllerDB.Prepare("INSERT INTO AllowedPost (Post_id , User_id) VALUES (?,?)")
+	if err != nil {
+		return err
+	}
+	for _, User_id := range users {
+		_, er := statement.Exec(idPost, User_id)
+		if er != nil {
+			return er
+		}
+	}
+	return nil
+}
+
+func (P *Post) Check() bool {
+	P.Content = html.EscapeString(strings.TrimSpace(P.Content))
+	P.Titre = html.EscapeString(strings.TrimSpace(P.Titre))
+
+	return P.User_id != 0 && P.Content != "" && P.Titre != "" && P.CheckPrivacy()
+}
+
+func (P *Post) CheckPrivacy() bool {
+	privacy := strings.TrimSpace(strings.ToLower(P.Privacy))
+	return privacy == "public" || privacy == "private" || privacy == "almostprivate" || privacy == "groupe"
+}
+
+func (P *Post) CheckGroupMember(DB *sql.DB) (int, error) {
+	statement, err := DB.Prepare("select COUNT(id) from Joinner where User_id = ? and Group_id = ? ")
+	if err != nil {
+		return 0, err
+	}
+	var num int
+	statement.QueryRow(P.User_id, P.Group_id).Scan(&num)
+	return num, nil
+}
+
+func (G *GroupeInfo) IsMember(DB *sql.DB, UserId int) (bool, error) {
+	statement, err := DB.Prepare(`
+	SELECT  G.title , G.description from Joinner as J JOIN "Group" as G 
+	on G.id = J.Group_id
+	WHERE J.Group_id = ? and J.User_id = ?
+	`)
+	if err != nil {
+		return false, err
+	}
+	Er := statement.QueryRow(G.Id, UserId).Scan(&G.Title, &G.Description)
+	if Er != nil {
+		return false, Er
+	}
+	return true, nil
+}
+
+func (G *GroupeInfo) GetGroupPost(DB *sql.DB, userId int) error {
+	statement, err := DB.Prepare(`
+	SELECT 
+	U.id , U.firstName , U.lastName , P.id , coalesce(P.Group_id , 0) as Group_id , P.titre ,coalesce(P.image, '') as image , P.content , P.privacy , coalesce(P.creationDate , '') as creationDate
+	from Post as P
+	JOIN User as U on U.id = P.User_id
+	where P.Group_id = ?
+	`)
+	if err != nil {
+		return err
+	}
+	posts, Er := statement.Query(G.Id)
+	if Er != nil && Er != sql.ErrNoRows {
+		return Er
+	}
+	for posts.Next() {
+		p := Post{}
+		posts.Scan(&p.User_id, &p.FirstName, &p.LastName, &p.Id, &p.Group_id, &p.Titre, &p.Image, &p.Content, &p.Privacy, &p.CreationDate)
+		G.Posts = append(G.Posts, p)
+	}
+	return nil
+}
