@@ -1,6 +1,7 @@
 <script>
-    export let groups = [ { id: 2, user_id: 2, title: 'group2', description: 'gnou wer gni' } ];
-    console.log(groups);
+    export let data
+    console.log(data.res.groups);
+    let groups = data.res.groups
 </script>
 
 <div class="main-content right-chat-active">
@@ -38,17 +39,7 @@
                             </div>
                         </div>
                         {/each}
-                        
-                        
-                        <div class="col-md-12 pe-2 ps-2">
-                            <div class="card w-100 text-center shadow-xss rounded-xxl border-0 p-4 mb-3 mt-0">
-                                <div class="snippet mt-2 ms-auto me-auto" data-title=".dot-typing">
-                                    <div class="stage">
-                                        <div class="dot-typing"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    
                           
                     </div>
                 </div>               
