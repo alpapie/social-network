@@ -1,17 +1,3 @@
-<script>
-    import { Modal, Content, Trigger } from "sv-popup"
-    import { writable } from 'svelte/store';
-    let groupTitle = '';
-    let groupDescription = '';
-    $: closed =false
-    function handleSubmit() {
-      // Logic to create the group
-      console.log('Group Title:', groupTitle);
-      console.log('Group Description:', groupDescription);
-      closed=true
-    }
-  </script>
-
     <div class="nav-header bg-white shadow-xs border-0">
         <div class="nav-top">
             <a href="index.html"><i class="feather-zap text-success display1-size me-2 ms-0"></i><span class="d-inline-block fredoka-font ls-3 fw-600 text-current font-xxl logo-text mb-0">Sociala. </span> </a>
@@ -61,71 +47,7 @@
         </div>
 
         <a href="#" class="p-2 text-center ms-3 menu-icon chat-active-btn"><i class="feather-message-square font-xl text-current"></i></a>
-        <div class="p-2 text-center ms-3 position-relative dropdown-menu-icon menu-icon cursor-pointer">
-            <Modal button={false} close={closed}>
-                <Content>
-                  <form on:submit|preventDefault={handleSubmit}>
-                    <input id="groupTitle" bind:value={groupTitle} required placeholder="Title"/>
-                    <textarea id="groupDescription" bind:value={groupDescription} required placeholder="Description"></textarea>
-                    <button type="submit" >Create</button>
-                  </form>
-                </Content>
-                <Trigger>
-                    <i class="feather-settings animation-spin d-inline-block font-xl text-current"></i>
-                </Trigger>
-              </Modal>
-        </div>
 
         <a href="default-settings.html" class="p-0 ms-3 menu-icon"><img src="images/profile-4.png" alt="user" class="w40 mt--1"></a>
         
     </div>
-
-
-    <style>
-        form {
-          display: flex;
-          flex-direction: column;
-          gap:  1rem;
-          max-width:  400px;
-          margin: auto;
-          padding:  1rem;
-          border:  1px solid #ccc;
-          border-radius:  5px;
-          background-color: #f9f9f9;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-        }
-      
-        label {
-          font-weight: bold;
-          margin-bottom:  0.5rem;
-        }
-      
-        input,
-        textarea {
-          padding:  0.5rem;
-          border:  1px solid #ccc;
-          border-radius:  3px;
-          width:  100%;
-        }
-      
-        textarea {
-          resize: vertical;
-          min-height:  100px;
-        }
-      
-        button {
-          padding:  0.5rem  1rem;
-          background-color: #007bff;
-          color: white;
-          border: none;
-          border-radius:  3px;
-          cursor: pointer;
-          transition: background-color  0.3s ease;
-        }
-      
-        button:hover {
-          background-color: #0056b3;
-        }
-      </style>
