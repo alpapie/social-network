@@ -1,9 +1,10 @@
 <script>
-    import Header from './header.svelte'
-    import SideBar from './sidebar.svelte'
+	import Header from "./header.svelte";
+	import SideBar from "./sidebar.svelte";
 </script>
+
 <div class="main-wrapper">
-    <Header/> 
-    <SideBar/>
-    <slot />
+	<Header />
+	<SideBar />
+	<slot />
 </div>
