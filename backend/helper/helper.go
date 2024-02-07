@@ -27,29 +27,30 @@ func SessionAddOrUpdate(db *sql.DB, sssid, useremail string,user_id int) error {
 
 }
 
-func Auth(Db *sql.DB, r *http.Request) (bool, string) {
+func Auth(Db *sql.DB, r *http.Request) (bool, string,int) {
 
 	sessionpi, err := r.Cookie("sessionId")
 	fmt.Println(sessionpi.Value)
 	if err != nil || sessionpi.String() == "" {
-		return false, ""
+		return false, "",0
 	}
 
 	var sessionId, email string
 	var datef time.Time
-	req := `SELECT uiSession,email,datefin from Session Where uiSession=?`
-	err = Db.QueryRow(req, sessionpi.Value).Scan(&sessionId, &email, &datef)
+	var user_id int
+	req := `SELECT User_id, uiSession,email,datefin from Session Where uiSession=?`
+	err = Db.QueryRow(req, sessionpi.Value).Scan(&user_id,&sessionId, &email, &datef)
 
 	if err != nil {
-		return false, ""
+		return false, "",0
 	}
 
 	fmt.Println(email)
 
 	if sessionId != "" && email != "" && datef.After(time.Now()) {
-		return true, email
+		return true, email,user_id
 	}
-	return false, ""
+	return false, "",0
 }
 func CheckRequest(r *http.Request, path, methode string) (bool, int) {
 	if strings.ToLower(r.Method) == methode && r.URL.Path == path {

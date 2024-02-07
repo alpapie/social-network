@@ -7,7 +7,7 @@ import (
 )
 
 func Auth(w http.ResponseWriter, r *http.Request) {
-	isAuth, _ := helper.Auth(DB, r)
+	isAuth, _ ,_:= helper.Auth(DB, r)
 	fmt.Println(isAuth)
 	if isAuth {
 		w.WriteHeader(200)

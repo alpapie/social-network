@@ -29,7 +29,7 @@ func Getmethode(r *http.Request, methode string) bool {
 // *****************************CHECK IF THE USER IS LOGGING OR NOT***************************
 func Log(next http.HandlerFunc) http.HandlerFunc {
 	fn := func(w http.ResponseWriter, r *http.Request) {
-		if is, _ := helper.Auth(controller.DB, r); is {
+		if is, _,_ := helper.Auth(controller.DB, r); is {
 			next.ServeHTTP(w, r)
 		} else {
 			w.WriteHeader(http.StatusForbidden)
@@ -41,7 +41,7 @@ func Log(next http.HandlerFunc) http.HandlerFunc {
 
 func IsAuth(next http.HandlerFunc) http.HandlerFunc {
 	fnt := func(w http.ResponseWriter, r *http.Request) {
-		if is, _ := helper.Auth(controller.DB, r); is {
+		if is, _ ,_:= helper.Auth(controller.DB, r); is {
 			w.WriteHeader(302)
 			w.Write([]byte(`{"error":"Connected","success":false}`))
 		} else {
