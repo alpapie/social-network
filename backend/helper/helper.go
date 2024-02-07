@@ -11,22 +11,17 @@ import (
 	"strings"
 	"time"
 )
-
-func SessionAddOrUpdate(db *sql.DB, sssid, useremail string, user_id int) error {
+func SessionAddOrUpdate(db *sql.DB, sssid, useremail string,user_id int) error {
 	req := `SELECT uiSession,email,datefin from Session Where email='` + useremail + `';`
 	var sessionid, email string
 	var datef time.Time
 	var errsession error
-	err := db.QueryRow(req).Scan(&sessionid, &email, &datef)
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-
-	if email == useremail {
-		_, errsession = db.Exec("UPDATE Session SET uiSession=?, datefin=? where email=?;", sssid, time.Now().Add(time.Hour*24*3), email)
+	_= db.QueryRow(req).Scan(&sessionid, &email, &datef)
+	
+	if  email == useremail {
+		_, errsession = db.Exec("UPDATE Session SET uiSession=?, datefin=? where email=?;", sssid, time.Now().Add(time.Hour*24*3) ,email)
 	} else {
-		_, errsession = db.Exec("INSERT INTO Session (User_id,uiSession,email,datefin) VALUES(?,?,?,?);", user_id, sssid, useremail, time.Now().Add(time.Hour*24*3))
+		_, errsession = db.Exec("INSERT INTO Session (User_id,uiSession,email,datefin) VALUES(?,?,?,?);",user_id, sssid, useremail, time.Now().Add(time.Hour*24*3))
 	}
 	return errsession
 
@@ -35,7 +30,7 @@ func SessionAddOrUpdate(db *sql.DB, sssid, useremail string, user_id int) error 
 func Auth(Db *sql.DB, r *http.Request) (bool, string) {
 
 	sessionpi, err := r.Cookie("sessionId")
-	// fmt.Println(sessionpi.Value)
+	fmt.Println(sessionpi.Value)
 	if err != nil || sessionpi.String() == "" {
 		return false, ""
 	}
@@ -80,10 +75,10 @@ func DeleteSessio(db *sql.DB, ssid string) error {
 // ******************************* PARSE FILE IN URL *****************
 func PArseUlr(r *http.Request, match string) (bool, int) {
 	index := strings.Split(r.URL.Path[1:], "/")
-	fmt.Println(index[0] + "/" + index[1])
+	fmt.Println(index[0]+"/"+index[1])
 	fmt.Println(len(index))
 	fmt.Println(match)
-	if len(index) == 3 && index[0]+"/"+index[1] == match {
+	if len(index) == 3 && index[0]+"/"+index[1]== match {
 		id, err := strconv.Atoi(index[2])
 		if err == nil {
 			return true, id
@@ -102,6 +97,7 @@ func FecthError(ch []error) bool {
 	return false
 }
 
+
 func ParseCatId(cat []string) ([]int, error) {
 	catid := []int{}
 	for _, v := range cat {
@@ -113,6 +109,7 @@ func ParseCatId(cat []string) ([]int, error) {
 	}
 	return catid, nil
 }
+
 
 func WriteJSON(w http.ResponseWriter, status int, data map[string]interface{}, headers http.Header) error {
 	js, err := json.MarshalIndent(data, "", "\t")
@@ -130,3 +127,4 @@ func WriteJSON(w http.ResponseWriter, status int, data map[string]interface{}, h
 
 	return nil
 }
+

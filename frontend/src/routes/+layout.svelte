@@ -1,12 +1,16 @@
 <script>
-
 </script>
 
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
-	<title>Elomoas - Online Course and LMS HTML Template</title>
+	<title>Social network</title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png">
+    <link rel="stylesheet" href="css/emoji.css">
+    
+    <link rel="stylesheet" href="css/lightbox.css">
 
 	<link rel="stylesheet" href="css/themify-icons.css" />
 	<link rel="stylesheet" href="css/feather.css" />
@@ -18,4 +22,8 @@
 
 <body class="color-theme-blue">
 	<slot />
+	<!-- <script src="js/plugin.js"></script>
+
+    <script src="js/lightbox.js"></script>
+    <script src="js/scripts.js"></script> -->
 </body>

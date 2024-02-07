@@ -95,7 +95,7 @@ func GetMemberGroupsByUserID(db *sql.DB, userID int) ([]Group, error) {
 
 func GetNotJoinedGroupsByUserID(db *sql.DB, userID int) ([]Group, error) {
 	stmt, err := db.Prepare(`
-		SELECT g.id, g.User_id, g.titre, g.description
+		SELECT g.id, g.User_id, g.title, g.description
 		FROM "Group" g
 		LEFT JOIN Joinner j ON g.id = j.Group_id AND j.User_id = ?
 		WHERE j.User_id IS NULL

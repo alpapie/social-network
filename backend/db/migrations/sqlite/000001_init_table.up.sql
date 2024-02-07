@@ -5,17 +5,19 @@
 /*==============================================================*/
 create table AllowedPost 
 (
-   id                   integer                        not null,
-   type                 integer                        null,
-   constraint PK_ALLOWEDPOST primary key (id)
+   Post_id              integer                        not null,
+   User_id              integer                         not null,
+   constraint PK_ALLOWEDPOST primary key (Post_id , User_id),
+   FOREIGN KEY (Post_id) REFERENCES Post(id) ON DELETE SET NULL,
+   FOREIGN KEY (User_id) REFERENCES User (id) ON DELETE SET NULL
 );
 
 /*==============================================================*/
 /* Index : ALLOWEDPOST_PK                                       */
 /*==============================================================*/
-create unique index ALLOWEDPOST_PK on AllowedPost (
-id ASC
-);
+-- create unique index ALLOWEDPOST_PK on AllowedPost (
+-- id ASC
+-- );
 
 /*==============================================================*/
 /* Table : "Comment"                                            */
@@ -26,7 +28,7 @@ create table "Comment"
    Post_id               integer                        not null,
    User_id               integer                        not null,
    "comment"            varchar(254)                   null,
-   type                 varchar(254)                   null,
+   creationdate         CURRENT_TIME                     not null,
    constraint PK_COMMENT primary key (id),
    FOREIGN KEY (Post_id) REFERENCES Post (id) ON DELETE SET NULL,
    FOREIGN KEY (User_id) REFERENCES User (id) ON DELETE SET NULL
@@ -97,10 +99,11 @@ Group_id ASC
 create table Follow 
 (
    id                   integer                        not null,
-   User_id               integer                        not null,
-   isfollowing          smallint                       null,
+   User_id              integer                        not null,
+   Follower_id          integer                          not null,
    constraint PK_FOLLOW primary key (id),
-   FOREIGN KEY (User_id) REFERENCES User (id) ON DELETE SET NULL
+   FOREIGN KEY (User_id) REFERENCES User (id) ON DELETE SET NULL,
+   FOREIGN KEY (Follower_id) REFERENCES User (id) ON DELETE SET NULL
 );
 
 /*==============================================================*/
@@ -124,8 +127,8 @@ create table "Group"
 (
    id                   integer                        not null,
    User_id               integer                        not null,
-   titre                varchar(254)                   null,
-   description          varchar(254)                   null,
+   title                varchar(254)                   not null,
+   description          varchar(254)                   not null,
    constraint PK_GROUP primary key (id),
    FOREIGN KEY (User_id) REFERENCES User (id) ON DELETE SET NULL
 );
@@ -152,8 +155,8 @@ create table GroupMessage
    id                   integer                        not null,
    User_id               integer                        not null,
    Group_id               integer                        not null,
-   content              varchar(254)                   null,
-   dateCreation         timestamp                      null,
+   content              varchar(254)                   not null,
+   dateCreation         CURRENT_DATE                    not null,
    constraint PK_GROUPMESSAGE primary key (id),
    FOREIGN KEY (Group_id) REFERENCES "Group" (id) ON DELETE SET NULL,
    FOREIGN KEY (User_id) REFERENCES User (id) ON DELETE SET NULL
@@ -185,10 +188,10 @@ User_id ASC
 /*==============================================================*/
 create table Joinner 
 (
-   id                   integer                        not null,
-   Group_id               integer                        not null,
+   id                   integer                         not null,
+   Group_id               integer                       not null,
    User_id               integer                        not null,
-   "date"               timestamp                      null,
+   "date"               CURRENT_DATE                    not null,
    constraint PK_JOINNER primary key (id),
    FOREIGN KEY (Group_id) REFERENCES "Group" (id) ON DELETE SET NULL,
    FOREIGN KEY (User_id) REFERENCES User (id) ON DELETE SET NULL
@@ -222,9 +225,9 @@ User_id ASC
 create table "Message" 
 (
    id                   integer                        not null,
-   Follow_id               integer                        not null,
+   Follow_id            integer                        not null,
    content              varchar(254)                   null,
-   dateCreation         timestamp                      null,
+   dateCreation         CURRENT_DATE                      null,
    constraint PK_MESSAGE primary key (id),
    FOREIGN KEY (Follow_id) REFERENCES Follow (id) ON DELETE SET NULL
 );
@@ -248,7 +251,8 @@ Follow_id ASC
 /*==============================================================*/
 create table Notfication 
 (
-   User_id               integer                        not null,
+   User_id               integer                       not null,
+   send_id               integer                       null,
    id                   integer                        null,
    type                 varchar(254)                   null,
    status               varchar(254)                   null,
@@ -277,7 +281,7 @@ create table "Option"
 (
    id                   integer                        not null,
    Eve_id               integer                        not null,
-   User_id               integer                        not null,
+   User_id               integer                       not null,
    isGoing              smallint                       null,
    constraint PK_OPTION primary key (id),
    FOREIGN KEY (User_id) REFERENCES User (id) ON DELETE SET NULL,
@@ -316,9 +320,8 @@ create table Post
    titre                varchar(254)                   null,
    image                varchar(254)                   null,
    content              varchar(254)                   null,
-   privaty              varchar(254)                   null,
-   postGroup            varchar(254)                   null,
-   creationDate         numeric                        null,
+   privacy              varchar(254)    CHECK (privacy IN ('public', 'private' , 'almostprivate' , 'groupe'))   null,
+   creationDate         CURRENT_DATE                    not null,
    constraint PK_POST primary key (id),
    FOREIGN KEY (User_id) REFERENCES User (id) ON DELETE SET NULL,
    FOREIGN KEY (Group_id) REFERENCES "Group" (id) ON DELETE SET NULL
@@ -379,15 +382,15 @@ User_id ASC
 create table "User" 
 (
    id                   integer                        not null,
-   firstName            varchar(254)                   null,
-   lastName             varchar(254)                   null,
-   email                varchar(254)                   null,
+   firstName            varchar(254)                   not null,
+   lastName             varchar(254)                   not null,
+   email                varchar(254)                   not null,
    nickName             varchar(254)                   null,
-   birthName            timestamp                      null,
+   birthDate            timestamp                      null,
    avatar               varchar(254)                   null,
    aboutMe              varchar(254)                   null,
    ispublic             smallint                       null,
-   tokenLogin           varchar(254)                   null,
+   tokenLogin           varchar(254)                   not null,
    constraint PK_USER primary key (id)
 );
 
