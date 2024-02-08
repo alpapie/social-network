@@ -30,10 +30,10 @@ func SessionAddOrUpdate(db *sql.DB, sssid, useremail string,user_id int) error {
 func Auth(Db *sql.DB, r *http.Request) (bool, string,int) {
 
 	sessionpi, err := r.Cookie("sessionId")
-	fmt.Println(sessionpi.Value)
 	if err != nil || sessionpi.String() == "" {
 		return false, "",0
 	}
+	fmt.Println(sessionpi.Value)
 
 	var sessionId, email string
 	var datef time.Time
