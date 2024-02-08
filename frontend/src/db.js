@@ -56,7 +56,6 @@ export function DB(type = "", key = "", data = null) {
       localStorageObj.delete(key);
       return;
     }
-    
   }catch(err){
     console.error("localsorage",err)
   }

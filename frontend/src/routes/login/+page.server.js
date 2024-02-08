@@ -14,7 +14,7 @@ export const load = async ({cookies})=>{
 export const actions = {
 	default: async ({request,cookies}) => {
         
-		const formDatas= await request.formData()
+		const formDatas = await request.formData()
 
         let response= await makeRequest("login","POST",formDatas,{},cookies)
 

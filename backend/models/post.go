@@ -99,7 +99,7 @@ func (U *User) GetPosts(controllerDB *sql.DB) ([]FeedPost, error) {
 	   		P.privacy = "almostprivate" and P.id in 
 		   (SELECT A.Post_id  from AllowedPost as A WHERE A.User_id = ? ) or
 			P.Group_id in 
-			   (SELECT J.Group_id from Joinner as J WHERE J.User_id = ?) LIMIT 10 OFFSET ?;
+			   (SELECT J.Group_id from Joinner as J WHERE J.User_id = ?) order by P.id desc  LIMIT 10 OFFSET ?;
 	`)
 	if err != nil {
 		return []FeedPost{}, err
