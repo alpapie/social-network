@@ -45,7 +45,9 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 	// 	http.Error(w, "Unauthorized", http.StatusUnauthorized)
 	// 	return
 	// }
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	var newGroup models.Group
+	fmt.Println(r)
     err := json.NewDecoder(r.Body).Decode(&newGroup)
     if err != nil {
         http.Error(w, "Failed to parse request body", http.StatusBadRequest)
