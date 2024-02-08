@@ -1,11 +1,7 @@
 <!-- navigation left -->
 <script>
     import { enhance } from "$app/forms";
-
     import { Modal, Content, Trigger } from "sv-popup"
-    import { writable } from 'svelte/store';
-    let groupTitle = '';
-    let groupDescription = '';
     $: closed =false
 </script>
 
@@ -18,7 +14,7 @@
                     <li class="logo d-none d-xl-block d-lg-block"></li>
                     <Modal button={false} close={closed}>
                         <Content>
-                          <form method="post"  action="?/login" use:enhance>
+                          <form method="post"  action="?/createGroup" use:enhance>
                             <input id="groupTitle" name="title" required placeholder="Title"/>
                             <textarea id="groupDescription" name="description" required placeholder="Description"></textarea>
                             <button type="submit" >Create</button>

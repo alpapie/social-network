@@ -12,7 +12,7 @@ export const load = async ({cookies})=>{
 }
 
 export const actions = {
-    default: async ({request,cookies}) => {
+  'createGroup': async ({request,cookies}) => {
         const formDatas= await request.formData()
         let data={
             title:formDatas.get("title"),
