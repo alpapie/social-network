@@ -15,7 +15,7 @@ type Group struct {
 }
 
 func (g *Group) CreateGroup(db *sql.DB) (int64, error) {
-	stmt, err := db.Prepare("INSERT INTO \"Group\" (User_id, titre, description) VALUES (?, ?, ?)")
+	stmt, err := db.Prepare("INSERT INTO \"Group\" (User_id, title, description) VALUES (?, ?, ?)")
 	if err != nil {
 		return 0, fmt.Errorf("could not prepare statement: %v", err)
 	}

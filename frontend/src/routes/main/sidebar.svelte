@@ -1,15 +1,26 @@
 <!-- navigation left -->
 <script>
+  import { createGroup } from "$lib/groups/createGroup";
     import { Modal, Content, Trigger } from "sv-popup"
     import { writable } from 'svelte/store';
     let groupTitle = '';
     let groupDescription = '';
     $: closed =false
-    function handleSubmit() {
-      // Logic to create the group
+    async function handleSubmit() {
         console.log('Group Title:', groupTitle);
         console.log('Group Description:', groupDescription);
-        closed=true
+        const groupData = {
+        title: groupTitle,
+        description: groupDescription
+      };      
+      try {
+      const response = await createGroup(groupData);
+      console.log('Group created successfully:', response);
+      closed = true;
+    } catch (error) {
+      console.error('Failed to create group:', error);
+    }
+        // closed=true
     }
 </script>
 

@@ -38,3 +38,42 @@ func GetAllNotjoinedGroups(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(jsonData)
 }
+
+func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
+	// auth, _ := helper.Auth(DB, r)
+	// if !auth {
+	// 	http.Error(w, "Unauthorized", http.StatusUnauthorized)
+	// 	return
+	// }
+	var newGroup models.Group
+    err := json.NewDecoder(r.Body).Decode(&newGroup)
+    if err != nil {
+        http.Error(w, "Failed to parse request body", http.StatusBadRequest)
+		fmt.Println("in decode")
+        return
+    }
+	
+	if newGroup.Title == "" || newGroup.Description == "" {
+        http.Error(w, "Title and description cannot be empty", http.StatusBadRequest)
+        return
+    }
+	
+	// replace after by dynamique  id getter
+    newGroup.UserID = 1
+    lastInsertId, err := newGroup.CreateGroup(DB)
+    if err != nil {
+        http.Error(w, "Failed to create group", http.StatusInternalServerError)
+		fmt.Println(err)
+		fmt.Println("in user")
+
+        return
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(http.StatusCreated)
+    json.NewEncoder(w).Encode(map[string]interface{}{
+        "status": "success",
+        "message": "Group created successfully",
+        "groupId": lastInsertId,
+    })
+}
