@@ -1,27 +1,12 @@
 <!-- navigation left -->
 <script>
-  import { createGroup } from "$lib/groups/createGroup";
+    import { enhance } from "$app/forms";
+
     import { Modal, Content, Trigger } from "sv-popup"
     import { writable } from 'svelte/store';
     let groupTitle = '';
     let groupDescription = '';
     $: closed =false
-    async function handleSubmit() {
-        console.log('Group Title:', groupTitle);
-        console.log('Group Description:', groupDescription);
-        const groupData = {
-        title: groupTitle,
-        description: groupDescription
-      };      
-      try {
-      const response = await createGroup(groupData);
-      console.log('Group created successfully:', response);
-      closed = true;
-    } catch (error) {
-      console.error('Failed to create group:', error);
-    }
-        // closed=true
-    }
 </script>
 
 <nav class="navigation scroll-bar">
@@ -33,9 +18,9 @@
                     <li class="logo d-none d-xl-block d-lg-block"></li>
                     <Modal button={false} close={closed}>
                         <Content>
-                          <form on:submit|preventDefault={handleSubmit}>
-                            <input id="groupTitle" bind:value={groupTitle} required placeholder="Title"/>
-                            <textarea id="groupDescription" bind:value={groupDescription} required placeholder="Description"></textarea>
+                          <form method="post"  action="?/login" use:enhance>
+                            <input id="groupTitle" name="title" required placeholder="Title"/>
+                            <textarea id="groupDescription" name="description" required placeholder="Description"></textarea>
                             <button type="submit" >Create</button>
                           </form>
                         </Content>

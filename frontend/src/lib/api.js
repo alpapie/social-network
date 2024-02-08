@@ -10,7 +10,7 @@ export async function makeRequest(endpoint, method, data = {}, headers = {},cook
     headers.Cookie=GetCookies(cookies)
   }
   const config = { withCredentials: true ,method, headers };
-    if (method !== "GET") {
+    if (method !== "get") {
       config.data = data;
     }
     const response = await axios(url,config);
