@@ -1,9 +1,7 @@
 import { makeRequest } from "$lib/api";
-export async function createGroup(groupData, cookies) {
-    let response = await makeRequest('createGroup', 'POST', groupData, {}, cookies);
-    console.log(response);
+export async function createGroup(groupData) {
     try {
-        const response = await makeRequest('createGroup', 'POST', groupData, {}, cookies);
+        const response = await makeRequest('createGroup', 'POST', groupData, {});
         console.log(response);
         if (response.status === 201) {
             console.log('Group created successfully:', response.data);
