@@ -34,8 +34,30 @@ func (g *Group) CreateGroup(db *sql.DB) (int64, error) {
 	return lastInsertId, nil
 }
 
+func GetGroupByID(db *sql.DB, groupID int) (*Group, error) {
+    stmt, err := db.Prepare("SELECT id, User_id, title, description FROM \"Group\" WHERE id = ?")
+    if err != nil {
+        return nil, fmt.Errorf("failed to prepare get group by ID statement: %v", err)
+    }
+    defer stmt.Close()
+
+    row := stmt.QueryRow(groupID)
+
+    var g Group
+
+    err = row.Scan(&g.ID, &g.UserID, &g.Title, &g.Description)
+    if err != nil {
+        if err == sql.ErrNoRows {
+            return nil, nil
+        }
+        return nil, fmt.Errorf("failed to scan row: %v", err)
+    }
+
+    return &g, nil
+}
+
 func GetAllGroups(db *sql.DB) ([]Group, error) {
-	rows, err := db.Query("SELECT id, User_id, titre, description FROM \"Group\"")
+	rows, err := db.Query("SELECT id, User_id, title, description FROM \"Group\"")
 	if err != nil {
 		return nil, fmt.Errorf("failed to query all groups: %v", err)
 	}
@@ -60,7 +82,7 @@ func GetAllGroups(db *sql.DB) ([]Group, error) {
 
 func GetMemberGroupsByUserID(db *sql.DB, userID int) ([]Group, error) {
 	stmt, err := db.Prepare(`
-		SELECT g.id, g.User_id, g.titre, g.description
+		SELECT g.id, g.User_id, g.title, g.description
 		FROM "Group" g
 		JOIN Joinner j ON g.id = j.Group_id
 		WHERE j.User_id = ?

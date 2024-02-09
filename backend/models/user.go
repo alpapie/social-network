@@ -21,10 +21,26 @@ type User struct {
 	TokenLogin string
 }
 
+func (u *User) HasActiveSession(db *sql.DB) (bool, error) {
+
+	var count int
+	query := `SELECT COUNT(*) FROM session WHERE User_id = ? AND datefin > datetime('now')`
+	err := db.QueryRow(query, u.ID).Scan(&count)
+	if err != nil {
+		return false, fmt.Errorf("failed to check session existence: %v", err)
+	}
+	if count < 1 {
+		return false, fmt.Errorf("no session")
+	}
+	fmt.Println(count)
+
+	return true, nil
+}
+
 func (u *User) GetUserById(db *sql.DB, id int) error {
 	query := `SELECT id, firstName, lastName, email, nickName, birthDate, avatar, aboutMe, ispublic FROM User WHERE id = ?`
 
-	err := db.QueryRow(query, id).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.NickName, &u.BirthDate, &u.Avatar, &u.AboutMe, &u.IsPublic, &u.TokenLogin)
+	err := db.QueryRow(query, id).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.NickName, &u.BirthDate, &u.Avatar, &u.AboutMe, &u.IsPublic)
 	if err != nil {
 		return fmt.Errorf("GetUserById %d: %v", id, err)
 	}
@@ -73,4 +89,58 @@ func (u *User) GetUserByToken(db *sql.DB, token string) error {
 	}
 
 	return nil
+}
+
+func (u *User) GetFollowed(db *sql.DB) ([]User, error) {
+	query := `SELECT User_id FROM Follow WHERE Follower_id = ?`
+	rows, err := db.Query(query, u.ID)
+	if err != nil {
+		return nil, fmt.Errorf("GetFollowed: %v", err)
+	}
+	defer rows.Close()
+
+	var followers []User
+	for rows.Next() {
+		var followerID int
+		if err := rows.Scan(&followerID); err != nil {
+			return nil, fmt.Errorf("GetFollowed scan: %v", err)
+		}
+		follower := User{}
+		if err := follower.GetUserById(db, followerID); err != nil {
+			return nil, fmt.Errorf("GetFollowed GetUserById: %v", err)
+		}
+		followers = append(followers, follower)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("GetFollowed rows.Err: %v", err)
+	}
+
+	return followers, nil
+}
+
+func (u *User) GetFollowers(db *sql.DB) ([]User, error) {
+	query := `SELECT Follower_id FROM Follow WHERE User_id = ?`
+	rows, err := db.Query(query, u.ID)
+	if err != nil {
+		return nil, fmt.Errorf("GetFollower: %v", err)
+	}
+	defer rows.Close()
+
+	var followed []User
+	for rows.Next() {
+		var followedID int
+		if err := rows.Scan(&followedID); err != nil {
+			return nil, fmt.Errorf("GetFollower scan: %v", err)
+		}
+		followedUser := User{}
+		if err := followedUser.GetUserById(db, followedID); err != nil {
+			return nil, fmt.Errorf("GetFollower GetUserById: %v", err)
+		}
+		followed = append(followed, followedUser)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("GetFollower rows.Err: %v", err)
+	}
+
+	return followed, nil
 }
