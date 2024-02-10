@@ -13,7 +13,7 @@ func Routes() {
 	http.HandleFunc("/server/register", middleware.Ispath(middleware.CheckMethod(controller.RegisterUser, "post"), "register"))
 
 	// http.HandleFunc("/", middleware.CheckMethod(controller.Login, "get"))
-	http.HandleFunc("/server/addPost", middleware.Log(middleware.CheckMethod(controller.CreatePostHandler, "post")))
+	http.HandleFunc("/server/addPost", middleware.IsAuth(middleware.CheckMethod(controller.CreatePostHandler, "post")))
 	http.HandleFunc("/server/getPost", middleware.IsAuth(middleware.CheckMethod(controller.PostDetail, "get")))
 	http.HandleFunc("/server/getPosts", middleware.IsAuth(middleware.CheckMethod(controller.PostsByUserHandler, "get")))
 	http.HandleFunc("/server/group", middleware.Log(middleware.CheckMethod(controller.GroupPost, "get")))

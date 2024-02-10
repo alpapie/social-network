@@ -15,7 +15,7 @@ export const actions = {
 	default: async ({request,cookies}) => {
         
 		const formDatas = await request.formData()
-
+        console.log("data from another file " , formDatas)
         let response= await makeRequest("login","POST",formDatas,{},cookies)
 
         if (response?.data?.success) {

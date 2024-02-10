@@ -94,7 +94,9 @@ func (U *User) GetPosts(controllerDB *sql.DB) ([]FeedPost, error) {
 	FROM Post as P 
 	JOIN User as U on U.id = P.User_id
    	LEFT JOIN "Group" as G on P.Group_id = G.id
-   	WHERE P.privacy = "public" or (P.privacy = "private" and P.User_id in 
+   	WHERE P.privacy = "public" or 
+	P.User_id = U.id
+	or (P.privacy = "private" and P.User_id in 
 	   (SELECT F.User_id from Follow as F WHERE F.Follower_id = ? )) or
 	   		P.privacy = "almostprivate" and P.id in 
 		   (SELECT A.Post_id  from AllowedPost as A WHERE A.User_id = ? ) or

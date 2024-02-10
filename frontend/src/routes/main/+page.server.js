@@ -1,4 +1,7 @@
 import { makeRequest } from "$lib/api.js";
+import { generateRandom,saveImage } from "$lib/index.js";
+import { fail } from '@sveltejs/kit';
+import { writeFileSync } from "fs";
 
 export async function load({cookies}) {
     // let response = await makeRequest("getPosts","get",{},{},cookies)
@@ -18,9 +21,22 @@ export async function load({cookies}) {
 }
 
 export const actions = {
-	"createPost": async ({request , cookies}) => {
+	default : async ({request }) => {
 		// TODO log the user in
         let data = await  request.formData()
-        console.log("here is the event" ,data )
+        let content = data.get('content')
+        if (content == "") {
+			console.log("fail content")
+			return fail(400, {content , missing: true})
+		}
+       
+        let post = {
+            titre : "hello",
+            content : content,
+            image : await saveImage(data.get("avatar")),
+            privacy : data.get("privacy")
+        }
+        let response = await makeRequest("addPost" , "POST",post)
+        console.log("response of server ",await response)
 	}
 };
