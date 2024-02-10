@@ -20,7 +20,7 @@
     <div class="card-body dd-block pt-0 ps-4 pe-4 pb-4">
       <ul class="memberlist mt-1 mb-2 ms-0 d-block">
         <li class="w20">
-          <a href="#"
+          <a href=""
             ><img
               src="images/user-6.png"
               alt="user"
@@ -30,7 +30,7 @@
           >
         </li>
         <li class="w20">
-          <a href="#"
+          <a href=""
             ><img
               src="images/user-7.png"
               alt="user"
@@ -40,7 +40,7 @@
           >
         </li>
         <li class="w20">
-          <a href="#"
+          <a href=""
             ><img
               src="images/user-8.png"
               alt="user"
@@ -50,7 +50,7 @@
           >
         </li>
         <li class="w20">
-          <a href="#"
+          <a href=""
             ><img
               src="images/user-3.png"
               alt="user"
@@ -61,13 +61,13 @@
         </li>
         <li class="last-member">
           <a
-            href="#"
+            href=""
             class="bg-greylight fw-600 text-grey-500 font-xssss w35 ls-3 text-center"
             style="height: 35px; line-height: 35px;">+2</a
           >
         </li>
         <li class="ps-3 w-auto ms-1">
-          <a href="#" class="fw-600 text-grey-500 font-xssss"
+          <a href="" class="fw-600 text-grey-500 font-xssss"
             >Member apply</a
           >
         </li>

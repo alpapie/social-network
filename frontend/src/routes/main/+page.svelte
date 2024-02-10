@@ -2,7 +2,9 @@
   import Friends from "./friends.svelte";
   import Posts from "./posts.svelte";
   import EventSugest from "./eventsugest.svelte";
-
+  import Sugesgroup from "./sugesgroup.svelte";
+  import Createpost from "./createpost.svelte";
+  export let data ;
 </script>
 <!-- main content -->
 <div class="main-content right-chat-active">
@@ -41,7 +43,8 @@
           <div
             class="card w-100 text-center shadow-xss rounded-xxl border-0 p-4 mb-3 mt-3"
           >
-          <Posts/>
+          <Createpost />
+          <Posts posts={data?.posts}/>
             <div class="snippet mt-2 ms-auto me-auto" data-title=".dot-typing">
               <div class="stage">
                 <div class="dot-typing"></div>
@@ -51,7 +54,8 @@
         </div>
         <div class="col-xl-4 col-xxl-3 col-lg-4 ps-lg-0">
           
-         <Friends/>
+         <Friends friends={data?.listesusers}/>
+         <Sugesgroup/>
          <EventSugest/>
 
         </div>

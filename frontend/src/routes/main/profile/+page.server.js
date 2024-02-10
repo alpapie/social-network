@@ -1,16 +1,12 @@
 import { makeRequest } from "$lib/api.js"
 import { authenticateUser } from "$lib/auth/auth"
-import { error, redirect } from "@sveltejs/kit"
+import { redirect } from "@sveltejs/kit"
 
 export const load = async ({cookies})=>{
     const IsAuth=await authenticateUser(cookies)
     if (!IsAuth) {
         redirect(302,"/login")
     }
-
-    const response= await makeRequest("home","get",{},{},cookies)
-    if (response?.data?.success) {
-        return response?.data;
-    }
-    throw error(400,"bad request")
+    const response= await makeRequest("profile","get",{},{},cookies)
+    console.log(response?.data);
 }

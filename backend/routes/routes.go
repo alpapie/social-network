@@ -8,11 +8,14 @@ import (
 
 func Routes() {
 	http.HandleFunc("/server/", middleware.Ispath(middleware.CheckMethod(controller.Auth, "get"),""))
+	http.HandleFunc("/server/home", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.Home, "get"),"home")))
 
 	http.HandleFunc("/server/login", middleware.Ispath(middleware.CheckMethod(controller.Login, "post"), "login"))
+	http.HandleFunc("/server/profile", middleware.Ispath(middleware.CheckMethod(controller.Profil, "get"), "profile"))
+	http.HandleFunc("/server/logout", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.Logout, "get"), "logout")))
+
 	http.HandleFunc("/server/register", middleware.Ispath(middleware.CheckMethod(controller.RegisterUser,"post"),"register"))
 
-	// http.HandleFunc("/", middleware.CheckMethod(controller.Login, "get"))
 	http.HandleFunc("/server/addPost", middleware.Log(middleware.CheckMethod(controller.CreatePostHandler, "post")))
 	http.HandleFunc("/server/getPost", middleware.Log(middleware.CheckMethod(controller.PostDetail, "get")))
 	http.HandleFunc("/server/getPosts", middleware.Log(middleware.CheckMethod(controller.PostsByUserHandler, "get")))

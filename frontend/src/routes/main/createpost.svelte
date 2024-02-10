@@ -1,5 +1,5 @@
 <div
-            class="card w-100 shadow-xss rounded-xxl border-0 ps-4 pt-4 pe-4 pb-3 mb-3"
+            class="card w-100 shadow-xss rounded-xxl border-0 ps-4 pt-4 pe-4 pb-3 mt-2 mb-3"
           >
             <div class="card-body p-0">
               <a
@@ -13,10 +13,11 @@
             <div class="card-body p-0 mt-3 position-relative">
               <figure class="avatar position-absolute ms-2 mt-1 top-5">
                 <img
-                  src="images/user-8.png"
+                  src="/images/user-8.png"
                   alt="image"
                   class="shadow-sm rounded-circle w30"
                 />
+                
               </figure>
               <textarea
                 name="message"

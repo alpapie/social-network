@@ -1,3 +1,17 @@
+<script>
+ 
+
+// let logut=async (cookies)=>{
+
+//     console.log(document.cookie);
+//     const response= await makeRequest("logout","get",{},{},cookies)
+//     console.log(response);
+//     if (response?.data?.success) {
+//         redirect(302,"/login")
+//     }
+//     throw error(400,"bad request")
+// } 
+</script>
 
     <div class="nav-header bg-white shadow-xs border-0">
         <div class="nav-top">
@@ -8,18 +22,6 @@
             <button class="nav-menu me-0 ms-2"></button>
         </div>
         
-        <!-- <form action="#" class="float-left header-search">
-            <div class="form-group mb-0 icon-input">
-                <i class="feather-search font-sm text-grey-400"></i>
-                <input type="text" placeholder="Start typing to search.." class="bg-grey border-0 lh-32 pt-2 pb-2 ps-5 pe-3 font-xssss fw-500 rounded-xl w350 theme-dark-bg">
-            </div>
-        </form> -->
-        <!-- <a href="default.html" class="p-2 text-center ms-3 menu-icon center-menu-icon"><i class="feather-home font-lg alert-primary btn-round-lg theme-dark-bg text-current "></i></a>
-        <a href="default-storie.html" class="p-2 text-center ms-0 menu-icon center-menu-icon"><i class="feather-zap font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500 "></i></a>
-        <a href="default-video.html" class="p-2 text-center ms-0 menu-icon center-menu-icon"><i class="feather-video font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500 "></i></a>
-        <a href="default-group.html" class="p-2 text-center ms-0 menu-icon center-menu-icon"><i class="feather-user font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500 "></i></a>
-        <a href="shop-2.html" class="p-2 text-center ms-0 menu-icon center-menu-icon"><i class="feather-shopping-bag font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500 "></i></a> -->
-
         <a href="#" class="p-2 text-center ms-auto menu-icon" id="dropdownMenu3" data-bs-toggle="dropdown" aria-expanded="false"><span class="dot-count bg-warning"></span><i class="feather-bell font-xl text-current"></i></a>
         <div class="dropdown-menu dropdown-menu-end p-4 rounded-3 border-0 shadow-lg" aria-labelledby="dropdownMenu3">
             
@@ -149,7 +151,8 @@
                 
             </div>
         </div>
+        <a href="#"class="p-2 text-center ms-3 menu-icon "><i class="btn-round-md bg-red-gradiant text-white feather-lock font-md me-3"></i></a>
 
-        <a href="default-settings.html" class="p-0 ms-3 menu-icon"><img src="images/profile-4.png" alt="user" class="w40 mt--1"></a>
+        <a href="/main/profile" class="p-0 ms-3 menu-icon"><img src="images/profile-4.png" alt="user" class="w40 mt--1"></a>
         
     </div>

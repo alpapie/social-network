@@ -87,7 +87,7 @@ where C.Post_id = ?
 
 func (U *User) GetPosts(controllerDB *sql.DB) ([]FeedPost, error) {
 	// variable temporaire
-	UserID := 2
+	UserID := 1
 
 	statement, err := controllerDB.Prepare(`
 	SELECT U.id , U.firstName , U.lastName , P.id , coalesce(P.Group_id,0) as Group_id , P.titre , coalesce(P.image ,'') as image , P.content , P.privacy , coalesce(P.creationDate,"") as creationDate ,coalesce(G.title,"") as groupName ,coalesce(G.description,"") as description

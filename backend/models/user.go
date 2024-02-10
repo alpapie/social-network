@@ -24,7 +24,7 @@ type User struct {
 func (u *User) GetUserById(db *sql.DB, id int) error {
 	query := `SELECT id, firstName, lastName, email, nickName, birthDate, avatar, aboutMe, ispublic FROM User WHERE id = ?`
 
-	err := db.QueryRow(query, id).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.NickName, &u.BirthDate, &u.Avatar, &u.AboutMe, &u.IsPublic, &u.TokenLogin)
+	err := db.QueryRow(query, id).Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.NickName, &u.BirthDate, &u.Avatar, &u.AboutMe, &u.IsPublic)
 	if err != nil {
 		return fmt.Errorf("GetUserById %d: %v", id, err)
 	}

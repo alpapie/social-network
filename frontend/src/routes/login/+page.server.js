@@ -22,7 +22,7 @@ export const actions = {
             DB("set","user",response?.data?.user)            
         //    console.log(localStorageObj)
             cookies.set('sessionId',response?.data?.data, {
-                httpOnly: true,
+                httpOnly: false,
                 sameSite: 'strict',
                 secure: false,
                 path: '/',
