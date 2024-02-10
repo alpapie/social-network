@@ -35,25 +35,25 @@ func (g *Group) CreateGroup(db *sql.DB) (int64, error) {
 }
 
 func GetGroupByID(db *sql.DB, groupID int) (*Group, error) {
-    stmt, err := db.Prepare("SELECT id, User_id, title, description FROM \"Group\" WHERE id = ?")
-    if err != nil {
-        return nil, fmt.Errorf("failed to prepare get group by ID statement: %v", err)
-    }
-    defer stmt.Close()
+	stmt, err := db.Prepare("SELECT id, User_id, title, description FROM \"Group\" WHERE id = ?")
+	if err != nil {
+		return nil, fmt.Errorf("failed to prepare get group by ID statement: %v", err)
+	}
+	defer stmt.Close()
 
-    row := stmt.QueryRow(groupID)
+	row := stmt.QueryRow(groupID)
 
-    var g Group
+	var g Group
 
-    err = row.Scan(&g.ID, &g.UserID, &g.Title, &g.Description)
-    if err != nil {
-        if err == sql.ErrNoRows {
-            return nil, nil
-        }
-        return nil, fmt.Errorf("failed to scan row: %v", err)
-    }
+	err = row.Scan(&g.ID, &g.UserID, &g.Title, &g.Description)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("failed to scan row: %v", err)
+	}
 
-    return &g, nil
+	return &g, nil
 }
 
 func GetAllGroups(db *sql.DB) ([]Group, error) {

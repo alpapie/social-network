@@ -108,6 +108,7 @@
             console.error('ERROR : ', error);
         }
     }
+    let copiedGroups = {...groups};
     async function handleFollowClick(groupId, userId) {
         console.log('CLICKED');
         const requestData = {
@@ -122,6 +123,12 @@
                 throw new Error(`HTTP error! status:`);
             }
             console.log('REQUEST SENDED');
+            copiedGroups.Notjoined = copiedGroups.Notjoined.map(group => {
+                if (group.id === groupId) {
+                    return {...group, notif_type: true};
+                }
+                return group;
+            });
 
         } catch (error) {
             console.error('ERROR : ', error);
@@ -192,7 +199,7 @@
                         </div>
                         {/each}
                         {:else if filter === 'not'}
-                        {#each groups.Notjoined as group}
+                        {#each copiedGroups.Notjoined as group}
                         <div class="col-md-6 col-sm-6 pe-2 ps-2">
                             <div class="card d-block border-0 shadow-xss rounded-3 overflow-hidden mb-3">
                                 <div class="card-body position-relative h100 bg-image-cover bg-image-center" style="background-image: url(images/bb-16.png);"></div>
@@ -203,7 +210,11 @@
                                     <p class="fw-500 font-xsssss text-grey-500 mt-0 mb-3">{group.description}</p>
                                     <span class="position-absolute right-15 top-0 d-flex align-items-center">
                                         <a href="#" class="d-lg-block d-none"><i class="feather-video btn-round-md font-md bg-primary-gradiant text-white"></i></a>
-                                        <a href="#" id="followButton" class="text-center p-2 lh-24 w100 ms-1 ls-3 d-inline-block rounded-xl bg-current font-xsssss fw-700 ls-lg text-white" on:click={() => handleFollowClick(group.id, groups.userid)}>FOLLOW</a>
+                                            {#if group.notif_type}
+                                                <a id="followButton" class="text-center p-2 lh-24 w100 ms-1 ls-3 d-inline-block rounded-xl bg-grey font-xsssss fw-700 ls-lg text-grey-700">REQUESTED</a>
+                                            {:else}
+                                                <a id="followButton" class="text-center p-2 lh-24 w100 ms-1 ls-3 d-inline-block rounded-xl bg-current font-xsssss fw-700 ls-lg text-white" on:click={() => handleFollowClick(group.id, groups.userid)}>FOLLOW</a>
+                                            {/if}
                                     </span>
                                 </div>
                             </div>

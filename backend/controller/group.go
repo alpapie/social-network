@@ -9,6 +9,14 @@ import (
 	"strconv"
 )
 
+type NewGroup struct {
+	ID          int    `json:"id"`
+	UserID      int    `json:"user_id"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	NotifStatus bool   `json:"notif_type"`
+}
+
 func GetAllNotjoinedGroups(w http.ResponseWriter, r *http.Request) {
 	var user = models.User{}
 	auth, userEmail := helper.Auth(DB, r)
@@ -29,6 +37,35 @@ func GetAllNotjoinedGroups(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	var groupss []NewGroup
+	for i := 0; i < len(groups); i++ {
+		not, errn := models.GetNotificationByUserIDAndType(DB, user.ID, "follow-Group-ID="+strconv.Itoa(groups[i].ID))
+		if errn != nil {
+			fmt.Println("df")
+			fmt.Println(errn)
+			return
+		}
+		fmt.Println("llll")
+		fmt.Println(len(not))
+		notifStatus := false
+		if len(not) == 0 {
+			notifStatus = false
+		} else {
+			notifStatus = true
+		}
+
+		var gr = NewGroup{
+			ID:          groups[i].ID,
+			UserID:      groups[i].UserID,
+			Title:       groups[i].Title,
+			Description: groups[i].Description,
+			NotifStatus: notifStatus,
+		}
+
+		groupss = append(groupss, gr)
+	}
+	fmt.Println("les notififs")
+	fmt.Println(groupss)
 
 	groups2, err := models.GetMemberGroupsByUserID(DB, user.ID)
 	if err != nil {
@@ -52,7 +89,7 @@ func GetAllNotjoinedGroups(w http.ResponseWriter, r *http.Request) {
 
 	responseMap := map[string]interface{}{
 		"joined":    groups2,
-		"Notjoined": groups,
+		"Notjoined": groupss,
 		"follower":  follower,
 		"followed":  followed,
 		"userid":    user.ID,

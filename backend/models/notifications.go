@@ -35,3 +35,37 @@ func (n *Notification) CreateNotification(db *sql.DB) error {
 	}
 	return nil
 }
+
+func GetNotificationByUserIDAndType(db *sql.DB, userID int, notificationType string) ([]Notification, error) {
+	stmt, err := db.Prepare(`
+        SELECT User_id, send_id, Type, Status
+        FROM Notfication
+        WHERE send_id = ? AND Type = ?
+    `)
+	if err != nil {
+		return nil, fmt.Errorf("failed to prepare get notification by user ID and type statement: %v", err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(userID, notificationType)
+	if err != nil {
+		return nil, fmt.Errorf("failed to execute query: %v", err)
+	}
+	defer rows.Close()
+
+	var notifications []Notification
+	for rows.Next() {
+		var n Notification
+		err := rows.Scan(&n.User_id, &n.SenderID, &n.Type, &n.Status)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan row: %v", err)
+		}
+		notifications = append(notifications, n)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error during rows iteration: %v", err)
+	}
+
+	return notifications, nil
+}
