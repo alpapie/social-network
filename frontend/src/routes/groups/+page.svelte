@@ -134,6 +134,15 @@
             console.error('ERROR : ', error);
         }
     }
+
+    let searchValue = '';
+
+    function filterUsers(searchText) {
+        return groups.joined[0].suggests.filter(user => {
+            return user.first_name.toLowerCase().includes(searchText.toLowerCase()) ||
+                user.last_name.toLowerCase().includes(searchText.toLowerCase());
+        });
+    }
     
     
 </script>
@@ -171,18 +180,23 @@
                                     <span class="position-absolute right-15 top-0 d-flex align-items-center">
                                         <a href="#" class="d-lg-block d-none"><i class="feather-video btn-round-md font-md bg-primary-gradiant text-white"></i></a>
                                         <Modal button={false} close={closed}>
-                                            <Content>
+                                            <Content>       
                                                 <form on:submit|preventDefault={handleSubmit}>
                                                     <div>Select users to invite into GROUP : {group.title}</div>
+                                                    <input type="text" placeholder="Recherche" bind:value={searchValue} on:input={e => searchValue = e.target.value} />
                                                     <input type="hidden" id="groupId" name="groupId" value={group.id}>
                                                     <input type="hidden" id="userId" name="userId" value={groups.userid}>
                                                     <select id="usersSelect" name="usersSelect" multiple bind:value={selectedUsers}>
-                                                        {#each groups.follower as follower}
-                                                            <option data-email="{follower.Email}" value="{follower.ID}">{follower.FirstName} {follower.LastName}</option>
-                                                            <div>{follower.Email}</div>
-                                                        {/each}
-                                                        {#each groups.followed as followed}
-                                                            <option data-email="{followed.Email}" value="{followed.ID}">{followed.FirstName} {followed.LastName}</option>
+                                                        {#each filterUsers(searchValue) as user}
+                                                        {#if user.is_requested}
+                                                            <option data-email="already requested" value="{user.id}" disabled>
+                                                                {user.first_name} {user.last_name}
+                                                            </option>
+                                                        {:else}
+                                                            <option data-email="{user.email}" value="{user.id}">
+                                                                {user.first_name} {user.last_name}
+                                                            </option>
+                                                        {/if}
                                                         {/each}
                                                     </select>
                                                     <button type="submit">Invite user(s)</button>
@@ -213,7 +227,7 @@
                                             {#if group.notif_type}
                                                 <a id="followButton" class="text-center p-2 lh-24 w100 ms-1 ls-3 d-inline-block rounded-xl bg-grey font-xsssss fw-700 ls-lg text-grey-700">REQUESTED</a>
                                             {:else}
-                                                <a id="followButton" class="text-center p-2 lh-24 w100 ms-1 ls-3 d-inline-block rounded-xl bg-current font-xsssss fw-700 ls-lg text-white" on:click={() => handleFollowClick(group.id, groups.userid)}>FOLLOW</a>
+                                                <a id="followButton" style="cursor: pointer;" class="text-center p-2 lh-24 w100 ms-1 ls-3 d-inline-block rounded-xl bg-current font-xsssss fw-700 ls-lg text-white" on:click={() => handleFollowClick(group.id, groups.userid)}>FOLLOW</a>
                                             {/if}
                                     </span>
                                 </div>

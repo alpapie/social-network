@@ -60,7 +60,6 @@ func (u *User) GetUserByEmail(db *sql.DB, email string) error {
 }
 
 func (u *User) CreateUser(db *sql.DB) error {
-	// Vérifier si l'email existe déjà
 	var count int
 	query := `SELECT COUNT(*) FROM User WHERE email = ?`
 	err := db.QueryRow(query, u.Email).Scan(&count)
