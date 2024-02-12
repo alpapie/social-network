@@ -124,7 +124,7 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func Groupdetail(w http.ResponseWriter, r *http.Request) {
+func CreateEvent(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("ON GROUP detail")
 
 	helper.WriteJSON(w, 200, map[string]interface{}{"success": true}, nil)

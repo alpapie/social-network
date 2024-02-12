@@ -37,18 +37,18 @@ func (n *Notification) CreateNotification(db *sql.DB) error {
 	return nil
 }
 
-func GetNotificationByUserIDAndType(db *sql.DB, SenderID int, userID int, notificationType string) ([]Notification, error) {
+func GetNotificationByUserIDAndType(db *sql.DB, SenderID int, userID int, notificationType string, groupID int) ([]Notification, error) {
 	stmt, err := db.Prepare(`
         SELECT User_id, send_id, Type, Status
         FROM Notification
-        WHERE send_id = ? AND Type = ? AND User_id = ?
+        WHERE send_id = ? AND Type = ? AND User_id = ? AND Group_id = ?
     `)
 	if err != nil {
 		return nil, fmt.Errorf("failed to prepare get notification by user ID and type statement: %v", err)
 	}
 	defer stmt.Close()
 
-	rows, err := stmt.Query(SenderID, notificationType, userID)
+	rows, err := stmt.Query(SenderID, notificationType, userID, groupID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute query: %v", err)
 	}

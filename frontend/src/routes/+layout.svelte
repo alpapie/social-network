@@ -22,8 +22,8 @@
 
 <body class="color-theme-blue">
 	<slot />
-	<script src="js/plugin.js"></script>
+	<!-- <script src="js/plugin.js"></script>
 
     <script src="js/lightbox.js"></script>
-    <script src="js/scripts.js"></script>
+    <script src="js/scripts.js"></script> -->
 </body>
