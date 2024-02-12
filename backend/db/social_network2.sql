@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* Nom de SGBD :  Sybase SQL Anywhere 11                        */
-/* Date de création :  31/01/2024 15:09:16                      */
+/* Date de crï¿½ation :  31/01/2024 15:09:16                      */
 /*==============================================================*/
 
 
@@ -700,11 +700,24 @@ Fol_id ASC
 create table Notfication 
 (
    Use_id               integer                        not null,
+   Use_id               integer                        not null,
    id                   integer                        null,
    type                 varchar(254)                   null,
    status               varchar(254)                   null,
    constraint AK_NOTIFICATION_ID_NOTFICAT unique (id)
+   constraint AK_NOTIFICATION_ID_NOTFICAT primary key (id)
 );
+
+CREATE TABLE notification (
+    id INTEGER PRIMARY KEY,
+    User_id INTEGER NOT NULL,
+    Group_id INTEGER,
+    type VARCHAR(255),
+    status VARCHAR(255),
+    FOREIGN KEY (User_id) REFERENCES "User" (id),
+    FOREIGN KEY (Group_id) REFERENCES "Group" (id)
+);
+
 
 /*==============================================================*/
 /* Index : AVOIR_FK                                             */

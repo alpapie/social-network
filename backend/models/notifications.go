@@ -11,13 +11,14 @@ type Notification struct {
 	ID       int    `json:"id"`
 	User_id  int    `json:"user_id"`
 	SenderID int    `json:"sender_id"`
+	Group_id int `json:"group_id"`
 	Type     string `json:"type"`
 	Status   string `json:"status"`
 }
 
 func (n *Notification) CreateNotification(db *sql.DB) error {
 
-	checkQuery := `SELECT COUNT(*) FROM Notfication WHERE User_id = ? AND send_id = ? AND Type = ?`
+	checkQuery := `SELECT COUNT(*) FROM Notification WHERE User_id = ? AND send_id = ? AND Type = ?`
 	row := db.QueryRow(checkQuery, n.User_id, n.SenderID, n.Type)
 	var count int
 	err := row.Scan(&count)
@@ -28,8 +29,8 @@ func (n *Notification) CreateNotification(db *sql.DB) error {
 		return fmt.Errorf("this notif already done")
 	}
 
-	query := `INSERT INTO Notfication (User_id, send_id, type, status) VALUES (?, ?, ?, ?)`
-	_, err1 := db.Exec(query, n.User_id, n.SenderID, n.Type, n.Status)
+	query := `INSERT INTO Notification (User_id, send_id, type, status, group_id) VALUES (?, ?, ?, ?, ?)`
+	_, err1 := db.Exec(query, n.User_id, n.SenderID, n.Type, n.Status, n.Group_id)
 	if err1 != nil {
 		return fmt.Errorf("failed to create notification: %v", err1)
 	}
@@ -39,7 +40,7 @@ func (n *Notification) CreateNotification(db *sql.DB) error {
 func GetNotificationByUserIDAndType(db *sql.DB, SenderID int, userID int, notificationType string) ([]Notification, error) {
 	stmt, err := db.Prepare(`
         SELECT User_id, send_id, Type, Status
-        FROM Notfication
+        FROM Notification
         WHERE send_id = ? AND Type = ? AND User_id = ?
     `)
 	if err != nil {

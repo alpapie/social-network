@@ -37,6 +37,22 @@ func (u *User) HasActiveSession(db *sql.DB) (bool, error) {
 	return true, nil
 }
 
+func (u *User) IsGroupmemeber(db *sql.DB, groupID int) (bool, error) {
+
+	var count int
+	query := `SELECT COUNT(*) FROM joinner WHERE User_id = ? AND Group_id = ?`
+	err := db.QueryRow(query, u.ID, groupID).Scan(&count)
+	if err != nil {
+		return false, fmt.Errorf("failed to check group member: %v", err)
+	}
+	if count < 1 {
+		return false, fmt.Errorf("not a member")
+	}
+	fmt.Println(count)
+
+	return true, nil
+}
+
 func (u *User) GetUserById(db *sql.DB, id int) error {
 	query := `SELECT id, firstName, lastName, email, nickName, birthDate, avatar, aboutMe, ispublic FROM User WHERE id = ?`
 

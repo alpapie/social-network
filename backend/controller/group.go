@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	helper "social_network/helper"
 	"social_network/models"
-	"strconv"
 )
 
 type NewGroup struct {
@@ -24,8 +24,6 @@ type NewUser struct {
 	Avatar      string `json:"avatar"`
 	Isrequested bool   `json:"is_requested"`
 }
-
-
 
 func CreateFollowGroup(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("HERE")
@@ -70,7 +68,8 @@ func CreateFollowGroup(w http.ResponseWriter, r *http.Request) {
 	var notification = models.Notification{}
 	notification.SenderID = user.ID
 	notification.User_id = group.UserID
-	notification.Type = "follow-Group-ID=" + strconv.Itoa(group.ID)
+	notification.Type = "follow-Group"
+	notification.Group_id = group.ID
 	notification.Status = "false"
 	ern := notification.CreateNotification(DB)
 	if ern != nil {
@@ -109,6 +108,12 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
+	er := models.JoinGroup(DB, 1, int(lastInsertId))
+	if er != nil {
+		fmt.Println(er)
+		return
+	}
+
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
@@ -117,4 +122,10 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 		"message": "Group created successfully",
 		"groupId": lastInsertId,
 	})
+}
+
+func Groupdetail(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("ON GROUP detail")
+
+	helper.WriteJSON(w, 200, map[string]interface{}{"success": true}, nil)
 }

@@ -1,15 +1,15 @@
 
 import { makeRequest } from "$lib/api.js";
 import { authenticateUser } from "$lib/auth/auth.js";
+export const load = async ({cookies})=>{
+  const IsAuth= await authenticateUser(cookies)
+}
 import { redirect } from "@sveltejs/kit";
 import { DB, localStorageObj } from "../../db.js";
 import { error } from '@sveltejs/kit';
 import { createGroup } from "$lib/groups/createGroup";
 
-export const load = async ({cookies})=>{
-    const IsAuth= await authenticateUser(cookies)
 
-}
 
 export const actions = {
   'createGroup': async ({request,cookies}) => {
