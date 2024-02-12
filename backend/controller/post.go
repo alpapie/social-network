@@ -16,7 +16,7 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 	NewPost := models.Post{User_id: 2}
 
 	err := json.NewDecoder(r.Body).Decode(&NewPost)
-
+	fmt.Println("here is the decoded post " , NewPost)
 	if err != nil || !NewPost.Check() {
 		fmt.Println("Error decoding JSON:", err)
 		http.Error(w, "400 bad request.", http.StatusBadRequest)

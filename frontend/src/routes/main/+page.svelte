@@ -1,16 +1,22 @@
 <script>
-	import { enhance } from '$app/forms';
+	
+  import Form from './form.svelte'
   import Post from './post.svelte';
 	export let data
-  export let form;
+  export let form
+  // export let visibility = "hidden"
+  
+
+
 </script>
 
-<!-- main content -->
+<!-- main
+ content -->
 <div class="main-content right-chat-active">
   <div class="middle-sidebar-bottom">
     <div class="middle-sidebar-left">
       <!-- loader wrapper -->
-      <!-- <div class="preloader-wrap p-3">
+      <!-- <div class="preloader-wrap p-3">c
           <div class="box shimmer">
             <div class="lines">
               <div class="line s_shimmer"></div>
@@ -44,7 +50,7 @@
           >
             <div class="owl-carousel category-card owl-theme overflow-hidden nav-none">
               <div class="item">
-                <div
+              <div
                   data-bs-toggle="modal"
                   data-bs-target="#Modalstory"
                   class="card w125 h200 d-block border-0 shadow-none rounded-xxxl bg-dark overflow-hidden mb-3 mt-3">
@@ -252,127 +258,12 @@
             </div>
           </div>
 
-          <!-- svelte-ignore missing-declaration -->
-			<form method="POST"  class="card w-100 shadow-xss rounded-xxl border-0 ps-4 pt-4 pe-4 pb-3 mb-3" use:enhance enctype="multipart/form-data">
-				<div style="display: flex;justify-content: space-between;" class="card-body p-0">
-          <div>
+			<Form {form} users={data?.listesusers}/>  
 
-            <button style="border: none;background-color: inherit;" class=" font-xssss fw-600 text-grey-700 card-body p-0 d-flex align-items-center">
-              <i class="btn-round-sm font-xs text-primary feather-edit-3 me-2 bg-greylight"></i>Create Post
-            </button>
-          </div>
+		  <h1>HERE IS THE PLACE OF POSTS</h1>
 
-          <select name="privacy" 	class=" font-xssss" style="border: none;border-radius: 15px;padding:0px 10px;" >
-            <option value="public">Public</option>
-            <option value="private">Private</option>
-            <option value="almostprivate">Almost Private</option>
-          </select>
-				</div>
-				<div class="card-body p-0 mt-3 position-relative">
-				<figure class="avatar position-absolute ms-2 mt-1 top-5">
-					<img
-					src="images/user-8.png"
-					alt="random"
-					class="shadow-sm rounded-circle w30"
-					/>
-				</figure>
-				<textarea
-					name="content"
-					class="h100 bor-0 w-100 rounded-xxl p-2 ps-5 font-xssss text-grey-500 fw-500 border-light-md theme-dark-bg"
-					cols="30"
-					rows="10"
-					placeholder="What's on your mind?"
-          ></textarea>
-          {#if form?.missing}
-            <span class="font-xssss" style="color: red;" >Empty post</span>
-          {/if}
+		  <Post data={data?.posts}/>
 
-				<label style="cursor: pointer;" for="my-image" class="d-flex align-items-center font-xssss fw-600 ls-1 text-grey-700 text-dark pe-4">
-					<i class="font-md text-success feather-image me-2"></i>
-					<span class="d-none-xs">Insert an image</span>
-				</label>
-				<input name="avatar" id="my-image" style="display: none;" accept=".jpg, .jpeg, .png, .gif" type="file">
-				</div>
-				<div class="card-body d-flex p-0 mt-0">
-			</form>
-              <!-- <a
-                href="/"
-                class="d-flex align-items-center font-xssss fw-600 ls-1 text-grey-700 text-dark pe-4"
-                ><i class="font-md text-danger feather-video me-2"></i><span
-                  class="d-none-xs">Live Video</span
-                ></a
-              > -->
-             
-              <!-- <a
-                href="/"
-                class="d-flex align-items-center font-xssss fw-600 ls-1 text-grey-700 text-dark pe-4"
-                ><i class="font-md text-warning feather-camera me-2"></i><span
-                  class="d-none-xs">Feeling/Activity</span
-                ></a
-              > -->
-              <!-- <a
-                href="/"
-                class="ms-auto"
-                id="dropdownMenu4"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-                ><i
-                  class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"
-                ></i></a> -->
-              <!-- <div
-                class="dropdown-menu dropdown-menu-start p-4 rounded-xxl border-0 shadow-lg"
-                aria-labelledby="dropdownMenu4"
-              >
-                <div class="card-body p-0 d-flex">
-                  <i class="feather-bookmark text-grey-500 me-3 font-lg"></i>
-                  <h4 class="fw-600 text-grey-900 font-xssss mt-0 me-4">
-                    Save Link <span
-                      class="d-block font-xsssss fw-500 mt-1 lh-3 text-grey-500"
-                      >Add this to your saved items</span
-                    >
-                  </h4>
-                </div>
-                <div class="card-body p-0 d-flex mt-2">
-                  <i class="feather-alert-circle text-grey-500 me-3 font-lg"
-                  ></i>
-                  <h4 class="fw-600 text-grey-900 font-xssss mt-0 me-4">
-                    Hide Post <span
-                      class="d-block font-xsssss fw-500 mt-1 lh-3 text-grey-500"
-                      >Save to your saved items</span
-                    >
-                  </h4>
-                </div>
-                <div class="card-body p-0 d-flex mt-2">
-                  <i class="feather-alert-octagon text-grey-500 me-3 font-lg"
-                  ></i>
-                  <h4 class="fw-600 text-grey-900 font-xssss mt-0 me-4">
-                    Hide all from Group <span
-                      class="d-block font-xsssss fw-500 mt-1 lh-3 text-grey-500"
-                      >Save to your saved items</span
-                    >
-                  </h4>
-                </div>
-                <div class="card-body p-0 d-flex mt-2">
-                  <i class="feather-lock text-grey-500 me-3 font-lg"></i>
-                  <h4 class="fw-600 mb-0 text-grey-900 font-xssss mt-0 me-4">
-                    Unfollow Group <span
-                      class="d-block font-xsssss fw-500 mt-1 lh-3 text-grey-500"
-                      >Save to your saved items</span
-                    >
-                  </h4>
-                </div>
-              </div> -->
-            <!-- </div> -->
-          
-		<h1>HERE IS THE PLACE OF POSTS</h1>
-    
-		<Post data={data.data}/>
-         
-       
-
-          
-
-         
         <div
             class="card w-100 text-center shadow-xss rounded-xxl border-0 p-4 mb-3 mt-3"
           >

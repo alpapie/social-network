@@ -18,7 +18,7 @@ type Post struct {
 	Content      string `json:"content"`
 	Privacy      string `json:"privacy"`
 	CreationDate string `json:"creationDate"`
-	AllowedUsers []int
+	AllowedUsers []int 	`json:allowedusers`
 }
 
 type FeedPost struct {
@@ -178,7 +178,7 @@ func (P *Post) Check() bool {
 	P.Content = html.EscapeString(strings.TrimSpace(P.Content))
 	P.Titre = html.EscapeString(strings.TrimSpace(P.Titre))
 
-	return P.User_id != 0 && P.Content != "" && P.Titre != "" && P.CheckPrivacy()
+	return P.User_id != 0 && P.Content != ""  && P.CheckPrivacy()
 }
 
 func (P *Post) CheckPrivacy() bool {

@@ -6,7 +6,7 @@ import { writeFileSync } from "fs";
 export async function load({cookies}) {
     // let response = await makeRequest("getPosts","get",{},{},cookies)
     // console.log("response status", await response.status)
-    const response = await fetch('http://localhost:8080/server/getPosts', {
+    const response = await fetch('http://localhost:8080/server/home', {
         method: 'GET',
         headers: {
             'content-type': 'application/json'
@@ -14,10 +14,7 @@ export async function load({cookies}) {
     });
 
    let  total = await response.json();
-    return {
-        
-        data : total
-    }
+    return total
 }
 
 export const actions = {
@@ -29,14 +26,14 @@ export const actions = {
 			console.log("fail content")
 			return fail(400, {content , missing: true})
 		}
-       
+
         let post = {
-            titre : "hello",
+            titre : "",
             content : content,
             image : await saveImage(data.get("avatar")),
-            privacy : data.get("privacy")
+            privacy : data.get("privacy"),
+            allowedusers : data.getAll("allowedusers").map((v) => Number(v))
         }
         let response = await makeRequest("addPost" , "POST",post)
-        console.log("response of server ",await response)
 	}
 };
