@@ -252,9 +252,10 @@ Follow_id ASC
 /*==============================================================*/
 create table Notification 
 (
-   id                   integer                        not null,
+   id                    integer                       not null,
    User_id               integer                       not null,
    send_id               integer                       null,
+   Group_id              integer                       null,
    type                 varchar(254)                   null,
    status               varchar(254)                   null,
    constraint AK_NOTIFICATION_ID_NOTFICAT unique (id),
