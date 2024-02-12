@@ -29,6 +29,7 @@ func Getmethode(r *http.Request, methode string) bool {
 // *****************************CHECK IF THE USER IS LOGGING OR NOT***************************
 func Log(next http.HandlerFunc) http.HandlerFunc {
 	fn := func(w http.ResponseWriter, r *http.Request) {
+		
 		if is, _,_ := helper.Auth(controller.DB, r); is {
 			next.ServeHTTP(w, r)
 		} else {

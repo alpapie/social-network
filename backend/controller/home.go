@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"social_network/helper"
 	"social_network/models"
@@ -9,10 +10,11 @@ import (
 func Home(w http.ResponseWriter, r *http.Request) {
 	_,_ ,user_id := helper.Auth(DB, r)
 	user := models.User{ID: user_id}
-	listusers, err := user.GetFollow(DB, 4)
-
+	listusers, err := user.GetUnFollow(DB, 4)
+	fmt.Println(listusers)
 	posts, errpost := user.GetPosts(DB)
 	if err != nil && errpost!=nil{
+		fmt.Println(err)
 		helper.ErrorPage(w, 500)
 		return
 	}

@@ -1,1 +1,0 @@
-ALTER TABLE "Group"  ADD img  varchar(254);

@@ -126,8 +126,9 @@ User_id ASC
 create table "Group" 
 (
    id                   integer                        not null,
-   User_id               integer                        not null,
+   User_id               integer                       not null,
    title                varchar(254)                   not null,
+   img                  varchar(254)                   null,
    description          varchar(254)                   not null,
    constraint PK_GROUP primary key (id),
    FOREIGN KEY (User_id) REFERENCES User (id) ON DELETE SET NULL
@@ -249,11 +250,11 @@ Follow_id ASC
 /*==============================================================*/
 /* Table : Notfication                                          */
 /*==============================================================*/
-create table Notfication 
+create table Notification 
 (
+   id                   integer                        not null,
    User_id               integer                       not null,
    send_id               integer                       null,
-   id                   integer                        null,
    type                 varchar(254)                   null,
    status               varchar(254)                   null,
    constraint AK_NOTIFICATION_ID_NOTFICAT unique (id),
@@ -263,14 +264,14 @@ create table Notfication
 /*==============================================================*/
 /* Index : AVOIR_FK                                             */
 /*==============================================================*/
-create index AVOIRNOT_FK on Notfication (
+create index AVOIRNOT_FK on Notification (
 User_id ASC
 );
 
 /*==============================================================*/
 /* Index : NOTFICATION_AK                                       */
 /*==============================================================*/
-create unique index NOTFICATION_AK on Notfication (
+create unique index NOTiFICATION_AK on Notification (
 id ASC
 );
 

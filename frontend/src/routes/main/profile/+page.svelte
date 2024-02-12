@@ -15,10 +15,10 @@
                                 <div class="card-body h250 p-0 rounded-xxl overflow-hidden m-3"><img src="/images/u-bg.jpg" alt="image"></div>
                                 <div class="card-body p-0 position-relative">
                                     <figure class="avatar position-absolute w100 z-index-1" style="top:-40px; left: 30px;">
-                                        {#if data?.user?.Avatar}
-                                            <img src="{data?.user?.Avatar}" alt="image" class="float-right p-1 bg-white rounded-circle w-100">
+                                        {#if data?.user?.Avatar!=="''"}
+                                            <img src="{data?.user?.Avatar}"  class="float-right p-1 bg-white rounded-circle w-100" alt="{data?.user?.Avatar}">
                                         {:else}
-                                            <img src="//ui-avatars.com/api/?name={data?.user?.FirstName +' '+data?.user?.LastName}e&size=100&rounded=true&color=fff&background=random" alt="avatar">
+                                            <img src="//ui-avatars.com/api/?name={data?.user?.FirstName +' '+data?.user?.LastName}&size=100&rounded=true&color=fff&background=random" alt="avatar">
                                         {/if}
                                     </figure>
                                     <h4 class="fw-700 font-sm mt-2 mb-lg-5 mb-4 pl-15">{data?.user?.FirstName +' '+data?.user?.LastName}<span class="fw-500 font-xssss text-grey-500 mt-1 mb-3 d-block">{data?.user?.Email}</span></h4>
@@ -89,7 +89,7 @@
                         </div>
                         <div class="col-xl-8 col-xxl-9 col-lg-8">
                            <Createpost/>
-                            <Posts/>
+                            <Posts posts={data.createdPost}/>
 
                         </div>                             
                     </div>

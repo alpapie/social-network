@@ -7,22 +7,54 @@ import (
 	"strconv"
 )
 
+func UnFollow(w http.ResponseWriter, r *http.Request) {
+	_, _, user_id := helper.Auth(DB, r)
+
+	user := models.User{ID: user_id}
+	listusers, err := user.GetUnFollow(DB, 100)
+	if err != nil {
+		helper.ErrorPage(w, 500)
+		return
+	}
+	err = helper.WriteJSON(w, http.StatusOK, map[string]interface{}{"success": true, "listusers": listusers}, nil)
+	if err != nil {
+		helper.ErrorPage(w, 500)
+		return
+	}
+}
+
 func Follow(w http.ResponseWriter, r *http.Request) {
-	_,_,user_id:= helper.Auth(DB,r)
-	limit,errlim:=strconv.Atoi(r.Form.Get("")) 
-	if errlim!=nil {
-		helper.ErrorPage(w,400)
+	// Set CORS headers
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+    w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+	
+	follow_id, err := strconv.Atoi(r.URL.Query().Get("user_id"))
+	if err != nil {
+		helper.ErrorPage(w, 400)
 		return
 	}
-	user:= models.User{ID: user_id}
-	listusers,err:= user.GetFollow(DB,limit)
-	if err!=nil {
-		helper.ErrorPage(w,500)
+	_, _, user_id := helper.Auth(DB, r)
+
+	follower := models.User{}
+	current_user := models.User{}
+
+	errfollow := follower.GetUserById(DB, follow_id)
+	erruser := current_user.GetUserById(DB, user_id)
+	if errfollow != nil || erruser != nil {
+		helper.ErrorPage(w, 400)
 		return
 	}
-	err=helper.WriteJSON(w,http.StatusOK, map[string]interface{}{"success": true, "data": listusers}, nil)
-	if err!=nil {
-		helper.ErrorPage(w,500)
+
+	if follower.IsPublic==1 {
+		errreq:=follower.AddFlow(DB,user_id)
+		if errreq != nil {
+			helper.ErrorPage(w, 500)
+			return
+		}
+	}
+	err = helper.WriteJSON(w, http.StatusOK, map[string]interface{}{"success": true,"user_id":user_id}, nil)
+	if err != nil {
+		helper.ErrorPage(w, 400)
 		return
 	}
 }

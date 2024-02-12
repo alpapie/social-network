@@ -18,6 +18,7 @@ type Post struct {
 	Content      string `json:"content"`
 	Privacy      string `json:"privacy"`
 	CreationDate string `json:"creationDate"`
+	Avatar	string	`json:"groupe_title"`
 	AllowedUsers []int
 }
 
@@ -67,8 +68,8 @@ func (P *PostDetails) GetPost(DB *sql.DB, UserID, post_id int) error {
 func (P *PostDetails) GetComments(DB *sql.DB) error {
 	statement, err := DB.Prepare(`
 	select C.id , U.firstName , U.lastName , C.comment ,C.creationDate, C.User_id, C.Post_id from Comment as C 
-JOIN User as U on U.id = C.User_id
-where C.Post_id = ?
+		JOIN User as U on U.id = C.User_id
+		where C.Post_id = ?
 	`)
 	if err != nil {
 		return err
@@ -232,3 +233,4 @@ func (G *GroupeInfo) GetGroupPost(DB *sql.DB, userId int) error {
 	}
 	return nil
 }
+
