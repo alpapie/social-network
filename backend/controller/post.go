@@ -12,8 +12,8 @@ import (
 
 func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-
-	NewPost := models.Post{User_id: 2}
+	_ ,  _ , UserID := helper.Auth(DB , r)
+	NewPost := models.Post{User_id: UserID}
 
 	err := json.NewDecoder(r.Body).Decode(&NewPost)
 	fmt.Println("here is the decoded post " , NewPost)
@@ -50,8 +50,8 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 
 func PostsByUserHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-
-	user := models.User{}
+	_ ,  _ , UserID := helper.Auth(DB , r)
+	user := models.User{ID: UserID}
 
 	posts, err := user.GetPosts(DB)
 	if err != nil {
@@ -73,7 +73,7 @@ func PostDetail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// variable temporaire
-	UserID := 2
+	_ ,  _ , UserID := helper.Auth(DB , r)
 
 	post := models.PostDetails{}
 
@@ -106,8 +106,8 @@ func PostDetail(w http.ResponseWriter, r *http.Request) {
 }
 
 func GroupPost(w http.ResponseWriter, r *http.Request) {
-	// variable temporaire
-	UserID := 2
+	
+	_ ,  _ , UserID := helper.Auth(DB , r)
 	group_id, er := strconv.Atoi(r.URL.Query().Get("groupid"))
 	if er != nil {
 		helper.ErrorPage(w, 400)

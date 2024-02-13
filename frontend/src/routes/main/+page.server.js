@@ -1,24 +1,25 @@
 import { makeRequest } from "$lib/api.js";
 import { generateRandom,saveImage } from "$lib/index.js";
 import { fail } from '@sveltejs/kit';
+import { error, redirect } from "@sveltejs/kit"
+import { authenticateUser } from "$lib/auth/auth"
 import { writeFileSync } from "fs";
 
-export async function load({cookies}) {
-    // let response = await makeRequest("getPosts","get",{},{},cookies)
-    // console.log("response status", await response.status)
-    const response = await fetch('http://localhost:8080/server/home', {
-        method: 'GET',
-        headers: {
-            'content-type': 'application/json'
-        }
-    });
-
-   let  total = await response.json();
-    return total
+export const load = async ({cookies})=>{
+    const IsAuth=await authenticateUser(cookies)
+    if (!IsAuth) {
+        redirect(302,"/login")
+    }
+    const response= await makeRequest("home","get",{},{},cookies)
+    if (response?.data?.success) {
+        return response?.data;
+    }
+    throw error(400,"bad request")
 }
 
+
 export const actions = {
-	default : async ({request }) => {
+	default : async ({request , cookies}) => {
 		// TODO log the user in
         let data = await  request.formData()
         let content = data.get('content')
@@ -34,6 +35,6 @@ export const actions = {
             privacy : data.get("privacy"),
             allowedusers : data.getAll("allowedusers").map((v) => Number(v))
         }
-        let response = await makeRequest("addPost" , "POST",post)
+        let response = await makeRequest("addPost" , "POST",post , {} ,cookies)
 	}
 };

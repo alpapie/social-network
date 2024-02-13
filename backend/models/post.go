@@ -86,8 +86,7 @@ where C.Post_id = ?
 }
 
 func (U *User) GetPosts(controllerDB *sql.DB) ([]FeedPost, error) {
-	// variable temporaire
-	UserID := 2
+
 
 	statement, err := controllerDB.Prepare(`
 	SELECT U.id , U.firstName , U.lastName , P.id , coalesce(P.Group_id,0) as Group_id , P.titre , coalesce(P.image ,'') as image , P.content , P.privacy , coalesce(P.creationDate,"") as creationDate ,coalesce(G.title,"") as groupName ,coalesce(G.description,"") as description
@@ -95,7 +94,7 @@ func (U *User) GetPosts(controllerDB *sql.DB) ([]FeedPost, error) {
 	JOIN User as U on U.id = P.User_id
    	LEFT JOIN "Group" as G on P.Group_id = G.id
    	WHERE P.privacy = "public" or 
-	P.User_id = U.id
+	P.User_id = ?
 	or (P.privacy = "private" and P.User_id in 
 	   (SELECT F.User_id from Follow as F WHERE F.Follower_id = ? )) or
 	   		P.privacy = "almostprivate" and P.id in 
@@ -109,7 +108,7 @@ func (U *User) GetPosts(controllerDB *sql.DB) ([]FeedPost, error) {
 
 	posts := []FeedPost{}
 
-	lines, err := statement.Query(UserID, UserID, UserID, 0)
+	lines, err := statement.Query(U.ID,U.ID, U.ID, U.ID, 0)
 	if err != nil {
 		return []FeedPost{}, err
 	}
