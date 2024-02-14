@@ -2,6 +2,7 @@
     import { Modal, Content, Trigger } from "sv-popup"
     import { makeRequest } from "$lib/api";
     
+    
     export let data;
     console.log(data);
     let groups = data.res.result;

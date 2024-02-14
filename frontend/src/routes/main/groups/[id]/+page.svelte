@@ -1,20 +1,21 @@
-
 <script>
     import { Modal, Content, Trigger } from "sv-popup"
     import { enhance } from "$app/forms";
-    // import { makeRequest } from "$lib/api";
-    // export const load = ({params,cookies}) => {
-    //     console.log('ID = ', params.id);
-    //     // const fetchgroup = async (id) => {
-    //     //     const res = await makeRequest("group","POST",id,{},cookies)
-    //     //     return res
-    //     // }
-        
-    //     // return {
-    //     //     title: fetchgroup(params.id),
-    //     // };
-    // }
+
+    export let data;
+    console.log('data received GET', data);
+    let grpInfo = data.res.result.groupDetail.groupdata;
+    let evts = data.res.result.groupDetail.Events
+    let nbrFollower = data.res.result.groupDetail.nbrfollowers
+    export let form;
     $: closed =false
+    $: console.log('data received', form);
+
+    $: if (form?.error === 'no') {
+        closed = true;
+    }
+
+    
     
 </script>
 
@@ -28,22 +29,27 @@
                         <div class="card-body position-relative h150 bg-image-cover bg-image-center" style="background-image: url(images/bb-9.jpg);"></div>
                         <div class="card-body d-block pt-4 text-center">
                             <figure class="avatar mt--6 position-relative w75 z-index-1 w100 z-index-1 ms-auto me-auto"><img src="../static/images/pt-1.jpg" alt="image" class="p-1 bg-white rounded-xl w-100"></figure>
-                            <h4 class="font-xs ls-1 fw-700 text-grey-900">Surfiya Zakir<span class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">@surfiyazakir22</span></h4>
+                            <h4 class="font-xs ls-1 fw-700 text-grey-900">{grpInfo.title}<span class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">@surfiyazakir22</span></h4>
                         </div>
                         <div class="card-body d-flex align-items-center ps-4 pe-4 pt-0">
                             <h4 class="font-xsssss text-center text-grey-500 fw-600 ms-2 me-2"><b class="text-grey-900 mb-1 font-xss fw-700 d-inline-block ls-3 text-dark">456 </b> Posts</h4>
-                            <h4 class="font-xsssss text-center text-grey-500 fw-600 ms-2 me-2"><b class="text-grey-900 mb-1 font-xss fw-700 d-inline-block ls-3 text-dark">2.1k </b> Followers</h4>
+                            <h4 class="font-xsssss text-center text-grey-500 fw-600 ms-2 me-2"><b class="text-grey-900 mb-1 font-xss fw-700 d-inline-block ls-3 text-dark">{nbrFollower} </b> Followers</h4>
                             <h4 class="font-xsssss text-center text-grey-500 fw-600 ms-2 me-2"><b class="text-grey-900 mb-1 font-xss fw-700 d-inline-block ls-3 text-dark">32k </b> Follow</h4>
                         </div>
                         <div class="card-body d-flex align-items-center justify-content-center ps-4 pe-4 pt-0">
                             <Modal button={false} close={closed}>
                                 <Content>       
-                                    <form method="post" use:enhance>
+                                    <form method="POST" use:enhance>
                                         <div>Create Your Event 🎰 </div>
-                                        <input type="text" id="event-title" name="title" placeholder="Title" required>
-                                        <textarea id="event-description" name="description" placeholder="description" required></textarea>
-                                        <input type="date" id="event-date" name="date" required>
-                                        <input type="time" id="event-time" name="time" value="08:00" required>
+                                        <input type="text" value={form?.title??''} id="event-title" name="title" placeholder="Title" required>
+                                        <textarea id="event-description" value={form?.description??''} name="description" placeholder="description" required></textarea>
+                                        <input type="date" value={form?.date??''} id="event-date" name="date" required>
+                                        <input type="time" value={form?.time??'08:00'} id="event-time" name="time" required>
+                                        {#if form}
+                                            <div class="alert alert-danger">
+                                                {form.error}
+                                            </div>
+                                        {/if}
                                         <button type="submit">Create</button>
                                     </form>
                                 </Content>
@@ -59,7 +65,7 @@
                     <div class="card w-100 shadow-xss rounded-xxl border-0 mb-3">
                         <div class="card-body d-block p-4">
                             <h4 class="fw-700 mb-3 font-xsss text-grey-900">About</h4>
-                            <p class="fw-500 text-grey-500 lh-24 font-xssss mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nulla dolor, ornare at commodo non, feugiat non nisi. Phasellus faucibus mollis pharetra. Proin blandit ac massa sed rhoncus</p>
+                            <p class="fw-500 text-grey-500 lh-24 font-xssss mb-0">{grpInfo.description}</p>
                         </div>
                         <div class="card-body border-top-xs d-flex">
                             <i class="feather-lock text-grey-500 me-3 font-lg"></i>
