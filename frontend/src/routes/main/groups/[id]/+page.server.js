@@ -1,17 +1,13 @@
-
-
+import { makeRequest } from "$lib/api";
 export const actions = {
-	default: async ({request,cookies}) => {
-        
-		const formDatas= await request.formData()
-
+    default: async ({request, cookies}) => {
+        const formDatas = await request.formData();
         console.log(formDatas);
+        let response = await makeRequest("createEvent","POST",formDatas,{},cookies)
+        console.log(response);
+
         return {
-            title: true,
+            closed: true 
         };
-
-        // let response= await makeRequest("login","POST",formDatas,{},cookies)
-
-        // return {error:response?.data?.error,email:formDatas.get("email")}
-	}
+    }
 };

@@ -81,13 +81,14 @@
     }
 
     let searchValue = '';
-
-    function filterUsers(searchText) {
-        return groups.joined[0].suggests.filter(user => {
+    function filterUsers(searchText, indice) {
+        return groups.joined[indice].suggests.filter(user => {
             return user.first_name.toLowerCase().includes(searchText.toLowerCase()) ||
                 user.last_name.toLowerCase().includes(searchText.toLowerCase());
         });
     }
+
+    
     
     
 </script>
@@ -113,7 +114,8 @@
                     
                     <div class="row ps-2 pe-1" style="height: fit-content;">
                         {#if filter === 'joined'}
-                        {#each groups.joined as group}
+                        {#if groups.joined && groups.joined.length >  0}
+                        {#each groups.joined as group, index}
                         
                         <div class="col-md-6 col-sm-6 pe-2 ps-2">
                             <div class="card d-block border-0 shadow-xss rounded-3 overflow-hidden mb-3">
@@ -140,7 +142,8 @@
                                                     <input type="hidden" id="groupId" name="groupId" value={group.id}>
                                                     <input type="hidden" id="userId" name="userId" value={groups.userid}>
                                                     <select id="usersSelect" name="usersSelect" multiple bind:value={selectedUsers}>
-                                                        {#each filterUsers(searchValue) as user}
+                                                        {#if groups.joined[0].suggests && groups.joined[0].suggests.length >  0}
+                                                        {#each filterUsers(searchValue, index) as user}
                                                         {#if user.is_requested}
                                                             <option data-email="already requested" value="{user.id}" disabled>
                                                                 {user.first_name} {user.last_name}
@@ -151,6 +154,7 @@
                                                             </option>
                                                         {/if}
                                                         {/each}
+                                                        {/if}
                                                     </select>
                                                     <button type="submit">Invite user(s)</button>
                                                 </form>
@@ -166,7 +170,9 @@
                         </div>
                        
                         {/each}
+                        {/if}
                         {:else if filter === 'not'}
+                        {#if groups.Notjoined && groups.Notjoined.length >  0}
                         {#each copiedGroups.Notjoined as group}
                         <div class="col-md-6 col-sm-6 pe-2 ps-2">
                             <div class="card d-block border-0 shadow-xss rounded-3 overflow-hidden mb-3">
@@ -188,6 +194,7 @@
                             </div>
                         </div>
                         {/each}
+                        {/if}
                         {/if}
                         
                     

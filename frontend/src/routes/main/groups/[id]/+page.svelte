@@ -15,12 +15,6 @@
     //     // };
     // }
     $: closed =false
-    export let data;
-    console.log('data = ');
-    console.log(data);
-    if (data) {
-        closed = true
-    }
     
 </script>
 

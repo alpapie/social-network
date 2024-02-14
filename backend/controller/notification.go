@@ -31,14 +31,18 @@ func GetAllNotjoinedGroups(w http.ResponseWriter, r *http.Request) {
 	}
 	var groupss []NewGroup
 	for i := 0; i < len(groups); i++ {
-		not, errn := models.GetNotificationByUserIDAndType(DB, user.ID, groups[i].UserID, "follow-Group")
+		not, errn := models.GetNotificationByUserIDAndType(DB, user.ID, groups[i].UserID, "follow-Group", groups[i].ID)
 		if errn != nil {
 			fmt.Println("df")
 			fmt.Println(errn)
 			return
 		}
-		fmt.Println("llll")
+		fmt.Println("---------- for group =>")
+		fmt.Println(groups[i].Title)
+		fmt.Println("=============")
 		fmt.Println(len(not))
+		fmt.Println(not)
+		fmt.Println("=============")
 		notifStatus := false
 		if len(not) == 0 {
 			notifStatus = false
@@ -84,13 +88,19 @@ func GetAllNotjoinedGroups(w http.ResponseWriter, r *http.Request) {
 	for i := 0; i < len(groups2); i++ {
 		var friendss []NewUser
 		for j := 0; j < len(friends); j++ {
-			notfollow, errn := models.GetNotificationByUserIDAndType(DB, user.ID, friends[j].ID, "invite-Group")
+			notfollow, errn := models.GetNotificationByUserIDAndType(DB, user.ID, friends[j].ID, "invite-Group", groups2[i].ID)
 			if errn != nil {
 				fmt.Println("df")
 				fmt.Println(errn)
 				return
 			}
 			requested := false
+			fmt.Println("+++++++++ for group =>")
+			fmt.Println(groups2[i].Title)
+			fmt.Println("=============")
+			fmt.Println(len(notfollow))
+			fmt.Println(notfollow)
+			fmt.Println("=============")
 			if len(notfollow) == 0 {
 				requested = false
 			} else {

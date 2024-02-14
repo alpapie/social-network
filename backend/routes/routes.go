@@ -15,5 +15,5 @@ func Routes() {
 	http.HandleFunc("/server/createGroup", controller.CreateGroupHandler)
 	http.HandleFunc("/server/invitegroup", middleware.Ispath(middleware.CheckMethod(controller.CreateInvitationGroup, "post"), "invitegroup"))
 	http.HandleFunc("/server/followgroup", middleware.Ispath(middleware.CheckMethod(controller.CreateFollowGroup, "post"), "followgroup"))
-	http.HandleFunc("/server/group", middleware.Ispath(middleware.CheckMethod(controller.Groupdetail, "post"), "group"))
+	http.HandleFunc("/server/createEvent", middleware.Ispath(middleware.CheckMethod(controller.CreateEvent, "post"), "createEvent"))
 }
