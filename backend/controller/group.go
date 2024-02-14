@@ -84,10 +84,24 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 	// 	http.Error(w, "Unauthorized", http.StatusUnauthorized)
 	// 	return
 	// }
+	auth, userEmail := helper.Auth(DB, r)
+	if !auth {
+		fmt.Println("Not registered")
+		return
+	}
+
+	var user = models.User{}
+
+	err := user.GetUserByEmail(DB, userEmail)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	var newGroup models.Group
 	fmt.Println(r)
-	err := json.NewDecoder(r.Body).Decode(&newGroup)
+	err = json.NewDecoder(r.Body).Decode(&newGroup)
 	if err != nil {
 		http.Error(w, "Failed to parse request body", http.StatusBadRequest)
 		fmt.Println("in decode")
@@ -99,7 +113,7 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newGroup.UserID = 1
+	newGroup.UserID = user.ID
 	lastInsertId, err := newGroup.CreateGroup(DB)
 	if err != nil {
 		http.Error(w, "Failed to create group", http.StatusInternalServerError)
