@@ -186,3 +186,19 @@ func JoinGroup(db *sql.DB, userID int, groupID int) error {
 
 	return nil
 }
+
+func GetGroupMemberCount(db *sql.DB, groupID int) (int, error) {
+	stmt, err := db.Prepare("SELECT COUNT(*) FROM Joinner WHERE Group_id = ?")
+	if err != nil {
+		return  0, fmt.Errorf("failed to prepare member count statement: %v", err)
+	}
+	defer stmt.Close()
+
+	var count int
+	err = stmt.QueryRow(groupID).Scan(&count)
+	if err != nil {
+		return  0, fmt.Errorf("failed to execute member count query: %v", err)
+	}
+
+	return count, nil
+}
