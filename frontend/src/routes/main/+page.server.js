@@ -12,7 +12,7 @@ import { createGroup } from "$lib/groups/createGroup";
 
 
 export const actions = {
-  'createGroup': async ({request,cookies}) => {
+  createGroup: async ({request,cookies}) => {
         const formDatas= await request.formData()
         let data={
             title:formDatas.get("title"),
