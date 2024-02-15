@@ -20,12 +20,15 @@
         const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
         return months[monthNumber -  1] || 'NaN';
     }
+    function getEventColorClass(index) {
+        const colors = ['bg-success', 'bg-warning', 'bg-primary'];
+        return colors[index % colors.length];
+    }
 
        
 </script>
 
 
-{#key data}
 <div class="main-content right-chat-active">
             
     <div class="middle-sidebar-bottom">
@@ -52,7 +55,7 @@
                                         <textarea id="event-description" value={form?.description??''} name="description" placeholder="description" required></textarea>
                                         <input type="date" value={form?.date??''} id="event-date" name="date" required>
                                         <input type="time" value={form?.time??'08:00'} id="event-time" name="time" required>
-                                        {#if form}
+                                        {#if form && form?.error != 'no'}
                                             <div class="alert alert-danger">
                                                 {form.error}
                                             </div>
@@ -120,9 +123,9 @@
                         </div>
                         <!-- <div>{data.res.result.groupDetail.events}</div> -->
                         {#if data.res.result.groupDetail.events && data.res.result.groupDetail.events.length >  0}
-                            {#each data.res.result.groupDetail.events as event}
+                            {#each data.res.result.groupDetail.events as event, index}
                                 <div class="card-body d-flex pt-0 ps-4 pe-4 pb-3 overflow-hidden">
-                                    <div class="bg-warning me-2 p-3 rounded-xxl"><h4 class="fw-700 font-lg ls-3 lh-1 text-white mb-0">
+                                    <div class="{getEventColorClass(index)} me-2 p-3 rounded-xxl"><h4 class="fw-700 font-lg ls-3 lh-1 text-white mb-0">
                                         <span class="ls-1 d-block font-xsss text-white fw-600">
                                             {getMonthName(new Date(event.date).getMonth() +  1)}
                                         </span>
@@ -334,7 +337,6 @@
          
     </div>            
 </div>
-{/key}
 
 
 <style>

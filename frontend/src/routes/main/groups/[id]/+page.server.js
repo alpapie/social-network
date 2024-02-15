@@ -10,10 +10,10 @@ export const actions = {
         console.log(formDatas);
         
 
-         const title = formDatas.get('title');
-         const description = formDatas.get('description');
-         const date = formDatas.get('date');
-         const time = formDatas.get('time');
+         let title = formDatas.get('title');
+         let description = formDatas.get('description');
+         let date = formDatas.get('date');
+         let time = formDatas.get('time');
 
  
          let errorMsg = '';
@@ -40,15 +40,19 @@ export const actions = {
                 errorMsg = response.data.error
             }else{
                 errorMsg = 'no'
+                title = ''
+                description = ''
+                date = ''
+                time = ''
             }
          }
 
         let res = {
             error: errorMsg,
-            title: formDatas.get('title'),
-            description: formDatas.get('description'),
-            date: formDatas.get('date'),
-            time: formDatas.get('time'),            
+            title: title,
+            description: description,
+            date: date,
+            time: time,            
         }
 
         return res;
