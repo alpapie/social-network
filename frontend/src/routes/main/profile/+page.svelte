@@ -1,14 +1,42 @@
 <script>
   import Createpost from "../createpost.svelte";
   import Posts from "../posts.svelte";
+  import axios from "axios";
+
     export let data
-    console.log(data);
+    export let toprivate
+    let erroralert=false
+    let privatestatus=data?.user?.IsPublic!=1
+    async function changeCountStatus(e){
+        console.log(privatestatus);
+        toprivate=!toprivate
+        setTimeout(()=>{
+            toprivate=!toprivate
+        },60000)
+        let header={
+                cookie:document.cookie
+            }
+        const config = { method:"get",withCredentials: true , header,mode: 'no-cors',  params:{ispublic:!privatestatus?1:0} };
+        let response= await axios("http://localhost:8080/server/changestatus",config)
+        console.log(response);
+        if (!response?.data?.success) {
+            erroralert=false
+            setTimeout(() => {
+                erroralert=true
+            }, 2000);
+        }
+
+    }
 
 </script>
         <!-- main content -->
         <div class="main-content right-chat-active">
             <div class="middle-sidebar-bottom">
                 <div class="middle-sidebar-left">
+                      <!-- Alert Error -->
+                    <div  id="error-alert" class="alert alert-danger alert-dismissible {erroralert?"d-none":""} fade show" role="alert" >
+                        Error for request friend!
+                    </div>
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="card w-100 border-0 p-0 bg-white shadow-xss rounded-xxl">
@@ -16,7 +44,7 @@
                                 <div class="card-body p-0 position-relative">
                                     <figure class="avatar position-absolute w100 z-index-1" style="top:-40px; left: 30px;">
                                         {#if data?.user?.Avatar!=="''"}
-                                            <img src="{data?.user?.Avatar}"  class="float-right p-1 bg-white rounded-circle w-100" alt="{data?.user?.Avatar}">
+                                            <img src="{data?.user?.Avatar}"  class="float-right p-1 bg-white rounded-circle w-100" alt="{data?.user?.FirstName }">
                                         {:else}
                                             <img src="//ui-avatars.com/api/?name={data?.user?.FirstName +' '+data?.user?.LastName}&size=100&rounded=true&color=fff&background=random" alt="avatar">
                                         {/if}
@@ -44,17 +72,12 @@
                                     <h4 class="fw-700 mb-3 font-xsss text-grey-900">About</h4>
                                     <p class="fw-500 text-grey-500 lh-24 font-xssss mb-0">{data?.user?.AboutMe}</p>
                                 </div>
-                                {#if data?.user?.IsPublic===0}
-                                    <div class="card-body d-flex pt-0">
-                                        <i class="feather-eye text-grey-500 me-3 font-lg"></i>
-                                        <h4 class="fw-700 text-grey-900 font-xssss mt-0">Visble <span class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">Anyone can find you</span></h4>
-                                    </div>
-                                {:else}
-                                    <div class="card-body border-top-xs d-flex">
-                                        <i class="feather-lock text-grey-500 me-3 font-lg"></i>
-                                        <h4 class="fw-700 text-grey-900 font-xssss mt-0">Private <span class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">What's up, how are you?</span></h4>
-                                    </div>
-                                {/if}
+                                
+                                <div class="card-body border-top-xs d-flex align-item-center">
+                                    <label class="toggle toggle-menu-color mr-2"><input type="checkbox" on:click={changeCountStatus} disabled={toprivate} bind:checked={privatestatus}><span class="toggle-icon"></span></label>
+                                    <h4 class="fw-700 text-grey-900 font-xssss  mt-2 mr-2">Private </h4>
+                                </div>
+                                
                                 <div class="card-body d-flex pt-0">
                                     <i class="feather-map-pin text-grey-500 me-3 font-lg"></i>
                                     <h4 class="fw-700 text-grey-900 font-xssss mt-1">Flodia, Austia </h4>

@@ -1,29 +1,51 @@
 <script>
     export let data
-    import { makeRequest} from "$lib/api.js"
-    import { error } from '@sveltejs/kit';
+    let success=false
+    let erroralert=false
+
     import axios from "axios";
-
+  
     async function RequestFollow(id_user){
-
         try {
            let header={
                 cookie:document.cookie
             }
-            const config = { method:"get", header,mode: 'no-cors',  params:{user_id:id_user} };
+            const config = { method:"get",withCredentials: true , header,mode: 'no-cors',  params:{user_id:id_user} };
             let response= await axios("http://localhost:8080/server/follow",config)
-            console.log(response);
+            if (response?.data?.success) {
+                success=true
+                setTimeout(() => {
+                    success=false
+                }, 2000); 
+                data.listusers= data.listusers.filter((user)=> user.ID!=id_user)
+            }else{
+                erroralert=true
+                setTimeout(() => {
+                    erroralert=false
+                }, 2000); 
+            }
         } catch (err) {
-            console.log(err);
-            // throw error(500,"internal server error")
+            erroralert=true
+            setTimeout(() => {
+                erroralert=false
+            }, 2000);
         }
-         
     }
+    
 </script>
-
-<div class="main-content right-chat-active">
-            
+{#key data}
+<div class="main-content right-chat-active">        
     <div class="middle-sidebar-bottom">
+            <!-- Alert Success -->
+            <div id="success-alert" class="alert alert-success alert-dismissible {success?"d-none":""} fade show" role="alert">
+               friend request success!
+            </div>
+        
+            <!-- Alert Error -->
+            <div  id="error-alert" class="alert alert-danger alert-dismissible {erroralert?"d-none":""} fade show" role="alert" >
+               Error for request friend!
+            </div>
+        
         <div class="middle-sidebar-left pe-0">
             <div class="row">
                 <div class="col-xl-12">
@@ -63,6 +85,7 @@
                 </div>               
             </div>
         </div>
-         
-    </div>            
+    </div> 
+      
 </div>
+{/key}

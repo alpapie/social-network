@@ -9,6 +9,7 @@ export async function makeRequest(endpoint, method, data = {}, headers = {},cook
     if (cookies){
       headers.Cookie=GetCookies(cookies)
     }
+    
     const config = { withCredentials: true ,method, headers };
     if (method !== "GET") {
       config.data = data;

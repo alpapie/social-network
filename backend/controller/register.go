@@ -30,13 +30,13 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 		helper.ErrorMessage(w, "Enter at least 2 input characters")
 		return
 	}
+	user.IsPublic=1
 	if !isEmailValid(user.Email) {
 		helper.ErrorMessage(w, "bad format of email")
 		return
 	}
 	// haspassword, errCrypt := bcrypt.GenerateFromPassword([]byte(password), 5)
 	user.TokenLogin = helper.LognToken(user.Email, password)
-	user.IsPublic = 0
 	err := user.CreateUser(DB)
 
 	if err != nil {

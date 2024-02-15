@@ -47,7 +47,6 @@ export const actions = {
             errorMsg = err.toUpperCase() +' invalid. Veuillez verifier et reesayer.'
         }
         
-
         let res = {
             error: errorMsg,
             email: formDatas.get('email'),

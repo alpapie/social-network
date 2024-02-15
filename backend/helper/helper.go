@@ -122,10 +122,15 @@ func WriteJSON(w http.ResponseWriter, status int, data map[string]interface{}, h
 	for key, value := range headers {
 		w.Header()[key] = value
 	}
-	// fmt.Println(js)
+	
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("Access-Control-Allow-Credentials", "true") 
+	
+	w.WriteHeader(http.StatusOK)
 	w.Write(js)
-
 	return nil
 }
 

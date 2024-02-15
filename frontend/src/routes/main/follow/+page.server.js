@@ -1,6 +1,6 @@
 import { makeRequest } from '$lib/api.js'
 import { authenticateUser } from '$lib/auth/auth.js'
-import { error } from '@sveltejs/kit'
+import { error, redirect } from '@sveltejs/kit'
 
 export const load = async ({cookies})=>{
     const IsAuth=await authenticateUser(cookies)

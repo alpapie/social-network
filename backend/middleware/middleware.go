@@ -28,8 +28,10 @@ func Getmethode(r *http.Request, methode string) bool {
 
 // *****************************CHECK IF THE USER IS LOGGING OR NOT***************************
 func Log(next http.HandlerFunc) http.HandlerFunc {
+	
 	fn := func(w http.ResponseWriter, r *http.Request) {
-		
+		fmt.Println(r.Header)
+
 		if is, _,_ := helper.Auth(controller.DB, r); is {
 			next.ServeHTTP(w, r)
 		} else {
@@ -57,7 +59,7 @@ func Ispath(next http.HandlerFunc, path string) http.HandlerFunc {
 		if r.URL.Path == "/server/"+path {
 			next.ServeHTTP(w, r)
 		} else {
-			fmt.Println("error 404")
+			fmt.Println(r.URL.Path,"error 404")
 			w.WriteHeader(404)
 			w.Write([]byte(`{"error":"page not found","success":false}`))
 		}

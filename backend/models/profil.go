@@ -4,8 +4,8 @@ import (
 	"database/sql"
 )
 
-func (u *User)GetUnFollow(DB *sql.DB, limit int)([]User,error){
-	req:=`SELECT id,"firstName","lastName", email,avatar 
+func (u *User) GetUnFollow(DB *sql.DB, limit int) ([]User, error) {
+	req := `SELECT id,"firstName","lastName", email,avatar 
 	FROM user
 	WHERE id NOT IN (
 		SELECT user_id
@@ -17,35 +17,35 @@ func (u *User)GetUnFollow(DB *sql.DB, limit int)([]User,error){
 		FROM follow
 		WHERE user_id = ?
 	) and id!=? LIMIT ? `
-	row,err:=DB.Query(req,u.ID,u.ID,u.ID,limit)
-	users:=[]User{}
-	if err!=nil {
-		return users,err
+	row, err := DB.Query(req, u.ID, u.ID, u.ID, limit)
+	users := []User{}
+	if err != nil {
+		return users, err
 	}
 	users = ExtractUserData(row, u, users)
 
-	return users,nil
+	return users, nil
 }
 
-func (U *User)Folower(DB *sql.DB,user_id int) ([]User, error ){
-	req:=`SELECT  u.id,u."firstName",u."lastName", u.email,u.avatar from "User" AS "u" inner JOIN "Follow" AS "f" on f."Follower_id"=u.id  where u.id!=?`
-	row,err:=DB.Query(req,user_id)
-	users:=[]User{}
-	if err!=nil {
+func (U *User) Folower(DB *sql.DB, user_id int) ([]User, error) {
+	req := `SELECT  u.id,u."firstName",u."lastName", u.email,u.avatar from "User" AS "u" inner JOIN "Follow" AS "f" on f."Follower_id"=u.id  where u.id!=?`
+	row, err := DB.Query(req, user_id)
+	users := []User{}
+	if err != nil {
 		return users, err
 	}
-	return ExtractUserData(row,U,users),nil
+	return ExtractUserData(row, U, users), nil
 }
 
-func (U *User)Following(DB *sql.DB,user_id int) ([]User,error){
-	req:=` SELECT u.id,u."firstName",u."lastName", u.email,u.avatar from "User" AS "u" inner JOIN "Follow" AS "f" on f."User_id"=u.id  where u.id!=?`
-	row,err:=DB.Query(req,user_id)
+func (U *User) Following(DB *sql.DB, user_id int) ([]User, error) {
+	req := ` SELECT u.id,u."firstName",u."lastName", u.email,u.avatar from "User" AS "u" inner JOIN "Follow" AS "f" on f."User_id"=u.id  where u.id!=?`
+	row, err := DB.Query(req, user_id)
 
-	users:=[]User{}
-	if err!=nil {
+	users := []User{}
+	if err != nil {
 		return users, err
 	}
-	return ExtractUserData(row,U,users),nil
+	return ExtractUserData(row, U, users), nil
 }
 
 func ExtractUserData(row *sql.Rows, u *User, users []User) []User {
@@ -56,18 +56,24 @@ func ExtractUserData(row *sql.Rows, u *User, users []User) []User {
 	return users
 }
 
-
-func (U *User)CreatedPost(DB *sql.DB,user_id int)([]FeedPost, error){
-	req:=`SELECT p.id,p.titre,p.image,p.content,p.privacy ,p."Group_id",g.title,u."firstName",u."lastName",u.avatar,p."creationDate" FROM "Post" "p" INNER JOIN "Group" "g" ON p."Group_id"=g.id OR p."Group_id"=0  join user "u" on p."User_id"=u.id  where p."User_id"=? `
-	row,err:=DB.Query(req, user_id)
-	post:=FeedPost{}
-	posts:=[]FeedPost{}
-	if err!=nil {
+func (U *User) CreatedPost(DB *sql.DB, user_id int) ([]FeedPost, error) {
+	req := `SELECT p.id,p.titre,p.image,p.content,p.privacy ,p."Group_id",g.title,u."firstName",u."lastName",u.avatar,p."creationDate" FROM "Post" "p" INNER JOIN "Group" "g" ON p."Group_id"=g.id OR p."Group_id"=0  join user "u" on p."User_id"=u.id  where p."User_id"=? `
+	row, err := DB.Query(req, user_id)
+	post := FeedPost{}
+	posts := []FeedPost{}
+	if err != nil {
 		return posts, err
 	}
-	for row.Next(){
-		row.Scan(&post.Id,&post.Titre,&post.Image,&post.Content,&post.Privacy,&post.Group_id,&post.GroupName,&post.FirstName,&post.LastName,&post.Avatar,&post.CreationDate)
+	for row.Next() {
+		row.Scan(&post.Id, &post.Titre, &post.Image, &post.Content, &post.Privacy, &post.Group_id, &post.GroupName, &post.FirstName, &post.LastName, &post.Avatar, &post.CreationDate)
 		posts = append(posts, post)
 	}
-	return posts,nil
+	return posts, nil
+}
+
+func (U *User) UpdateStatus(DB *sql.DB) error {
+	req := `UPDATE User SET ispublic = ? WHERE id=?`
+
+	_, err := DB.Exec(req, U.ID, U.IsPublic)
+	return err
 }

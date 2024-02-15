@@ -17,7 +17,7 @@
         {#if !friend.Avatar }
         <img src="{friend.Avatar}" alt="{friend.FirstName +" "+ friend.LastName}" class="float-right p-0 bg-white rounded-circle w-100 shadow-xss">
         {:else}
-        <img src="//ui-avatars.com/api/?name={friend.FirstName +" "+ friend.LastName}e&size=100&rounded=true&color=fff&background=random" alt="{user.FirstName +" "+ user.LastName}" />
+        <img src="//ui-avatars.com/api/?name={friend.FirstName +" "+ friend.LastName}e&size=100&rounded=true&color=fff&background=random" alt="{friend.FirstName +" "+ friend.LastName}" />
 
         {/if}
         

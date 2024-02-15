@@ -66,6 +66,6 @@ func (u *User) GetUserByToken(db *sql.DB, token string) error {
 
 func (u *User) AddFlow(db *sql.DB,follow_id int)(error){
 	req:=`insert INTO "Follow" ("User_id","Follower_id") VALUES(?,?)`
-	_,err:=db.Exec(req,follow_id,u.ID)
+	_,err:=db.Exec(req,u.ID,follow_id,)
 	return err
 }
