@@ -1,13 +1,12 @@
 <script>
-	
-  import Form from './form.svelte'
-  import Post from './post.svelte';
-	export let data
-  export let form
+  import Form from "./form.svelte";
+  import Post from "./post.svelte";
+  import Comment from "./comments.svelte";
+  export let data;
+  export let form;
+  let CommSection = {display : "none" , data : {}}
+
   // export let visibility = "hidden"
-  
-
-
 </script>
 
 <!-- main
@@ -48,12 +47,15 @@
           <div
             class="card w-100 shadow-none bg-transparent bg-transparent-card border-0 p-0 mb-0"
           >
-            <div class="owl-carousel category-card owl-theme overflow-hidden nav-none">
+            <div
+              class="owl-carousel category-card owl-theme overflow-hidden nav-none"
+            >
               <div class="item">
-              <div
+                <div
                   data-bs-toggle="modal"
                   data-bs-target="#Modalstory"
-                  class="card w125 h200 d-block border-0 shadow-none rounded-xxxl bg-dark overflow-hidden mb-3 mt-3">
+                  class="card w125 h200 d-block border-0 shadow-none rounded-xxxl bg-dark overflow-hidden mb-3 mt-3"
+                >
                   <div
                     class="card-body d-block p-3 w-100 position-absolute bottom-0 text-center"
                   >
@@ -258,13 +260,13 @@
             </div>
           </div>
 
-			<Form {form} users={data?.listesusers}/>  
+          <Form {form} users={data?.listesusers} />
 
-		  <h1>HERE IS THE PLACE OF POSTS</h1>
+          <h1>HERE IS THE PLACE OF POSTS</h1>
 
-		  <Post data={data?.posts}/>
+          <Post data={data?.posts} bind:CommSection />
 
-        <div
+          <div
             class="card w-100 text-center shadow-xss rounded-xxl border-0 p-4 mb-3 mt-3"
           >
             <div class="snippet mt-2 ms-auto me-auto" data-title=".dot-typing">
@@ -640,3 +642,4 @@
   </div>
 </div>
 <!-- main content -->
+<Comment bind:CommSection />

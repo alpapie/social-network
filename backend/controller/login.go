@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"social_network/helper"
 	"social_network/models"
+	"strings"
 	"time"
 
 	"github.com/gofrs/uuid"
@@ -45,7 +46,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var u1 = uuid.Must(uuid.NewV4())
-	sssid := u1.String() + "-" + time.Now().GoString()
+	sssid := u1.String() + "-" +  strings.ReplaceAll(strings.ReplaceAll(time.Now().GoString()," ","-") ,",","_")
 
 	errss := helper.SessionAddOrUpdate(DB, sssid, user.Email,user.ID)
 	if errss != nil {

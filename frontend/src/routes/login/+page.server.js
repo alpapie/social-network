@@ -3,7 +3,6 @@ import { authenticateUser } from "$lib/auth/auth.js";
 import { redirect } from "@sveltejs/kit";
 import { DB, localStorageObj } from "../../db.js";
 import { error } from '@sveltejs/kit';
-
 export const load = async ({cookies})=>{
     const IsAuth= await authenticateUser(cookies)
     if (IsAuth) {
@@ -14,15 +13,13 @@ export const load = async ({cookies})=>{
 export const actions = {
 	default: async ({request,cookies}) => {
         
-		const formDatas = await request.formData()
-        console.log("data from another file " , formDatas)
+		const formDatas= await request.formData()
         let response= await makeRequest("login","POST",formDatas,{},cookies)
-
         if (response?.data?.success) {
             DB("set","user",response?.data?.user)            
         //    console.log(localStorageObj)
             cookies.set('sessionId',response?.data?.data, {
-                httpOnly: true,
+                httpOnly: false,
                 sameSite: 'strict',
                 secure: false,
                 path: '/',
