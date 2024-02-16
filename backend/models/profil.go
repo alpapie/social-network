@@ -74,6 +74,6 @@ func (U *User) CreatedPost(DB *sql.DB, user_id int) ([]FeedPost, error) {
 func (U *User) UpdateStatus(DB *sql.DB) error {
 	req := `UPDATE User SET ispublic = ? WHERE id=?`
 
-	_, err := DB.Exec(req, U.ID, U.IsPublic)
+	_, err := DB.Exec(req, U.IsPublic,U.ID)
 	return err
 }

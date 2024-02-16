@@ -32,13 +32,13 @@ func Profil(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateProfil(w http.ResponseWriter, r *http.Request) {
-	IsPublic, err := strconv.Atoi(r.URL.Query().Get("ispublic"))
+	isPublic, err := strconv.Atoi(r.URL.Query().Get("ispublic"))
 	if err != nil {
 		helper.ErrorPage(w, 400)
 		return
 	}
 	_, _, user_id := helper.Auth(DB, r)
-	user := models.User{ID: user_id,IsPublic: IsPublic}
+	user := models.User{ID: user_id,IsPublic: isPublic}
 	err=user.UpdateStatus(DB)
 	if err!=nil {
 		helper.ErrorPage(w, 400)

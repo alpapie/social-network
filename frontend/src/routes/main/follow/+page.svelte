@@ -1,7 +1,7 @@
 <script>
     export let data
-    let success=false
-    let erroralert=false
+    let success=true
+    let erroralert=true
 
     import axios from "axios";
   
@@ -13,15 +13,15 @@
             const config = { method:"get",withCredentials: true , header,mode: 'no-cors',  params:{user_id:id_user} };
             let response= await axios("http://localhost:8080/server/follow",config)
             if (response?.data?.success) {
-                success=true
+                success=false
                 setTimeout(() => {
-                    success=false
+                    success=true
                 }, 2000); 
                 data.listusers= data.listusers.filter((user)=> user.ID!=id_user)
             }else{
-                erroralert=true
+                erroralert=false
                 setTimeout(() => {
-                    erroralert=false
+                    erroralert=true
                 }, 2000); 
             }
         } catch (err) {
@@ -35,17 +35,18 @@
 </script>
 {#key data}
 <div class="main-content right-chat-active">        
+    <div class="container">
+        <!-- Alert Success -->
+        <div id="success-alert" class="alert alert-success alert-dismissible {success?"d-none":""} fade show" role="alert">
+           friend request success!
+        </div>
+    
+        <!-- Alert Error -->
+        <div  id="error-alert" class="alert alert-danger alert-dismissible {erroralert?"d-none":""} fade show" role="alert" >
+           Error for request friend!
+        </div>
+    </div>
     <div class="middle-sidebar-bottom">
-            <!-- Alert Success -->
-            <div id="success-alert" class="alert alert-success alert-dismissible {success?"d-none":""} fade show" role="alert">
-               friend request success!
-            </div>
-        
-            <!-- Alert Error -->
-            <div  id="error-alert" class="alert alert-danger alert-dismissible {erroralert?"d-none":""} fade show" role="alert" >
-               Error for request friend!
-            </div>
-        
         <div class="middle-sidebar-left pe-0">
             <div class="row">
                 <div class="col-xl-12">

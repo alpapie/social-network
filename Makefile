@@ -1,5 +1,5 @@
 back:
-	cd backend && air
+	cd backend && ./air
 
 front:
 	cd frontend && npm run dev -- --open
