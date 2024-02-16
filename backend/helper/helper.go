@@ -52,6 +52,7 @@ func Auth(Db *sql.DB, r *http.Request) (bool, string, int) {
 	}
 	return false, "", 0
 }
+
 func CheckRequest(r *http.Request, path, methode string) (bool, int) {
 	if strings.ToLower(r.Method) == methode && r.URL.Path == path {
 		return true, 0
@@ -61,12 +62,11 @@ func CheckRequest(r *http.Request, path, methode string) (bool, int) {
 		return false, 404
 	}
 }
+
 func Getmethode(r *http.Request, methode string) bool {
-	if strings.ToLower(r.Method) != methode {
-		return false
-	}
-	return true
+	return strings.EqualFold(methode, r.Method)
 }
+
 func DeleteSessio(db *sql.DB, ssid string) error {
 	req := `DELETE from Session Where uiSession=?;`
 	_, err := db.Exec(req, ssid)
@@ -119,13 +119,13 @@ func WriteJSON(w http.ResponseWriter, status int, data map[string]interface{}, h
 	for key, value := range headers {
 		w.Header()[key] = value
 	}
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	w.Header().Set("Access-Control-Allow-Credentials", "true") 
-	
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+
 	w.WriteHeader(http.StatusOK)
 	w.Write(js)
 	return nil

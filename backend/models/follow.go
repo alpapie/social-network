@@ -12,9 +12,11 @@ func (u *User) GetFollow(DB *sql.DB, limit int) ([]User, error) {
 	if err != nil {
 		return users, err
 	}
+
 	for row.Next() {
-		row.Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.NickName)
-		users = append(users, *u)
+		newUser := User{}
+		row.Scan(&newUser.ID, &newUser.FirstName, &newUser.LastName, &newUser.Email, &newUser.NickName)
+		users = append(users, newUser)
 	}
 	defer row.Close()
 	return users, nil

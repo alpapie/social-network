@@ -39,7 +39,7 @@
             let response= await axios(url,config)
             return response.data
         } catch (err) {
-           console.log(err);
+           console.log("ERORR POSTDETAIL",  err);
         }
   }
   
