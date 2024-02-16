@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { GetCookies } from "../db";
+import { GetCookies } from "./db";
 
 export async function makeRequest(endpoint, method, data = {}, headers = {},cookies) {
   try {
@@ -18,7 +18,6 @@ export async function makeRequest(endpoint, method, data = {}, headers = {},cook
     
     return response;
   } catch (err) {
-    console.log(err);
     return err?.response
   }
 }
