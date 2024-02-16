@@ -3,51 +3,20 @@
 
 // let logut=async (cookies)=>{
 
-//     console.log(document.cookie);
-//     const response= await makeRequest("logout","get",{},{},cookies)
-//     console.log(response);
-//     if (response?.data?.success) {
-//         redirect(302,"/login")
-//     }
-//     throw error(400,"bad request")
-// } 
+  import Notification from "./notification.svelte";
+
 </script>
 
     <div class="nav-header bg-white shadow-xs border-0">
         <div class="nav-top">
             <a href="/main"><i class="feather-zap text-success display1-size me-2 ms-0"></i><span class="d-inline-block fredoka-font ls-3 fw-600 text-current font-xxl logo-text mb-0">Sociala. </span> </a>
             <a href="#" class="mob-menu ms-auto me-2 chat-active-btn"><i class="feather-message-circle text-grey-900 font-sm btn-round-md bg-greylight"></i></a>
-            <a href="default-video.html" class="mob-menu me-2"><i class="feather-video text-grey-900 font-sm btn-round-md bg-greylight"></i></a>
+            <a href="/main" class="mob-menu me-2"><i class="feather-video text-grey-900 font-sm btn-round-md bg-greylight"></i></a>
             <a href="#" class="me-2 menu-search-icon mob-menu"><i class="feather-search text-grey-900 font-sm btn-round-md bg-greylight"></i></a>
             <button class="nav-menu me-0 ms-2"></button>
         </div>
+        <Notification/>
         
-        <a href="#" class="p-2 text-center ms-auto menu-icon" id="dropdownMenu3" data-bs-toggle="dropdown" aria-expanded="false"><span class="dot-count bg-warning"></span><i class="feather-bell font-xl text-current"></i></a>
-        <div class="dropdown-menu dropdown-menu-end p-4 rounded-3 border-0 shadow-lg" aria-labelledby="dropdownMenu3">
-            
-            <h4 class="fw-700 font-xss mb-4">Notification</h4>
-            <div class="card bg-transparent-card w-100 border-0 ps-5 mb-3">
-                <img src="images/user-8.png" alt="user" class="w40 position-absolute left-0">
-                <h5 class="font-xsss text-grey-900 mb-1 mt-0 fw-700 d-block">Hendrix Stamp <span class="text-grey-400 font-xsssss fw-600 float-right mt-1"> 3 min</span></h5>
-                <h6 class="text-grey-500 fw-500 font-xssss lh-4">There are many variations of pass..</h6>
-            </div>
-            <div class="card bg-transparent-card w-100 border-0 ps-5 mb-3">
-                <img src="images/user-4.png" alt="user" class="w40 position-absolute left-0">
-                <h5 class="font-xsss text-grey-900 mb-1 mt-0 fw-700 d-block">Goria Coast <span class="text-grey-400 font-xsssss fw-600 float-right mt-1"> 2 min</span></h5>
-                <h6 class="text-grey-500 fw-500 font-xssss lh-4">Mobile Apps UI Designer is require..</h6>
-            </div>
-
-            <div class="card bg-transparent-card w-100 border-0 ps-5 mb-3">
-                <img src="images/user-7.png" alt="user" class="w40 position-absolute left-0">
-                <h5 class="font-xsss text-grey-900 mb-1 mt-0 fw-700 d-block">Surfiya Zakir <span class="text-grey-400 font-xsssss fw-600 float-right mt-1"> 1 min</span></h5>
-                <h6 class="text-grey-500 fw-500 font-xssss lh-4">Mobile Apps UI Designer is require..</h6>
-            </div>
-            <div class="card bg-transparent-card w-100 border-0 ps-5">
-                <img src="images/user-6.png" alt="user" class="w40 position-absolute left-0">
-                <h5 class="font-xsss text-grey-900 mb-1 mt-0 fw-700 d-block">Victor Exrixon <span class="text-grey-400 font-xsssss fw-600 float-right mt-1"> 30 sec</span></h5>
-                <h6 class="text-grey-500 fw-500 font-xssss lh-4">Mobile Apps UI Designer is require..</h6>
-            </div>
-        </div>
         <a href="#" class="p-2 text-center ms-3 menu-icon chat-active-btn"><i class="feather-message-square font-xl text-current"></i></a>
         <div class="p-2 text-center ms-3 position-relative dropdown-menu-icon menu-icon cursor-pointer">
             <i class="feather-settings animation-spin d-inline-block font-xl text-current"></i>

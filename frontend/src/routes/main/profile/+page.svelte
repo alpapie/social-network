@@ -11,6 +11,7 @@
   let success = true;
   let erroralert = true;
   let privatestatus = data?.user?.IsPublic == 0;
+  console.log(data);
   async function changeCountStatus(e) {
     toprivate = !toprivate;
     setTimeout(() => {
