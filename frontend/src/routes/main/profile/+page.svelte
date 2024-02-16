@@ -79,7 +79,7 @@
                 class="avatar position-absolute w100 z-index-1"
                 style="top:-40px; left: 30px;"
               >
-                {#if data?.user?.Avatar !== "''"}
+                {#if data?.user?.Avatar === "''"}
                   <img
                     src={data?.user?.Avatar}
                     class="float-right p-1 bg-white rounded-circle w-100"
@@ -132,22 +132,8 @@
                     data-bs-toggle="pill">following</a
                   >
                 </li>
-                <!-- <li class="list-inline-item me-5"><a class="fw-700 font-xssss text-grey-500 pt-3 pb-3 ls-1 d-inline-block" href="#navtabs4" data-toggle="tab">Video</a></li> -->
-                <li class="list-inline-item me-5">
-                  <a
-                    class="fw-700 font-xssss text-grey-500 pt-3 pb-3 ls-1 d-inline-block"
-                    href="#groups"
-                    data-bs-toggle="pill">Group</a
-                  >
-                </li>
-                <li class="list-inline-item me-5">
-                  <a
-                    class="fw-700 font-xssss text-grey-500 pt-3 pb-3 ls-1 d-inline-block"
-                    href="#events"
-                    data-bs-toggle="pill">Events</a
-                  >
-                </li>
-                <!-- <li class="list-inline-item me-5"><a class="fw-700 me-sm-5 font-xssss text-grey-500 pt-3 pb-3 ls-1 d-inline-block" href="#navtabs7" data-toggle="tab">Media</a></li> -->
+
+               <!-- <li class="list-inline-item me-5"><a class="fw-700 me-sm-5 font-xssss text-grey-500 pt-3 pb-3 ls-1 d-inline-block" href="#navtabs7" data-toggle="tab">Media</a></li> -->
               </ul>
             </div>
           </div>
@@ -203,8 +189,7 @@
             <UserList users={data.follower}/>
           </div>
           <div id="following" class="tab-pane fade"><UserList users={data.following}/></div>
-          <div id="groups" class="tab-pane fade">absabs</div>
-          <div id="events" class="tab-pane fade">ashashhash</div>
+          
         </div>
       </div>
     </div>

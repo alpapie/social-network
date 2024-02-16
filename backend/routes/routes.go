@@ -27,8 +27,7 @@ func Routes() {
 	http.HandleFunc("/server/addComment", middleware.Log(middleware.CheckMethod(controller.AddCommentHandler, "post")))
 	// http.HandleFunc("/server/", middleware.Ispath(middleware.CheckMethod(controller.Auth, "get"), ""))
 
-	http.HandleFunc("/server/login", middleware.Ispath(middleware.CheckMethod(controller.Login, "post"), "login"))
-	http.HandleFunc("/server/register", middleware.Ispath(middleware.CheckMethod(controller.RegisterUser, "post"), "register"))
+	
 	http.HandleFunc("/server/groups", middleware.Ispath(middleware.CheckMethod(controller.GetAllNotjoinedGroups, "get"), "groups"))
 	http.HandleFunc("/server/createGroup", controller.CreateGroupHandler)
 	http.HandleFunc("/server/invitegroup", middleware.Ispath(middleware.CheckMethod(controller.CreateInvitationGroup, "post"), "invitegroup"))
