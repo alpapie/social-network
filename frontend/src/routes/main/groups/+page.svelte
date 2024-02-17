@@ -177,7 +177,7 @@
                         {#each copiedGroups.Notjoined as group}
                         <div class="col-md-6 col-sm-6 pe-2 ps-2">
                             <div class="card d-block border-0 shadow-xss rounded-3 overflow-hidden mb-3">
-                                <div class="card-body position-relative h100 bg-image-cover bg-image-center" style="background-image: url(images/bb-16.png);"></div>
+                                <div class="card-body position-relative h100 bg-image-cover bg-image-center" style="background-image: url(/images/bb-16.png);"></div>
                                 <div class="card-body d-block w-100 pl-10 pe-4 pb-4 pt-0 text-left position-relative">
                                     <figure class="avatar position-absolute w75 z-index-1" style="top:-40px; left: 15px;"><img src="/images/user-12.png" alt="image" class="float-right p-1 bg-white rounded-circle w-100"></figure>
                                     <div class="clearfix"></div>
