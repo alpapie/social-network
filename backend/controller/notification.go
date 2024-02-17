@@ -13,17 +13,14 @@ func GetAllNotjoinedGroups(w http.ResponseWriter, r *http.Request) {
 	var user = models.User{}
 	auth, userEmail,_ := helper.Auth(DB, r)
 	if !auth {
-		fmt.Println("01")
 		return
 	}
 	err := user.GetUserByEmail(DB, userEmail)
 	if err != nil {
-		fmt.Println("1")
-		fmt.Println(err)
+
 		return
 	}
-	fmt.Println("======------======")
-	fmt.Println(user)
+
 	groups, err := models.GetNotJoinedGroupsByUserID(DB, user.ID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -33,16 +30,9 @@ func GetAllNotjoinedGroups(w http.ResponseWriter, r *http.Request) {
 	for i := 0; i < len(groups); i++ {
 		not, errn := models.GetNotificationByUserIDAndType(DB, user.ID, groups[i].UserID, "follow-Group", groups[i].ID)
 		if errn != nil {
-			fmt.Println("df")
-			fmt.Println(errn)
 			return
 		}
-		fmt.Println("---------- for group =>")
-		fmt.Println(groups[i].Title)
-		fmt.Println("=============")
-		fmt.Println(len(not))
-		fmt.Println(not)
-		fmt.Println("=============")
+		
 		notifStatus := false
 		if len(not) == 0 {
 			notifStatus = false
@@ -60,8 +50,6 @@ func GetAllNotjoinedGroups(w http.ResponseWriter, r *http.Request) {
 
 		groupss = append(groupss, gr)
 	}
-	fmt.Println("les notififs")
-	fmt.Println(groupss)
 
 	follower, err := user.GetFollowers(DB)
 	if err != nil {
@@ -80,7 +68,6 @@ func GetAllNotjoinedGroups(w http.ResponseWriter, r *http.Request) {
 
 	groups2, err := models.GetMemberGroupsByUserID(DB, user.ID)
 	if err != nil {
-		fmt.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -90,17 +77,10 @@ func GetAllNotjoinedGroups(w http.ResponseWriter, r *http.Request) {
 		for j := 0; j < len(friends); j++ {
 			notfollow, errn := models.GetNotificationByUserIDAndType(DB, user.ID, friends[j].ID, "invite-Group", groups2[i].ID)
 			if errn != nil {
-				fmt.Println("df")
-				fmt.Println(errn)
 				return
 			}
 			requested := false
-			fmt.Println("+++++++++ for group =>")
-			fmt.Println(groups2[i].Title)
-			fmt.Println("=============")
-			fmt.Println(len(notfollow))
-			fmt.Println(notfollow)
-			fmt.Println("=============")
+			
 			if len(notfollow) == 0 {
 				requested = false
 			} else {
@@ -127,10 +107,6 @@ func GetAllNotjoinedGroups(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	fmt.Println("-----------------")
-	fmt.Println(groupss2)
-	fmt.Println("-----------------")
-
 	responseMap := map[string]interface{}{
 		"joined":    groupss2,
 		"Notjoined": groupss,
@@ -148,7 +124,7 @@ func GetAllNotjoinedGroups(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateInvitationGroup(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("here")
+
 	type GroupInvitationData struct {
 		GroupID string `json:"groupId"`
 		UserID  string `json:"userId"`
@@ -159,8 +135,6 @@ func CreateInvitationGroup(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&groupData)
 	if err != nil {
-		fmt.Println("ggg")
-		fmt.Println(err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -172,15 +146,13 @@ func CreateInvitationGroup(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("w")
 		return
 	}
-	fmt.Println(userID)
 
 	errr := user.GetUserById(DB, userID)
 	if errr != nil {
 		fmt.Println("111")
 		return
 	}
-	fmt.Println("THE USER")
-	fmt.Println(user)
+
 	sess, err1 := user.HasActiveSession(DB)
 	if err1 != nil || !sess {
 		fmt.Println(err1)

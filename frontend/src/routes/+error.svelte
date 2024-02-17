@@ -9,10 +9,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{$page.status}</title>
 
-    <link rel="stylesheet" href="css/themify-icons.css">
-    <link rel="stylesheet" href="css/feather.css">
+    <link rel="stylesheet" href="/css/themify-icons.css">
+    <link rel="stylesheet" href="/css/feather.css">
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
     <!-- Custom Stylesheet -->
     <link rel="stylesheet" href="css/style.css">
 
@@ -68,9 +68,9 @@
 
     </div>
     
-    <!-- <script src="js/plugin.js"></script>
+    <script src="js/plugin.js"></script>
     <script src="js/countdown.js"></script> 
-    <script src="js/scripts.js"></script> -->
+    <script src="js/scripts.js"></script>
 
 </body>
 

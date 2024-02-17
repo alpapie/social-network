@@ -5,7 +5,6 @@ import { DB, localStorageObj } from "$lib/db.js";
 import { error } from '@sveltejs/kit';
 
 export const load = async ({cookies})=>{
-    console.log(localStorageObj?.data);
     if (localStorageObj?.data?.user) {
         const IsAuth= await authenticateUser(cookies)
         if (IsAuth) {
@@ -33,9 +32,9 @@ export const actions = {
               });
             redirect(302,"/")
         }
-        if (response?.data?.error.Code) {
-            console.log(response.data.error.Code);
-            throw  error(response?.data?.error.Code, response?.data?.error.Message);
+        
+        if (response?.data?.error?.Code) {
+            throw  error(response?.data?.error?.Code, response?.data?.error?.Message);
         }
         return {error:response?.data?.error,email:formDatas.get("email")}
 	}

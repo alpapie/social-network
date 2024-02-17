@@ -74,9 +74,7 @@ func PostDetail(w http.ResponseWriter, r *http.Request) {
 	}
 	// variable temporaire
 	UserID := 2
-
 	post := models.PostDetails{}
-
 	Er := post.GetPost(DB, UserID, post_id)
 
 	if Er != nil {

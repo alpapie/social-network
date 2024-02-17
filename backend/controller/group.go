@@ -87,11 +87,7 @@ func CreateFollowGroup(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
-	// auth, _ := helper.Auth(DB, r)
-	// if !auth {
-	// 	http.Error(w, "Unauthorized", http.StatusUnauthorized)
-	// 	return
-	// }
+
 	auth, userEmail ,_:= helper.Auth(DB, r)
 	if !auth {
 		fmt.Println("Not registered")
