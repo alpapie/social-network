@@ -55,3 +55,9 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+
+
+func AcceptFriend(w http.ResponseWriter, r *http.Request){
+	
+}

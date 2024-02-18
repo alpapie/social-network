@@ -180,23 +180,14 @@ func CreateEvent(w http.ResponseWriter, r *http.Request) {
 
 func GetGroupDetail(w http.ResponseWriter, r *http.Request) {
 	var user = models.User{}
-	auth, userEmail,_ := helper.Auth(DB, r)
-	if !auth {
-		fmt.Println("01")
-		return
-	}
+	_, userEmail,_ := helper.Auth(DB, r)
 	err := user.GetUserByEmail(DB, userEmail)
 	if err != nil {
-		fmt.Println("1")
-		fmt.Println(err)
 		return
 	}
-	fmt.Println("======------======")
-	fmt.Println(user)
+
 	groupId := strings.Split(r.URL.Path, "/")
-	// groupId := r.FormValue("groupId")
-	fmt.Println(groupId[len(groupId)-1])
-	fmt.Println("++++_________+++++++__)-")
+
 	grId, errg := strconv.Atoi(groupId[len(groupId)-1])
 	if errg != nil {
 		return
@@ -226,9 +217,5 @@ func GetGroupDetail(w http.ResponseWriter, r *http.Request) {
 	groupapagedata.Events = events
 	groupapagedata.Groupdata = *gr
 
-	fmt.Println("ddd")
-	fmt.Print(groupapagedata)
-
-	fmt.Println("GROUP DETAIL")
 	helper.WriteJSON(w, 200, map[string]interface{}{"success": true, "groupDetail": groupapagedata}, nil)
 }
