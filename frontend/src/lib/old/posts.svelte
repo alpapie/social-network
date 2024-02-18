@@ -23,20 +23,7 @@
         return minutes + (minutes>1 ?" minutes ago":" minute ago")
     }
 }
-  let dd={
-    firstName: 'Mamoudou',
-    lastName: 'Ndiaye',
-    Group_id: 0,
-    User_id: 1,
-    titre: '2iiiiwie',
-    image: 'ada',
-    content: 'abbabas',
-    privacy: 'public',
-    creationDate: '2024-02-09 15:41:09',
-    AllowedUsers: null,
-    groupName: '',
-    description: ''
-  }
+
 </script>
 {#if posts}
   {#each posts as post}

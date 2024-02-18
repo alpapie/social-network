@@ -14,7 +14,7 @@
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
     <!-- Custom Stylesheet -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
 
 </head>
 
@@ -68,9 +68,9 @@
 
     </div>
     
-    <script src="js/plugin.js"></script>
-    <script src="js/countdown.js"></script> 
-    <script src="js/scripts.js"></script>
+    <script src="/js/plugin.js"></script>
+    <script src="/js/countdown.js"></script> 
+    <script src="/js/scripts.js"></script>
 
 </body>
 

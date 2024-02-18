@@ -44,13 +44,10 @@ func CreateFollowGroup(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&followData)
 	if err != nil {
-		fmt.Println("ggg")
-		fmt.Println(err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	fmt.Println("userID", followData.UserID)
-	fmt.Println("groupID", followData.GroupID)
+
 	var user = models.User{}
 
 	errr := user.GetUserById(DB, followData.UserID)
@@ -58,15 +55,7 @@ func CreateFollowGroup(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("111")
 		return
 	}
-	fmt.Println("THE USER")
-	fmt.Println(user)
-	sess, err1 := user.HasActiveSession(DB)
-	if err1 != nil || !sess {
-		fmt.Println(err1)
-		fmt.Println("ff")
-		return
-	}
-	fmt.Println(sess)
+	
 	group, errg := models.GetGroupByID(DB, followData.GroupID)
 	if errg != nil {
 		fmt.Println("t")

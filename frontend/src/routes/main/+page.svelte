@@ -1,6 +1,6 @@
 <script>
   import Friends from "./friends.svelte";
-  import Posts from "./posts.svelte";
+  import Posts_page from "./post.svelte";
   import EventSugest from "./eventsugest.svelte";
   import Sugesgroup from "./sugesgroup.svelte";
 
@@ -10,6 +10,7 @@
 
   export let form;
   export let data;
+  console.log(data.posts);
 
   let CommSection = { display: "none", data: {} };
 
@@ -51,8 +52,8 @@
  content -->
 <div class="main-content right-chat-active">
   <div class="middle-sidebar-bottom">
-    <div class="middle-sidebar-left">
-      <!-- loader wrapper -->
+    <!-- <div class="middle-sidebar-left">
+      loader wrapper 
       <div class="preloader-wrap p-3">
         <div class="box shimmer">
           <div class="lines">
@@ -79,24 +80,25 @@
           <div class="line s_shimmer"></div>
         </div>
       </div>
-    </div>
+    </div> -->
     <!-- loader wrapper -->
     <div class="row feed-body">
       <div class="col-xl-8 col-xxl-9 col-lg-8">
-        <div
-          class="card w-100 text-center shadow-xss rounded-xxl border-0 p-4 mb-3 mt-3"
-        >
-          <Form {form} users={data?.listesusers} />
+        <div class="card w-100 text-center shadow-xss rounded-xxl border-0 p-4 mb-3 mt-3">
+          <Form {form} users={data?.folow_and_following} />
 
           <h1>HERE IS THE PLACE OF POSTS</h1>
 
-          <Posts data={posts} bind:CommSection />
+          <Posts_page data={posts} bind:CommSection />
 
-          <div bind:this={loadingDots} class="snippet mt-2 ms-auto me-auto" data-title=".dot-typing">
-            <div class="stage">
-              <div class="dot-typing"></div>
+          <div bind:this={loadingDots} class="card w-100 text-center shadow-xss rounded-xxl border-0 p-4 mb-3 mt-3">
+            <div class="snippet mt-2 ms-auto me-auto" data-title=".dot-typing">
+              <div class="stage">
+                  <div class="dot-typing"></div>
+              </div>
             </div>
           </div>
+          
         </div>
       </div>
       <div class="col-xl-4 col-xxl-3 col-lg-4 ps-lg-0">
@@ -106,6 +108,6 @@
       </div>
     </div>
   </div>
-  <Comment bind:CommSection />
 </div>
 <!-- main content -->
+<Comment bind:CommSection />

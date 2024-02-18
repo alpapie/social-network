@@ -25,10 +25,6 @@
       <h4 class="fw-700 text-grey-900 font-xssss mt-1">
         {friend.FirstName+" "+
         friend.LastName} 
-        <!-- <span
-        class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500"
-        >12 mutual friends</span -->
-        <!-- > -->
       </h4>
     </div>
     <div class="card-body d-flex align-items-center pt-0 ps-4 pe-4 pb-4">

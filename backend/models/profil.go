@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"fmt"
 )
 
 func (u *User) GetUnFollow(DB *sql.DB, limit int) ([]User, error) {
@@ -12,12 +13,8 @@ func (u *User) GetUnFollow(DB *sql.DB, limit int) ([]User, error) {
 		FROM follow
 		WHERE follower_id = ?
 	)
-	AND id NOT IN (
-		SELECT follower_id
-		FROM follow
-		WHERE user_id = ?
-	) and id!=? LIMIT ? `
-	row, err := DB.Query(req, u.ID, u.ID, u.ID, limit)
+	and id!=? LIMIT ? `
+	row, err := DB.Query(req, u.ID, u.ID, limit)
 	users := []User{}
 	if err != nil {
 		return users, err
@@ -57,15 +54,16 @@ func ExtractUserData(row *sql.Rows, u *User, users []User) []User {
 }
 
 func (U *User) CreatedPost(DB *sql.DB, user_id int) ([]FeedPost, error) {
-	req := `SELECT p.id,p.titre,p.image,p.content,p.privacy ,p."Group_id",g.title,u."firstName",u."lastName",u.avatar,p."creationDate" FROM "Post" "p" INNER JOIN "Group" "g" ON p."Group_id"=g.id OR p."Group_id"=0  join user "u" on p."User_id"=u.id  where p."User_id"=? `
+	req := `SELECT p.id,p.titre,p.image,p.content,p.privacy ,p."Group_id",g.title,u."firstName",u."lastName",u.avatar,p."creationDate" FROM "Post" "p" LEFT JOIN "Group" "g" ON p."Group_id"=g.id  join user "u" on p."User_id"=u.id  where p."User_id"=? `
 	row, err := DB.Query(req, user_id)
-	post := FeedPost{}
 	posts := []FeedPost{}
 	if err != nil {
 		return posts, err
 	}
 	for row.Next() {
+		post := FeedPost{}
 		row.Scan(&post.Id, &post.Titre, &post.Image, &post.Content, &post.Privacy, &post.Group_id, &post.GroupName, &post.FirstName, &post.LastName, &post.Avatar, &post.CreationDate)
+		fmt.Println(len(posts),"created postin the models")
 		posts = append(posts, post)
 	}
 	return posts, nil
@@ -76,4 +74,14 @@ func (U *User) UpdateStatus(DB *sql.DB) error {
 
 	_, err := DB.Exec(req, U.IsPublic,U.ID)
 	return err
+}
+
+func (U *User)GetFollowerAndFollowing(DB *sql.DB,user_id int) ([]User, error ){
+	req:=`SELECT  u.id,u."firstName",u."lastName", u.email,u.avatar from "User" AS "u" inner JOIN "Follow" AS "f" on f."Follower_id"=u.id or f."User_id"=u.id where u.id!=?`
+	row, err := DB.Query(req, user_id)
+	users := []User{}
+	if err != nil {
+		return users, err
+	}
+	return ExtractUserData(row, U, users), nil
 }

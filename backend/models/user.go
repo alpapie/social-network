@@ -21,22 +21,6 @@ type User struct {
 	TokenLogin string
 }
 
-func (u *User) HasActiveSession(db *sql.DB) (bool, error) {
-
-	var count int
-	query := `SELECT COUNT(*) FROM session WHERE User_id = ? AND datefin > datetime('now')`
-	err := db.QueryRow(query, u.ID).Scan(&count)
-	if err != nil {
-		return false, fmt.Errorf("failed to check session existence: %v", err)
-	}
-	if count < 1 {
-		return false, fmt.Errorf("no session")
-	}
-	fmt.Println(count)
-
-	return true, nil
-}
-
 func (u *User) IsGroupmemeber(db *sql.DB, groupID int) (bool, error) {
 
 	var count int

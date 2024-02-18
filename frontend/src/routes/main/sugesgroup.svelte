@@ -4,7 +4,7 @@
         Suggest Group
       </h4>
       <a
-        href="default-group.html"
+        href="/main/groups"
         class="fw-600 ms-auto font-xssss text-primary">See all</a
       >
     </div>

@@ -13,22 +13,5 @@
 <body class="color-theme-blue">
   <slot />
 
-  <script
-    src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag/dist/js/multi-select-tag.js"
-  ></script>
-  <script>
-    new MultiSelectTag("allowed", {
-      rounded: true, // default true
-      shadow: true, // default false
-      placeholder: "Search", // default Search...
-      tagColor: {
-        textColor: "#030c16",
-        borderColor: "#bcd6f6",
-        bgColor: "#bcd6f6",
-      },
-      onChange: function (values) {
-        console.log(values);
-      },
-    });
-  </script>
+
 </body>

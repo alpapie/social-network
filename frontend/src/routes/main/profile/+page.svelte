@@ -1,17 +1,18 @@
 <script>
-  import Createpost from "../createpost.svelte";
+ 
   import Eventsugest from "../eventsugest.svelte";
-  import Posts from "../posts.svelte";
+  import Posts from "../post.svelte";
   import axios from "axios";
   import UserList from "./userList.svelte";
-
+ 
   export let data;
 
   export let toprivate;
   let success = true;
   let erroralert = true;
   let privatestatus = data?.user?.IsPublic == 0;
-  console.log(data);
+
+  console.log(data.createdPost);
   async function changeCountStatus(e) {
     toprivate = !toprivate;
     setTimeout(() => {
@@ -181,8 +182,8 @@
                   <Eventsugest/>
                 </div>
                 <div class="col-xl-8 col-xxl-9 col-lg-8">
-                  <Createpost />
-                  <Posts posts={data.createdPost} />
+                  <!-- <Createpost /> -->
+                  <Posts data={data.createdPost} />
                 </div>
             </div>
           </div>

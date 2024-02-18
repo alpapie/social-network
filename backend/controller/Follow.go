@@ -37,6 +37,8 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 	current_user := models.User{}
 	errfollow := follower.GetUserById(DB, follow_id)
 	erruser := current_user.GetUserById(DB, user_id)
+
+
 	if errfollow != nil || erruser != nil {
 		helper.ErrorPage(w, 400)
 		return

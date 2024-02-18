@@ -152,13 +152,7 @@ func CreateInvitationGroup(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("111")
 		return
 	}
-
-	sess, err1 := user.HasActiveSession(DB)
-	if err1 != nil || !sess {
-		fmt.Println(err1)
-		fmt.Println("ff")
-		return
-	}
+	
 	mem, errm := user.IsGroupmemeber(DB, groupID)
 	if errm != nil || !mem {
 		fmt.Println(errm)
