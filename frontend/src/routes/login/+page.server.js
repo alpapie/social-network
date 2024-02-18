@@ -14,12 +14,9 @@ export const load = async ({cookies})=>{
 }
 
 export const actions = {
-	default: async ({request,cookies}) => {
-        
-		const formDatas= await request.formData()
-
-        let response= await makeRequest("login","POST",formDatas,{},cookies)
-
+    default: async ({ request, cookies }) => {
+        const formDatas = await request.formData()
+        let response = await makeRequest("login", "POST", formDatas, {}, cookies)
         if (response?.data?.success) {
             DB("set","user",response?.data?.user)            
      
@@ -28,14 +25,14 @@ export const actions = {
                 sameSite: 'strict',
                 secure: false,
                 path: '/',
-                maxAge: 3600*24 * 3,
-              });
-            redirect(302,"/")
+                maxAge: 3600 * 24 * 3,
+            });
+            redirect(302, "/")
         }
         
         if (response?.data?.error?.Code) {
             throw  error(response?.data?.error?.Code, response?.data?.error?.Message);
         }
-        return {error:response?.data?.error,email:formDatas.get("email")}
-	}
+        return { error: response?.data?.error, email: formDatas.get("email") }
+    }
 };

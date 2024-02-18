@@ -10,9 +10,10 @@ import (
 
 func AddCommentHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	_, _, userId := helper.Auth(DB, r)
 
 	newComment := models.Comment{
-		UserId: 2,
+		UserId: userId,
 	}
 	err := json.NewDecoder(r.Body).Decode(&newComment)
 	fmt.Println("here is the comment ", newComment)
@@ -28,7 +29,7 @@ func AddCommentHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if res == 0 {
-		helper.ErrorPage(w,  401)
+		helper.ErrorPage(w, 401)
 		return
 	}
 

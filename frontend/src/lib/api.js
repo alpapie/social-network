@@ -2,7 +2,7 @@ import axios from "axios";
 
 import { GetCookies } from "./db";
 
-export async function makeRequest(endpoint, method, data = {}, headers = {},cookies) {
+export async function makeRequest(endpoint, method, data = {}, headers = {}, cookies) {
   try {
     
     let url = `http://localhost:8080/server/${endpoint}`;

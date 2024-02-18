@@ -35,11 +35,6 @@ const validateFormData = (formData) => {
 export const actions = {
 	default: async ({request,}) => {
 		const formDatas= await request.formData()
-        // data={
-        //     email:formDatas.get()
-        // }
-
-        // console.log(validateFormData(formDatas));
         let errorMsg = '';
         let [bool, err] = validateFormData(formDatas)
         if (bool == true) {

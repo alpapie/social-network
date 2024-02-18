@@ -10,13 +10,17 @@ import (
 	"strconv"
 )
 
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+}
+
 func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-
-	NewPost := models.Post{User_id: 2}
+	_, _, UserID := helper.Auth(DB, r)
+	NewPost := models.Post{User_id: UserID}
 
 	err := json.NewDecoder(r.Body).Decode(&NewPost)
-
+	fmt.Println("here is the decoded post ", NewPost)
 	if err != nil || !NewPost.Check() {
 		fmt.Println("Error decoding JSON:", err)
 		http.Error(w, "400 bad request.", http.StatusBadRequest)
@@ -50,8 +54,8 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 
 func PostsByUserHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-
-	user := models.User{}
+	_, _, UserID := helper.Auth(DB, r)
+	user := models.User{ID: UserID}
 
 	posts, err := user.GetPosts(DB)
 	if err != nil {
@@ -67,13 +71,15 @@ func PostsByUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func PostDetail(w http.ResponseWriter, r *http.Request) {
+
 	post_id, er := strconv.Atoi(r.URL.Query().Get("postid"))
 	if er != nil {
 		helper.ErrorPage(w, 400)
 		return
 	}
 	// variable temporaire
-	UserID := 2
+	_, _, UserID := helper.Auth(DB, r)
+
 	post := models.PostDetails{}
 	Er := post.GetPost(DB, UserID, post_id)
 
@@ -94,18 +100,12 @@ func PostDetail(w http.ResponseWriter, r *http.Request) {
 		helper.ErrorPage(w, 500)
 		return
 	}
-
-	data, err := json.Marshal(post)
-	if err != nil {
-		helper.ErrorPage(w, 500)
-		return
-	}
-	w.Write(data)
+	helper.WriteJSON(w,200,map[string]interface{}{"data":post},r.Header)
 }
 
 func GroupPost(w http.ResponseWriter, r *http.Request) {
-	// variable temporaire
-	UserID := 2
+
+	_, _, UserID := helper.Auth(DB, r)
 	group_id, er := strconv.Atoi(r.URL.Query().Get("groupid"))
 	if er != nil {
 		helper.ErrorPage(w, 400)

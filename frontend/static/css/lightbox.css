@@ -217,7 +217,7 @@ body.lb-disable-scrolling {
     .lightbox {top:0 !important; width: 100% !important;}
     .lightbox .lb-image,.lb-outerContainer {width: 100% !important; }
     .lb-dataContainer  {position: absolute; top:0; z-index: 10;}
-    .right-comment {top:auto !important; width: 100% !important; padding-bottom: 30px; height: 70% !important;}
+    .right-comment {width: 100% !important; padding-bottom: 30px; height: 70% !important;}
     .lightboxOverlay {background-color: #fff; opacity: 1 !important;}
     .lb-data .lb-number {color: #fff;}
   }

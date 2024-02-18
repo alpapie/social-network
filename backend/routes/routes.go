@@ -11,9 +11,9 @@ func Routes() {
 	http.HandleFunc("/server/home", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.Home, "get"),"home")))
 
 	http.HandleFunc("/server/login", middleware.Ispath(middleware.CheckMethod(controller.Login, "post"), "login"))
-	http.HandleFunc("/server/profile", middleware.Ispath(middleware.CheckMethod(controller.Profil, "get"), "profile"))
-	http.HandleFunc("/server/unfollower", middleware.Ispath(middleware.CheckMethod(controller.UnFollow, "get"), "unfollower"))
-	http.HandleFunc("/server/follow", middleware.Log(middleware.CheckMethod(controller.Follow, "get")))
+	http.HandleFunc("/server/profile", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.Profil, "get"), "profile")))
+	http.HandleFunc("/server/unfollower", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.UnFollow, "get"), "unfollower")))
+	http.HandleFunc("/server/follow", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.Follow, "get"),"follow")))
 	http.HandleFunc("/server/changestatus", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.UpdateProfil, "get"),"changestatus")))
 
 	http.HandleFunc("/server/logout", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.Logout, "get"), "logout")))
@@ -28,10 +28,10 @@ func Routes() {
 	// http.HandleFunc("/server/", middleware.Ispath(middleware.CheckMethod(controller.Auth, "get"), ""))
 
 	
-	http.HandleFunc("/server/groups", middleware.Ispath(middleware.CheckMethod(controller.GetAllNotjoinedGroups, "get"), "groups"))
-	http.HandleFunc("/server/createGroup", controller.CreateGroupHandler)
-	http.HandleFunc("/server/invitegroup", middleware.Ispath(middleware.CheckMethod(controller.CreateInvitationGroup, "post"), "invitegroup"))
-	http.HandleFunc("/server/followgroup", middleware.Ispath(middleware.CheckMethod(controller.CreateFollowGroup, "post"), "followgroup"))
-	http.HandleFunc("/server/createEvent", middleware.Ispath(middleware.CheckMethod(controller.CreateEvent, "post"), "createEvent"))
-	http.HandleFunc("/server/getgroupdetail/", controller.GetGroupDetail)
+	http.HandleFunc("/server/groups", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.GetAllNotjoinedGroups, "get"), "groups")))
+	http.HandleFunc("/server/createGroup", middleware.Log(controller.CreateGroupHandler))
+	http.HandleFunc("/server/invitegroup", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.CreateInvitationGroup, "post"), "invitegroup")))
+	http.HandleFunc("/server/followgroup", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.CreateFollowGroup, "post"), "followgroup")))
+	http.HandleFunc("/server/createEvent", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.CreateEvent, "post"), "createEvent")))
+	http.HandleFunc("/server/getgroupdetail/", middleware.Log(controller.GetGroupDetail))
 }

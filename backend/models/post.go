@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"fmt"
 	"html"
 	"strings"
 	"time"
@@ -19,7 +20,8 @@ type Post struct {
 	Privacy      string `json:"privacy"`
 	CreationDate string `json:"creationDate"`
 	Avatar	string	`json:"groupe_title"`
-	AllowedUsers []int
+	// AllowedUsers []int
+	AllowedUsers []int  `json:allowedusers`
 }
 
 type FeedPost struct {
@@ -48,7 +50,7 @@ func (P *PostDetails) GetPost(DB *sql.DB, UserID, post_id int) error {
 	FROM Post as P 
 	JOIN User as U on U.id = P.User_id
    	LEFT JOIN "Group" as G on P.Group_id = G.id
-   	WHERE P.id = ? and ( P.privacy = "public" or (P.privacy = "private" and P.User_id in 
+   	WHERE P.id = ? and ( P.User_id = ? OR P.privacy = "public" or (P.privacy = "private" and P.User_id in 
 	   (SELECT F.User_id from Follow F WHERE F.Follower_id = ? )) or
 	   		P.privacy = "almostprivate" and P.id in 
 		   (SELECT A.Post_id  from AllowedPost as A WHERE A.User_id = ? ) or
@@ -58,7 +60,7 @@ func (P *PostDetails) GetPost(DB *sql.DB, UserID, post_id int) error {
 	if err != nil {
 		return err
 	}
-	sqlErr := statement.QueryRow(post_id, UserID, UserID, UserID).Scan(&P.Post.User_id, &P.Post.FirstName, &P.Post.LastName, &P.Post.Id, &P.Post.Group_id, &P.Post.Titre, &P.Post.Image, &P.Post.Content, &P.Post.Privacy, &P.Post.CreationDate, &P.GroupName, &P.Description)
+	sqlErr := statement.QueryRow(post_id, UserID, UserID, UserID, UserID).Scan(&P.Post.User_id, &P.Post.FirstName, &P.Post.LastName, &P.Post.Id, &P.Post.Group_id, &P.Post.Titre, &P.Post.Image, &P.Post.Content, &P.Post.Privacy, &P.Post.CreationDate, &P.GroupName, &P.Description)
 	if sqlErr == sql.ErrNoRows {
 		return sqlErr
 	}
@@ -87,28 +89,30 @@ func (P *PostDetails) GetComments(DB *sql.DB) error {
 }
 
 func (U *User) GetPosts(controllerDB *sql.DB) ([]FeedPost, error) {
-	// variable temporaire
-	UserID := 1
 
 	statement, err := controllerDB.Prepare(`
 	SELECT U.id , U.firstName , U.lastName , P.id , coalesce(P.Group_id,0) as Group_id , P.titre , coalesce(P.image ,'') as image , P.content , P.privacy , coalesce(P.creationDate,"") as creationDate ,coalesce(G.title,"") as groupName ,coalesce(G.description,"") as description
 	FROM Post as P 
 	JOIN User as U on U.id = P.User_id
    	LEFT JOIN "Group" as G on P.Group_id = G.id
-   	WHERE P.privacy = "public" or (P.privacy = "private" and P.User_id in 
+   	WHERE P.privacy = "public" or 
+	P.User_id = ?
+	or (P.privacy = "private" and P.User_id in 
 	   (SELECT F.User_id from Follow as F WHERE F.Follower_id = ? )) or
 	   		P.privacy = "almostprivate" and P.id in 
 		   (SELECT A.Post_id  from AllowedPost as A WHERE A.User_id = ? ) or
 			P.Group_id in 
-			   (SELECT J.Group_id from Joinner as J WHERE J.User_id = ?) LIMIT 10 OFFSET ?;
+			   (SELECT J.Group_id from Joinner as J WHERE J.User_id = ?) order by P.id desc;
 	`)
 	if err != nil {
 		return []FeedPost{}, err
 	}
 
+	fmt.Println("the user id", U.ID)
+
 	posts := []FeedPost{}
 
-	lines, err := statement.Query(UserID, UserID, UserID, 0)
+	lines, err := statement.Query(U.ID, U.ID, U.ID, U.ID)
 	if err != nil {
 		return []FeedPost{}, err
 	}
@@ -177,7 +181,7 @@ func (P *Post) Check() bool {
 	P.Content = html.EscapeString(strings.TrimSpace(P.Content))
 	P.Titre = html.EscapeString(strings.TrimSpace(P.Titre))
 
-	return P.User_id != 0 && P.Content != "" && P.Titre != "" && P.CheckPrivacy()
+	return P.User_id != 0 && P.Content != "" && P.CheckPrivacy()
 }
 
 func (P *Post) CheckPrivacy() bool {

@@ -30,8 +30,7 @@ func Getmethode(r *http.Request, methode string) bool {
 func Log(next http.HandlerFunc) http.HandlerFunc {
 	
 	fn := func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println(r.Header)
-
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
 		if is, _,_ := helper.Auth(controller.DB, r); is {
 			next.ServeHTTP(w, r)
 		} else {
