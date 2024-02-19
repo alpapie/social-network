@@ -10,7 +10,7 @@
       >See all</a
     >
   </div>
-  {#if  friends}
+  {#if friends}
     {#each friends as friend}
     <div class="card-body d-flex pt-4 ps-4 pe-4 pb-0 border-top-xs bor-0">
       <figure class="avatar me-3">

@@ -37,6 +37,8 @@
             }
             const config = { method:"get",withCredentials: true , header,mode: 'no-cors' };
             let response= await axios(url,config)
+           console.log("SUCCES POSTDETAIL",  response.data);
+
             return response.data
         } catch (err) {
            console.log("ERORR POSTDETAIL",  err);
@@ -47,14 +49,12 @@
   async function ShowComments(postId) {
     if (CommSection?.display == "none") {
       console.log("show comments ", postId)
-     CommSection.data = await getPostDetails(postId)
       console.log("hello " , CommSection.data)
       CommSection.display = "block"
-    } else {
-        CommSection.display = "none"
-        CommSection.data = {}
-    }
+    } 
+    CommSection.data = await getPostDetails(postId)
   }
+
 
 </script>
 
@@ -82,10 +82,17 @@
       </div>
       <div class="card-body p-0 me-lg-5">
         <p class="fw-500 text-grey-500 lh-26 font-xssss w-100 mb-2">
-          {post.content.slice(0,200)}
-          <a
-            class="fw-600 text-primary ms-2">See more</a
-          >
+          {#if post?.content.length > 200}
+                {#if post.display || post.display == undefined}
+                      {post.content.slice(0,200)}
+                      <a class="fw-600 text-primary ms-2" on:click={()=>{if(post.display == undefined ){post.display = false}else{post.display = !post.display}}} style="cursor:pointer;" >See more</a>
+                {:else}
+                      {post.content}
+                      <a class="fw-600 text-primary ms-2" on:click={()=>{post.display = !post.display}} style="cursor:pointer;">Show Less</a>
+                {/if}
+          {:else}
+                {post.content}
+          {/if}
         </p>
       </div>
       <div class="card-body d-block p-0 mb-3">

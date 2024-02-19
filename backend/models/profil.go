@@ -19,7 +19,7 @@ func (u *User) GetUnFollow(DB *sql.DB, limit int) ([]User, error) {
 	if err != nil {
 		return users, err
 	}
-	users = ExtractUserData(row, u, users)
+	users = ExtractUserData(row, users)
 
 	return users, nil
 }
@@ -31,7 +31,7 @@ func (U *User) Folower(DB *sql.DB, user_id int) ([]User, error) {
 	if err != nil {
 		return users, err
 	}
-	return ExtractUserData(row, U, users), nil
+	return ExtractUserData(row, users), nil
 }
 
 func (U *User) Following(DB *sql.DB, user_id int) ([]User, error) {
@@ -42,13 +42,14 @@ func (U *User) Following(DB *sql.DB, user_id int) ([]User, error) {
 	if err != nil {
 		return users, err
 	}
-	return ExtractUserData(row, U, users), nil
+	return ExtractUserData(row, users), nil
 }
 
-func ExtractUserData(row *sql.Rows, u *User, users []User) []User {
+func ExtractUserData(row *sql.Rows, users []User) []User {
+	newUser:= User{}
 	for row.Next() {
-		row.Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.Avatar)
-		users = append(users, *u)
+		row.Scan(&newUser.ID, &newUser.FirstName, &newUser.LastName, &newUser.Email, &newUser.Avatar)
+		users = append(users, newUser)
 	}
 	return users
 }
@@ -83,5 +84,5 @@ func (U *User)GetFollowerAndFollowing(DB *sql.DB,user_id int) ([]User, error ){
 	if err != nil {
 		return users, err
 	}
-	return ExtractUserData(row, U, users), nil
+	return ExtractUserData(row, users), nil
 }

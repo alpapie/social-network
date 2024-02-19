@@ -14,16 +14,17 @@ type Comment struct {
 	UserId       int    `json:"userId"`
 	PostId       int    `json:"postId"`
 	CreationDate string `json:"creationDate"`
+	Image        string `json:"image"`
 }
 
 func (C *Comment) Create(DB *sql.DB) (int, error) {
-	statement, err := DB.Prepare("Insert INTO Comment (post_id, user_id, comment) values (?,?,?)")
+	statement, err := DB.Prepare("Insert INTO Comment (post_id, user_id, comment, image) values (?,?,?,?)")
 	if err != nil {
 		return -1, err
 	}
 	defer statement.Close()
 
-	sqlResult, err := statement.Exec(C.PostId, C.UserId, C.Comment)
+	sqlResult, err := statement.Exec(C.PostId, C.UserId, C.Comment,C.Image)
 	if err != nil {
 		return -1, err
 	}

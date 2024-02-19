@@ -69,7 +69,7 @@ func (P *PostDetails) GetPost(DB *sql.DB, UserID, post_id int) error {
 
 func (P *PostDetails) GetComments(DB *sql.DB) error {
 	statement, err := DB.Prepare(`
-	select C.id , U.firstName , U.lastName , C.comment ,C.creationDate, C.User_id, C.Post_id from Comment as C 
+	select C.id , U.firstName , U.lastName , C.comment ,C.creationDate, coalesce(C.image, '') as image ,  C.User_id, C.Post_id from Comment as C 
 		JOIN User as U on U.id = C.User_id
 		where C.Post_id = ?
 	`)
@@ -82,7 +82,7 @@ func (P *PostDetails) GetComments(DB *sql.DB) error {
 	}
 	for lines.Next() {
 		com := Comment{}
-		lines.Scan(&com.Id, &com.FirstName, &com.LastName, &com.Comment, &com.CreationDate, &com.UserId, &com.PostId)
+		lines.Scan(&com.Id, &com.FirstName, &com.LastName, &com.Comment, &com.CreationDate,&com.Image, &com.UserId, &com.PostId)
 		P.Comments = append(P.Comments, com)
 	}
 	return nil

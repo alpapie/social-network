@@ -15,7 +15,6 @@ export const actions = {
          let date = formDatas.get('date');
          let time = formDatas.get('time');
 
- 
          let errorMsg = '';
  
          if (title.length <=  2 || description.length <=  2) {

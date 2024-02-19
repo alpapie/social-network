@@ -3,7 +3,7 @@ import { authenticateUser } from "$lib/auth/auth"
 import { error, redirect } from "@sveltejs/kit"
 import { generateRandom, saveImage } from "$lib/index.js";
 import { fail } from '@sveltejs/kit';
-
+import { localStorageObj } from "$lib/db.js";
 import { createGroup } from "$lib/groups/createGroup";
 
 export const load = async ({cookies})=>{
@@ -18,7 +18,6 @@ export const load = async ({cookies})=>{
     }
     throw error(400,"bad request")
 }
-
 
 export const actions = {
   createGroup: async ({request,cookies}) => {
@@ -64,6 +63,7 @@ export const actions = {
         let comment = {
             postId: Number(postId),
             comment: content,
+            image: await saveImage(data.get("avatar")),
             firstName: user.FirstName,
             lastName: user.LastName,
         }
@@ -72,12 +72,10 @@ export const actions = {
         console.log("comment value", comment);
 
         if (response.status == 200) {
-            return comment
+            return {succes : true , data : comment}
         } else {
             return { success: false }
         }
-        // let responseData = response.json()
-        // console.log("COMMENT HANDLER RESPONSE ", response)
-        return response?.data
+       
     }
 };

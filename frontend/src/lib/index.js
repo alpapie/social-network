@@ -9,7 +9,7 @@ export const  generateRandom = () =>
 
   export const saveImage = async (image)=>{
     console.log("here is the image" , image)
-    if (image.name == 'undefined') return ""
+    if (image.name == 'undefined' || image.name == '' ) return ""
     let extension = image.name.split(".").pop()
     let path = `./src/lib/images/${generateRandom()}.${extension}`
     writeFileSync(path , Buffer.from(await image.arrayBuffer()))
