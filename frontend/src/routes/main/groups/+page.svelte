@@ -45,6 +45,14 @@
                     throw new Error(`HTTP error! status:`);
                 }
                 closed = true;
+                groups.joined.forEach(group => {
+                    group.suggests.forEach(user => {
+                        if (selectedUsers.includes(user.id)) {
+                            user.is_requested = true;
+                        }
+                    });
+                });
+                selectedUsers = [];
                 formerror = '';
             }else{
                 formerror = 'ERROR ON FORM'

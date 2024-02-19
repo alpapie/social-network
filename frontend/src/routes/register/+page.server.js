@@ -2,6 +2,7 @@ import { makeRequest } from "$lib/api.js";
 import { authenticateUser } from "$lib/auth/auth.js";
 import {  localStorageObj } from "$lib/db.js";
 import { redirect } from "@sveltejs/kit";
+import { generateRandom, saveImage } from "$lib/index.js";
 
 
 export const load = async ({cookies})=>{
@@ -38,11 +39,24 @@ export const actions = {
         let errorMsg = '';
         let [bool, err] = validateFormData(formDatas)
         if (bool == true) {
-            let response = await makeRequest("register","POST",formDatas)
-            if (response.data.success == true) {
-                redirect(302, "/login")
+            let imagePath = '';
+
+            if (formDatas.get('avatar').name != 'undefined') {
+                let image = await saveImage(formDatas.get('avatar'));
+                if (image !== '') {
+                    imagePath = image;
+                    formDatas.set('avatar', imagePath);
+                } else {
+                    errorMsg = 'Invalid image size or format';
+                }
             }
-            errorMsg = response.data.error
+            if (errorMsg.length == 0) {
+                let response = await makeRequest("register","POST",formDatas)
+                if (response.data.success == true) {
+                    redirect(302, "/login")
+                }
+                errorMsg = response.data.error
+            }
         }else{
             errorMsg = err.toUpperCase() +' invalid. Veuillez verifier et reesayer.'
         }

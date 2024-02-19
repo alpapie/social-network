@@ -23,7 +23,7 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 	user.FirstName = html.EscapeString(strings.TrimSpace(r.FormValue("firstname")))
 	user.LastName = html.EscapeString(strings.TrimSpace(r.FormValue("lastname")))
 	user.BirthDate = html.EscapeString(strings.TrimSpace(r.FormValue("birthdate")))
-	user.Avatar = helper.UploadImage(r)
+	user.Avatar = r.FormValue("avatar")
 	user.NickName = html.EscapeString(strings.TrimSpace(r.FormValue("nickname")))
 	user.AboutMe = html.EscapeString(strings.TrimSpace(r.FormValue("aboutme")))
 	if !verifLen(password, user.FirstName, user.LastName, user.Email, user.BirthDate) {
