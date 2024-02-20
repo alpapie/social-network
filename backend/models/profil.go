@@ -2,7 +2,6 @@ package models
 
 import (
 	"database/sql"
-	"fmt"
 )
 
 func (u *User) GetUnFollow(DB *sql.DB, limit int) ([]User, error) {
@@ -63,7 +62,6 @@ func (U *User) CreatedPost(DB *sql.DB, user_id int) ([]FeedPost, error) {
 	for row.Next() {
 		post := FeedPost{}
 		row.Scan(&post.Id, &post.Titre, &post.Image, &post.Content, &post.Privacy, &post.Group_id, &post.GroupName, &post.FirstName, &post.LastName, &post.Avatar, &post.CreationDate)
-		fmt.Println(len(posts),"created postin the models")
 		posts = append(posts, post)
 	}
 	return posts, nil
@@ -71,13 +69,12 @@ func (U *User) CreatedPost(DB *sql.DB, user_id int) ([]FeedPost, error) {
 
 func (U *User) UpdateStatus(DB *sql.DB) error {
 	req := `UPDATE User SET ispublic = ? WHERE id=?`
-
 	_, err := DB.Exec(req, U.IsPublic,U.ID)
 	return err
 }
 
 func (U *User)GetFollowerAndFollowing(DB *sql.DB,user_id int) ([]User, error ){
-	req:=`SELECT  u.id,u."firstName",u."lastName", u.email,u.avatar from "User" AS "u" inner JOIN "Follow" AS "f" on f."Follower_id"=u.id or f."User_id"=u.id where u.id!=?`
+	req:=`SELECT  u.id,u."firstName",u."lastName", u.email,u.avatar from "User" AS "u" inner JOIN "Follow" AS "f" on f."Follower_id"=u.id  where u.id!=?`
 	row, err := DB.Query(req, user_id)
 	users := []User{}
 	if err != nil {

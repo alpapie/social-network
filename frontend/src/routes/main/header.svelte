@@ -1,9 +1,7 @@
 <script>
- 
 
-// let logut=async (cookies)=>{
-
-  import Notification from "./notification.svelte";
+    export let data
+    import Notification from "./notification.svelte";
 
 </script>
 
@@ -15,7 +13,7 @@
             <a href="#" class="me-2 menu-search-icon mob-menu"><i class="feather-search text-grey-900 font-sm btn-round-md bg-greylight"></i></a>
             <button class="nav-menu me-0 ms-2"></button>
         </div>
-        <Notification/>
+        <Notification data={data}/>
         
         <a href="#" class="p-2 text-center ms-3 menu-icon chat-active-btn"><i class="feather-message-square font-xl text-current"></i></a>
         <div class="p-2 text-center ms-3 position-relative dropdown-menu-icon menu-icon cursor-pointer">

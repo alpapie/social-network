@@ -260,17 +260,8 @@ create table Notification
    status               varchar(254)                   null,
    constraint AK_NOTIFICATION_ID_NOTFICAT primary key (id),
    FOREIGN KEY (User_id) REFERENCES User (id) ON DELETE SET NULL
-);
-
-CREATE TABLE notification (
-    id INTEGER PRIMARY KEY,
-    Send_id INTEGER NOT NULL,
-    User_id INTEGER NOT NULL,
-    Group_id INTEGER,
-    type VARCHAR(255),
-    status VARCHAR(255),
-    FOREIGN KEY (User_id) REFERENCES "User" (id),
-    FOREIGN KEY (Group_id) REFERENCES "Group" (id)
+   FOREIGN KEY (send_id) REFERENCES User (id) ON DELETE SET NULL
+   FOREIGN KEY (Group_id) REFERENCES "Group" (id) ON DELETE SET NULL
 );
 
 /*==============================================================*/

@@ -11,6 +11,10 @@ type Notification struct {
 	ID       int    `json:"id"`
 	User_id  int    `json:"user_id"`
 	SenderID int    `json:"sender_id"`
+	FirstName string `json:"firstname"`
+	LastName string `json:"lastname"`
+	Avatar 	 string `json:"avatar"`
+	GroupTitle string `json:"grouptitle"`
 	Group_id int `json:"group_id"`
 	Type     string `json:"type"`
 	Status   string `json:"status"`
@@ -69,4 +73,20 @@ func GetNotificationByUserIDAndType(db *sql.DB, SenderID int, userID int, notifi
 	}
 
 	return notifications, nil
+}
+
+
+func (N Notification)GetNotf(db *sql.DB, user_id int)([]Notification, error) {
+	req:=`SELECT notif.id,notif.status, notif.send_id , coalesce(g.id, 0), u."firstName", u."lastName",u.avatar, coalesce(g.title,"") from "User" as u INNER join "Notification" as notif on notif.send_id=u.id LEFT join "Group" as g on g.id=notif."Group_id" WHERE notif."User_id"=? `
+	row, err:=db.Query(req,user_id)
+	notifications:=[]Notification{}
+	if err!=nil {
+		return notifications,err
+	}
+	for row.Next() {
+		row.Scan(&N.ID,&N.Status,&N.SenderID,&N.Group_id,&N.FirstName,&N.LastName,&N.Avatar,&N.GroupTitle)
+		// fmt.Println("current notif",N)
+		notifications = append(notifications, N)
+	}
+	return notifications , nil
 }

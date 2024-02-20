@@ -29,9 +29,9 @@ export const actions = {
         }
           try {
           const response = await createGroup(data,cookies);
-          console.log('Group created successfully:', response);
         } catch (error) {
           console.error('Failed to create group:', error);
+
         }
     },
     createPost: async ({ request, cookies }) => {
@@ -39,7 +39,6 @@ export const actions = {
         let data = await request.formData()
         let content = data.get('content')
         if (content == "") {
-            console.log("fail content")
             return fail(400, { content, missing: true })
         }
         let post = {
@@ -69,7 +68,6 @@ export const actions = {
         }
 
         const response = await makeRequest("addComment", "POST", comment, {}, cookies)
-        console.log("comment value", comment);
 
         if (response.status == 200) {
             return comment

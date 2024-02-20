@@ -10,7 +10,6 @@
 
   export let form;
   export let data;
-  console.log(data.posts);
 
   let CommSection = { display: "none", data: {} };
 
