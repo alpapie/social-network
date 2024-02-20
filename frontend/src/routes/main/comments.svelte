@@ -30,7 +30,7 @@
 			<div class="card-body ps-2 pe-4 pb-0 d-flex">
 				<figure class="avatar me-3">
 					<img
-						src="images/user-8.png"
+						src="/images/user-8.png"
 						alt="display photo"
 						class="shadow-sm rounded-circle w45"
 					/>
@@ -126,7 +126,7 @@
 						<div class="card-body border-top-xs pt-4 pb-3 pe-4 d-block ps-5">
 							<figure class="avatar position-absolute left-0 ms-2 mt-1">
 								<img
-									src="images/user-6.png"
+									src="/images/user-6.png"
 									alt="display photo"
 									class="shadow-sm rounded-circle w35"
 								/>

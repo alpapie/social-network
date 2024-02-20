@@ -103,38 +103,3 @@ func PostDetail(w http.ResponseWriter, r *http.Request) {
 	helper.WriteJSON(w,200,map[string]interface{}{"data":post},r.Header)
 }
 
-func GroupPost(w http.ResponseWriter, r *http.Request) {
-
-	_, _, UserID := helper.Auth(DB, r)
-	group_id, er := strconv.Atoi(r.URL.Query().Get("groupid"))
-	if er != nil {
-		helper.ErrorPage(w, 400)
-		return
-	}
-	group := models.GroupeInfo{
-		Id: group_id,
-	}
-	ismenber, Er := group.IsMember(DB, UserID)
-
-	// internal server error
-	if Er != nil && Er != sql.ErrNoRows {
-		helper.ErrorPage(w, 500)
-		return
-	}
-
-	// you're not a member of this group
-	if !ismenber {
-		helper.ErrorPage(w, 400)
-		return
-	}
-	PostEr := group.GetGroupPost(DB, UserID)
-	if PostEr != nil {
-		helper.ErrorPage(w, 500)
-		return
-	}
-	data, err := json.Marshal(group)
-	if err != nil {
-		helper.ErrorPage(w, 500)
-	}
-	w.Write(data)
-}

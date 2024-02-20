@@ -31,6 +31,7 @@ type GroupDetail struct {
 	NbrFollowers int            `json:"nbrfollowers"`
 	Events       []models.Event `json:"events"`
 	Groupdata    models.Group   `json:"groupdata"`
+	PostsData    []models.Post  `json:"postsdata"`
 }
 
 func CreateFollowGroup(w http.ResponseWriter, r *http.Request) {
@@ -44,7 +45,7 @@ func CreateFollowGroup(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&followData)
 	if err != nil {
-		helper.ErrorPage(w,500)
+		helper.ErrorPage(w, 500)
 		return
 	}
 
@@ -53,14 +54,14 @@ func CreateFollowGroup(w http.ResponseWriter, r *http.Request) {
 	errr := user.GetUserById(DB, followData.UserID)
 	if errr != nil {
 		fmt.Println("111")
-		helper.ErrorPage(w,500)
+		helper.ErrorPage(w, 500)
 		return
 	}
-	
+
 	group, errg := models.GetGroupByID(DB, followData.GroupID)
 	if errg != nil {
 		fmt.Println("t")
-		helper.ErrorPage(w,500)
+		helper.ErrorPage(w, 500)
 		return
 	}
 
@@ -73,7 +74,7 @@ func CreateFollowGroup(w http.ResponseWriter, r *http.Request) {
 	ern := notification.CreateNotification(DB)
 	if ern != nil {
 		fmt.Println(ern)
-		helper.ErrorPage(w,500)
+		helper.ErrorPage(w, 500)
 		return
 	}
 
@@ -81,13 +82,13 @@ func CreateFollowGroup(w http.ResponseWriter, r *http.Request) {
 
 func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 
-	_, userEmail ,_:= helper.Auth(DB, r)
+	_, userEmail, _ := helper.Auth(DB, r)
 
 	var user = models.User{}
 	err := user.GetUserByEmail(DB, userEmail)
 	if err != nil {
 		fmt.Println(err)
-		helper.ErrorPage(w,500)
+		helper.ErrorPage(w, 500)
 		return
 	}
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -95,18 +96,18 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(r)
 	err = json.NewDecoder(r.Body).Decode(&newGroup)
 	if err != nil {
-		helper.ErrorPage(w,500)
+		helper.ErrorPage(w, 500)
 		fmt.Println("in decode")
 		return
 	}
 	if newGroup.Title == "" || newGroup.Description == "" {
-		helper.ErrorPage(w,500)
+		helper.ErrorPage(w, 500)
 		return
 	}
 	newGroup.UserID = user.ID
 	lastInsertId, err := newGroup.CreateGroup(DB)
 	if err != nil {
-		helper.ErrorPage(w,500)
+		helper.ErrorPage(w, 500)
 		fmt.Println(err)
 		fmt.Println("in user")
 		return
@@ -114,7 +115,7 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 	er := models.JoinGroup(DB, user.ID, int(lastInsertId))
 	if er != nil {
 		fmt.Println(er)
-		helper.ErrorPage(w,500)
+		helper.ErrorPage(w, 500)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -128,13 +129,13 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 
 func CreateEvent(w http.ResponseWriter, r *http.Request) {
 	var user = models.User{}
-	_, userEmail ,_:= helper.Auth(DB, r)
+	_, userEmail, _ := helper.Auth(DB, r)
 
 	err := user.GetUserByEmail(DB, userEmail)
 	if err != nil {
 		fmt.Println("1")
 		fmt.Println(err)
-		helper.ErrorPage(w,500)
+		helper.ErrorPage(w, 500)
 		return
 	}
 	fmt.Println("======------======")
@@ -152,7 +153,7 @@ func CreateEvent(w http.ResponseWriter, r *http.Request) {
 	event.Time = time
 	grId, errGrid := strconv.Atoi(groupId)
 	if errGrid != nil {
-		helper.ErrorPage(w,500)
+		helper.ErrorPage(w, 500)
 		return
 	}
 
@@ -161,7 +162,7 @@ func CreateEvent(w http.ResponseWriter, r *http.Request) {
 	errc := event.CreateEvent(DB)
 	if errc != nil {
 		fmt.Println(errc)
-		helper.ErrorPage(w,500)
+		helper.ErrorPage(w, 500)
 		return
 	}
 
@@ -170,10 +171,10 @@ func CreateEvent(w http.ResponseWriter, r *http.Request) {
 
 func GetGroupDetail(w http.ResponseWriter, r *http.Request) {
 	var user = models.User{}
-	_, userEmail,_ := helper.Auth(DB, r)
+	_, userEmail, _ := helper.Auth(DB, r)
 	err := user.GetUserByEmail(DB, userEmail)
 	if err != nil {
-		helper.ErrorPage(w,500)
+		helper.ErrorPage(w, 500)
 		return
 	}
 
@@ -181,7 +182,7 @@ func GetGroupDetail(w http.ResponseWriter, r *http.Request) {
 
 	grId, errg := strconv.Atoi(groupId[len(groupId)-1])
 	if errg != nil {
-		helper.ErrorPage(w,500)
+		helper.ErrorPage(w, 500)
 		return
 	}
 	gr, err := models.GetGroupByID(DB, grId)
@@ -204,10 +205,18 @@ func GetGroupDetail(w http.ResponseWriter, r *http.Request) {
 		helper.ErrorPage(w, 500)
 		return
 	}
+	posts, errp := models.GetGroupPost(DB, grId)
+	if errp != nil {
+		helper.ErrorPage(w, 500)
+		return
+	}
+	fmt.Println("=>>>>>>>")
+	fmt.Println(posts)
 	groupapagedata := GroupDetail{}
 	groupapagedata.NbrFollowers = nbr
 	groupapagedata.Events = events
 	groupapagedata.Groupdata = *gr
+	groupapagedata.PostsData = posts
 
 	helper.WriteJSON(w, 200, map[string]interface{}{"success": true, "groupDetail": groupapagedata}, nil)
 }

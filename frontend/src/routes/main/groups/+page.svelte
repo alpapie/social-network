@@ -2,7 +2,6 @@
     import { Modal, Content, Trigger } from "sv-popup"
     import { makeRequest } from "$lib/api";
     
-    
     export let data;
     console.log(data);
     let groups = data?.res?.result;
@@ -45,7 +44,7 @@
                     throw new Error(`HTTP error! status:`);
                 }
                 closed = true;
-                groups.joined.forEach(group => {
+                groups?.joined.forEach(group => {
                     group.suggests.forEach(user => {
                         if (selectedUsers.includes(user.id)) {
                             user.is_requested = true;
@@ -91,7 +90,7 @@
 
     let searchValue = '';
     function filterUsers(searchText, indice) {
-        return groups.joined[indice].suggests.filter(user => {
+        return groups?.joined[indice].suggests.filter(user => {
             return user.first_name.toLowerCase().includes(searchText.toLowerCase()) ||
                 user.last_name.toLowerCase().includes(searchText.toLowerCase());
         });
@@ -123,8 +122,8 @@
                     
                     <div class="row ps-2 pe-1" style="height: fit-content;">
                         {#if filter === 'joined'}
-                        {#if groups.joined && groups.joined.length >  0}
-                        {#each groups.joined as group, index}
+                        {#if groups?.joined && groups?.joined.length >  0}
+                        {#each groups?.joined as group, index}
                         
                         <div class="col-md-6 col-sm-6 pe-2 ps-2">
                             <div class="card d-block border-0 shadow-xss rounded-3 overflow-hidden mb-3">
@@ -181,8 +180,8 @@
                         {/each}
                         {/if}
                         {:else if filter === 'not'}
-                        {#if groups.Notjoined && groups.Notjoined.length >  0}
-                        {#each copiedGroups.Notjoined as group}
+                        {#if groups?.Notjoined && groups?.Notjoined.length >  0}
+                        {#each copiedGroups?.Notjoined as group}
                         <div class="col-md-6 col-sm-6 pe-2 ps-2">
                             <div class="card d-block border-0 shadow-xss rounded-3 overflow-hidden mb-3">
                                 <div class="card-body position-relative h100 bg-image-cover bg-image-center" style="background-image: url(/images/bb-16.png);"></div>
