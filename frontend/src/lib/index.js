@@ -22,5 +22,5 @@ export const  generateRandom = () =>
     }
     let path = `./static/uploads/${generateRandom()}.${extension}`;
     writeFileSync(path, Buffer.from(await image.arrayBuffer()));
-    return path;
+    return path.slice(8);
 }

@@ -56,8 +56,7 @@
 				use:enhance={({ formData }) => {
 					formData.append("postId", CommSection?.data?.data?.id);
 					return async ({ result }) => {
-						console.log("the succes", result.data.succes);
-						console.log("the result", result.data.data);
+						
 						if (result?.data?.succes == true) {
 							if (
 								CommSection?.data?.data?.Comments &&
@@ -68,7 +67,7 @@
 									...CommSection.data.data.Comments,
 								];
 							} else {
-								CommSection.data.data.Comments = [result.data];
+								CommSection.data.data.Comments = [result.data.data];
 							}
 						}
 						// console.log("new POSTDETAIL", CommSection.data);

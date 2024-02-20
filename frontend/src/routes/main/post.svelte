@@ -8,7 +8,7 @@
 
 	function calculateAgo(dateString) {
     // Convert the date string to a Date object
-    const date = new Date(dateString);
+    const date = new Date(dateString.split(".")[0]);
     const now = new Date();
 
     // Calculate the difference between the dates in milliseconds
