@@ -36,9 +36,9 @@
             <div class="row">
                 <div class="col-xl-4 col-xxl-3 col-lg-4 pe-0">
                     <div class="card w-100 shadow-xss rounded-xxl overflow-hidden border-0 mb-3 mt-3 pb-3">
-                        <div class="card-body position-relative h150 bg-image-cover bg-image-center" style="background-image: url(images/bb-9.jpg);"></div>
+                        <div class="card-body position-relative h150 bg-image-cover bg-image-center" style="background-image: url(/images/bb-9.jpg);"></div>
                         <div class="card-body d-block pt-4 text-center">
-                            <figure class="avatar mt--6 position-relative w75 z-index-1 w100 z-index-1 ms-auto me-auto"><img src="../static/images/pt-1.jpg" alt="image" class="p-1 bg-white rounded-xl w-100"></figure>
+                            <figure class="avatar mt--6 position-relative w75 z-index-1 w100 z-index-1 ms-auto me-auto"><img src="/images/pt-1.jpg" alt="image" class="p-1 bg-white rounded-xl w-100"></figure>
                             <h4 class="font-xs ls-1 fw-700 text-grey-900">{grpInfo.title}<span class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">@surfiyazakir22</span></h4>
                         </div>
                         <div class="card-body d-flex align-items-center ps-4 pe-4 pt-0">
@@ -102,12 +102,12 @@
                         </div>
                         <div class="card-body d-block pt-0 pb-2">
                             <div class="row">
-                                <div class="col-6 mb-2 pe-1"><a href="images/e-2.jpg" data-lightbox="roadtrip"><img src="images/e-2.jpg" alt="image" class="img-fluid rounded-3 w-100"></a></div>
-                                <div class="col-6 mb-2 ps-1"><a href="images/e-3.jpg" data-lightbox="roadtrip"><img src="images/e-3.jpg" alt="image" class="img-fluid rounded-3 w-100"></a></div>
-                                <div class="col-6 mb-2 pe-1"><a href="images/e-4.jpg" data-lightbox="roadtrip"><img src="images/e-4.jpg" alt="image" class="img-fluid rounded-3 w-100"></a></div>
-                                <div class="col-6 mb-2 ps-1"><a href="images/e-5.jpg" data-lightbox="roadtrip"><img src="images/e-5.jpg" alt="image" class="img-fluid rounded-3 w-100"></a></div>
-                                <div class="col-6 mb-2 pe-1"><a href="images/e-2.jpg" data-lightbox="roadtrip"><img src="images/e-2.jpg" alt="image" class="img-fluid rounded-3 w-100"></a></div>
-                                <div class="col-6 mb-2 ps-1"><a href="images/e-1.jpg" data-lightbox="roadtrip"><img src="images/e-1.jpg" alt="image" class="img-fluid rounded-3 w-100"></a></div>
+                                <div class="col-6 mb-2 pe-1"><a href="images/e-2.jpg" data-lightbox="roadtrip"><img src="/images/e-2.jpg" alt="image" class="img-fluid rounded-3 w-100"></a></div>
+                                <div class="col-6 mb-2 ps-1"><a href="images/e-3.jpg" data-lightbox="roadtrip"><img src="/images/e-3.jpg" alt="image" class="img-fluid rounded-3 w-100"></a></div>
+                                <div class="col-6 mb-2 pe-1"><a href="images/e-4.jpg" data-lightbox="roadtrip"><img src="/images/e-4.jpg" alt="image" class="img-fluid rounded-3 w-100"></a></div>
+                                <div class="col-6 mb-2 ps-1"><a href="images/e-5.jpg" data-lightbox="roadtrip"><img src="/images/e-5.jpg" alt="image" class="img-fluid rounded-3 w-100"></a></div>
+                                <div class="col-6 mb-2 pe-1"><a href="images/e-2.jpg" data-lightbox="roadtrip"><img src="/images/e-2.jpg" alt="image" class="img-fluid rounded-3 w-100"></a></div>
+                                <div class="col-6 mb-2 ps-1"><a href="images/e-1.jpg" data-lightbox="roadtrip"><img src="/images/e-1.jpg" alt="image" class="img-fluid rounded-3 w-100"></a></div>
                             </div>
                         </div>
                         <div class="card-body d-block w-100 pt-0">
@@ -155,7 +155,7 @@
                             <a href="#" class=" font-xssss fw-600 text-grey-500 card-body p-0 d-flex align-items-center"><i class="btn-round-sm font-xs text-primary feather-edit-3 me-2 bg-greylight"></i>Create Post</a>
                         </div>
                         <div class="card-body p-0 mt-3 position-relative">
-                            <figure class="avatar position-absolute ms-2 mt-1 top-5"><img src="images/user-8.png" alt="image" class="shadow-sm rounded-circle w30"></figure>
+                            <figure class="avatar position-absolute ms-2 mt-1 top-5"><img src="/images/user-8.png" alt="image" class="shadow-sm rounded-circle w30"></figure>
                             <textarea name="message" class="h100 bor-0 w-100 rounded-xxl p-2 ps-5 font-xssss text-grey-500 fw-500 border-light-md theme-dark-bg" cols="30" rows="10" placeholder="What's on your mind?"></textarea>
                         </div>
                         <div class="card-body d-flex p-0 mt-0">
@@ -187,7 +187,7 @@
 
                     <div class="card w-100 shadow-xss rounded-xxl border-0 p-4 mb-3">
                         <div class="card-body p-0 d-flex">
-                            <figure class="avatar me-3"><img src="images/user-7.png" alt="image" class="shadow-sm rounded-circle w45"></figure>
+                            <figure class="avatar me-3"><img src="/images/user-7.png" alt="image" class="shadow-sm rounded-circle w45"></figure>
                             <h4 class="fw-700 text-grey-900 font-xssss mt-1">Anthony Daugloi <span class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">3 hour ago</span></h4>
                             <a href="#" class="ms-auto" id="dropdownMenu21" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i></a>
                             <div class="dropdown-menu dropdown-menu-end p-4 rounded-xxl border-0 shadow-lg" aria-labelledby="dropdownMenu21">
@@ -214,9 +214,9 @@
                         </div>
                         <div class="card-body d-block p-0">
                             <div class="row ps-2 pe-2">
-                                <div class="col-xs-4 col-sm-4 p-1"><a href="images/t-10.jpg" data-lightbox="roadtrip"><img src="images/t-10.jpg" class="rounded-3 w-100" alt="image"></a></div>
-                                <div class="col-xs-4 col-sm-4 p-1"><a href="images/t-11.jpg" data-lightbox="roadtrip"><img src="images/t-11.jpg" class="rounded-3 w-100" alt="image"></a></div>
-                                <div class="col-xs-4 col-sm-4 p-1"><a href="images/t-12.jpg" data-lightbox="roadtrip" class="position-relative d-block"><img src="images/t-12.jpg" class="rounded-3 w-100" alt="image"><span class="img-count font-sm text-white ls-3 fw-600"><b>+2</b></span></a></div>
+                                <div class="col-xs-4 col-sm-4 p-1"><a href="images/t-10.jpg" data-lightbox="roadtrip"><img src="/images/t-10.jpg" class="rounded-3 w-100" alt="image"></a></div>
+                                <div class="col-xs-4 col-sm-4 p-1"><a href="images/t-11.jpg" data-lightbox="roadtrip"><img src="/images/t-11.jpg" class="rounded-3 w-100" alt="image"></a></div>
+                                <div class="col-xs-4 col-sm-4 p-1"><a href="images/t-12.jpg" data-lightbox="roadtrip" class="position-relative d-block"><img src="/images/t-12.jpg" class="rounded-3 w-100" alt="image"><span class="img-count font-sm text-white ls-3 fw-600"><b>+2</b></span></a></div>
                             </div>
                         </div>
                         <div class="card-body d-flex p-0 mt-3">
@@ -228,7 +228,7 @@
                     
                     <div class="card w-100 shadow-xss rounded-xxl border-0 p-4 mb-0">
                         <div class="card-body p-0 d-flex">
-                            <figure class="avatar me-3"><img src="images/user-8.png" alt="image" class="shadow-sm rounded-circle w45"></figure>
+                            <figure class="avatar me-3"><img src="/images/user-8.png" alt="image" class="shadow-sm rounded-circle w45"></figure>
                             <h4 class="fw-700 text-grey-900 font-xssss mt-1">Anthony Daugloi <span class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">2 hour ago</span></h4>
                             <a href="#" class="ms-auto" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i></a>
                             <div class="dropdown-menu dropdown-menu-end p-4 rounded-xxl border-0 shadow-lg" aria-labelledby="dropdownMenu2">
@@ -264,7 +264,7 @@
 
                     <div class="card w-100 shadow-xss rounded-xxl border-0 p-4 mb-3 mt-3">
                         <div class="card-body p-0 d-flex">
-                            <figure class="avatar me-3"><img src="images/user-8.png" alt="image" class="shadow-sm rounded-circle w45"></figure>
+                            <figure class="avatar me-3"><img src="/images/user-8.png" alt="image" class="shadow-sm rounded-circle w45"></figure>
                             <h4 class="fw-700 text-grey-900 font-xssss mt-1">Anthony Daugloi <span class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">2 hour ago</span></h4>
                             <a href="#" class="ms-auto" id="dropdownMenu5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i></a>
                             <div class="dropdown-menu dropdown-menu-end p-4 rounded-xxl border-0 shadow-lg" aria-labelledby="dropdownMenu5">
@@ -305,7 +305,7 @@
 
                     <div class="card w-100 shadow-xss rounded-xxl border-0 p-4 mb-4">
                         <div class="card-body p-0 d-flex">
-                            <figure class="avatar me-3"><img src="images/user-8.png" alt="image" class="shadow-sm rounded-circle w45"></figure>
+                            <figure class="avatar me-3"><img src="/images/user-8.png" alt="image" class="shadow-sm rounded-circle w45"></figure>
                             <h4 class="fw-700 text-grey-900 font-xssss mt-1">Anthony Daugloi <span class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">2 hour ago</span></h4>
                             <a href="#" class="ms-auto"><i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i></a>
                         </div>
@@ -315,12 +315,12 @@
                         </div>
                         <div class="card-body d-block p-0 mb-3">
                             <div class="row ps-2 pe-2">
-                                <div class="col-xs-6 col-sm-6 p-1"><a href="images/t-21.jpg" data-lightbox="roadtri"><img src="images/t-21.jpg" class="rounded-3 w-100" alt="image"></a></div>
-                                <div class="col-xs-6 col-sm-6 p-1"><a href="images/t-22.jpg" data-lightbox="roadtri"><img src="images/t-22.jpg" class="rounded-3 w-100" alt="image"></a></div>
+                                <div class="col-xs-6 col-sm-6 p-1"><a href="images/t-21.jpg" data-lightbox="roadtri"><img src="/images/t-21.jpg" class="rounded-3 w-100" alt="image"></a></div>
+                                <div class="col-xs-6 col-sm-6 p-1"><a href="images/t-22.jpg" data-lightbox="roadtri"><img src="/images/t-22.jpg" class="rounded-3 w-100" alt="image"></a></div>
                             </div>
                             <div class="row ps-2 pe-2">
-                                <div class="col-xs-4 col-sm-4 p-1"><a href="images/t-23.jpg" data-lightbox="roadtri"><img src="images/t-23.jpg" class="rounded-3 w-100" alt="image"></a></div>
-                                <div class="col-xs-4 col-sm-4 p-1"><a href="images/t-24.jpg" data-lightbox="roadtri"><img src="images/t-24.jpg" class="rounded-3 w-100" alt="image"></a></div>
+                                <div class="col-xs-4 col-sm-4 p-1"><a href="images/t-23.jpg" data-lightbox="roadtri"><img src="/images/t-23.jpg" class="rounded-3 w-100" alt="image"></a></div>
+                                <div class="col-xs-4 col-sm-4 p-1"><a href="images/t-24.jpg" data-lightbox="roadtri"><img src="/images/t-24.jpg" class="rounded-3 w-100" alt="image"></a></div>
                                 <div class="col-xs-4 col-sm-4 p-1"><a href="images/t-25.jpg" data-lightbox="roadtri" class="position-relative d-block"><img src="images/t-25.jpg" class="rounded-3 w-100" alt="image"><span class="img-count font-sm text-white ls-3 fw-600"><b>+2</b></span></a></div>
                             </div>
                         </div>
