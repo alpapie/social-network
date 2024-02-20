@@ -34,7 +34,6 @@ type GroupDetail struct {
 }
 
 func CreateFollowGroup(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("HERE")
 	type GroupFollowData struct {
 		GroupID int `json:"groupId"`
 		UserID  int `json:"userId"`
@@ -52,13 +51,11 @@ func CreateFollowGroup(w http.ResponseWriter, r *http.Request) {
 
 	errr := user.GetUserById(DB, followData.UserID)
 	if errr != nil {
-		fmt.Println("111")
 		return
 	}
-	
+
 	group, errg := models.GetGroupByID(DB, followData.GroupID)
 	if errg != nil {
-		fmt.Println("t")
 		return
 	}
 
@@ -77,7 +74,7 @@ func CreateFollowGroup(w http.ResponseWriter, r *http.Request) {
 
 func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 
-	auth, userEmail ,_:= helper.Auth(DB, r)
+	auth, userEmail, _ := helper.Auth(DB, r)
 	if !auth {
 		fmt.Println("Not registered")
 		return
@@ -125,7 +122,7 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 
 func CreateEvent(w http.ResponseWriter, r *http.Request) {
 	var user = models.User{}
-	auth, userEmail ,_:= helper.Auth(DB, r)
+	auth, userEmail, _ := helper.Auth(DB, r)
 	if !auth {
 		fmt.Println("01")
 		return
@@ -169,7 +166,7 @@ func CreateEvent(w http.ResponseWriter, r *http.Request) {
 
 func GetGroupDetail(w http.ResponseWriter, r *http.Request) {
 	var user = models.User{}
-	_, userEmail,_ := helper.Auth(DB, r)
+	_, userEmail, _ := helper.Auth(DB, r)
 	err := user.GetUserByEmail(DB, userEmail)
 	if err != nil {
 		return

@@ -16,9 +16,9 @@ type UserToNotif struct {
 }
 
 var (
-	upgrader websocket.Upgrader
-	UsersNotif   = make(map[int]*UserToNotif)
-	mutex    = sync.RWMutex{}
+	upgrader   websocket.Upgrader
+	UsersNotif = make(map[int]*UserToNotif)
+	mutex      = sync.RWMutex{}
 )
 
 func init() {
@@ -42,8 +42,13 @@ func InitSocketNotification(w http.ResponseWriter, r *http.Request) {
 	mutex.RLock()
 	UsersNotif[user_id] = user
 	mutex.RUnlock()
-	
-	fmt.Println(UsersNotif)
+
+	fmt.Println("--------------online users-------------")
+	for _, v := range UsersNotif {
+		fmt.Println("**************")
+		fmt.Println(v.userID)
+		fmt.Println("***************")
+	}
 }
 
 func GetNotification(w http.ResponseWriter, r *http.Request) {
@@ -51,7 +56,6 @@ func GetNotification(w http.ResponseWriter, r *http.Request) {
 	_, _, user_id := helper.Auth(DB, r)
 	notifications, err := notif.GetNotf(DB, user_id)
 
-	// fmt.Println("notification list",notifications)
 	if err != nil {
 		fmt.Println("notif error", err)
 		helper.ErrorPage(w, 500)
@@ -60,6 +64,19 @@ func GetNotification(w http.ResponseWriter, r *http.Request) {
 	errjson := helper.WriteJSON(w, 200, map[string]interface{}{"success": true, "notifications": notifications}, nil)
 	if errjson != nil {
 		fmt.Println(errjson)
+		helper.ErrorPage(w, 500)
+		return
+	}
+}
+
+func SendSocketNotification(w http.ResponseWriter, receiverId int) {
+	mutex.RLock()
+	receiverConn := UsersNotif[receiverId].conn
+	mutex.RUnlock()
+
+	err := receiverConn.WriteJSON("new message")
+	if err != nil {
+		fmt.Println("Error sending socket notification", err)
 		helper.ErrorPage(w, 500)
 		return
 	}

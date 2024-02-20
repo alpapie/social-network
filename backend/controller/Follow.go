@@ -38,7 +38,6 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 	errfollow := follower.GetUserById(DB, follow_id)
 	erruser := current_user.GetUserById(DB, user_id)
 
-
 	if errfollow != nil || erruser != nil {
 		helper.ErrorPage(w, 400)
 		return
@@ -50,7 +49,16 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 			helper.ErrorPage(w, 500)
 			return
 		}
+	} else {
+		newNotification := models.Notification{User_id: current_user.ID, SenderID: follower.ID, FirstName: follower.FirstName, LastName: follower.LastName, Avatar: follower.Avatar, Type: "Follow"}
+		errNotification := newNotification.CreateNotification(DB)
+		if errNotification != nil {
+			helper.ErrorPage(w, 500)
+			return
+		}
+		SendSocketNotification(w, follow_id)
 	}
+
 	err = helper.WriteJSON(w, http.StatusOK, map[string]interface{}{"success": true, "user_id": user_id}, nil)
 	if err != nil {
 		helper.ErrorPage(w, 400)
@@ -58,8 +66,6 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func AcceptFriend(w http.ResponseWriter, r *http.Request) {
 
-
-func AcceptFriend(w http.ResponseWriter, r *http.Request){
-	
 }
