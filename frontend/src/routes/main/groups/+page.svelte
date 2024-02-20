@@ -5,7 +5,7 @@
     
     export let data;
     console.log(data);
-    let groups = data.res.result;
+    let groups = data?.res?.result;
     let filter = 'joined';
     
 

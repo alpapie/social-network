@@ -74,18 +74,15 @@ func CreateFollowGroup(w http.ResponseWriter, r *http.Request) {
 	if ern != nil {
 		fmt.Println(ern)
 		helper.ErrorPage(w,500)
+		return
 	}
 
 }
 
 func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 
-	auth, userEmail ,_:= helper.Auth(DB, r)
-	if !auth {
-		fmt.Println("Not registered")
-		helper.ErrorPage(w,500)
-		return
-	}
+	_, userEmail ,_:= helper.Auth(DB, r)
+
 	var user = models.User{}
 	err := user.GetUserByEmail(DB, userEmail)
 	if err != nil {
@@ -117,6 +114,7 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 	er := models.JoinGroup(DB, user.ID, int(lastInsertId))
 	if er != nil {
 		fmt.Println(er)
+		helper.ErrorPage(w,500)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -130,12 +128,8 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 
 func CreateEvent(w http.ResponseWriter, r *http.Request) {
 	var user = models.User{}
-	auth, userEmail ,_:= helper.Auth(DB, r)
-	if !auth {
-		fmt.Println("01")
-		helper.ErrorPage(w,500)
-		return
-	}
+	_, userEmail ,_:= helper.Auth(DB, r)
+
 	err := user.GetUserByEmail(DB, userEmail)
 	if err != nil {
 		fmt.Println("1")

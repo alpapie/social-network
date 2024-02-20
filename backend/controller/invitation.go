@@ -11,11 +11,8 @@ import (
 
 func GetAllNotjoinedGroups(w http.ResponseWriter, r *http.Request) {
 	var user = models.User{}
-	auth, userEmail,_ := helper.Auth(DB, r)
-	if !auth {
-		helper.ErrorPage(w,500)
-		return
-	}
+	_, userEmail,_ := helper.Auth(DB, r)
+
 	err := user.GetUserByEmail(DB, userEmail)
 	if err != nil {
 		helper.ErrorPage(w,500)
