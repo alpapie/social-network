@@ -1,5 +1,12 @@
 <!-- right chat -->
-<div class="right-chat nav-wrap mt-2 right-scroll-bar active-sidebar">
+<script>
+    import { displayContacts } from "./stores";
+    let show;
+    displayContacts.subscribe((value) =>{
+        show = value;
+    });
+</script>
+<div class="right-chat nav-wrap mt-2 right-scroll-bar" class:active-sidebar={show}>
     <div class="middle-sidebar-right-content bg-white shadow-xss rounded-xxl">
   
         <!-- loader wrapper -->
