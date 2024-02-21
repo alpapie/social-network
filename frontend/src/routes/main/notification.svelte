@@ -12,7 +12,9 @@
 
 		NotifSocket.onmessage = function (event) {
 			alert(`[message] Data received from server: ${event.data}`);
-			data.notifications.push(event.data);
+			let newMessage = JSON.parse(event.data);
+			console.log(newMessage);
+			data.notifications.push(newMessage);
 		};
 
 		NotifSocket.onclose = function (event) {
@@ -48,7 +50,7 @@
 					' ' +
 					notif.lastname}&size=10&rounded=true&color=fff&background=random"
 				width="50"
-				alt={notif.FirstName + " " + notif.LastName}
+				alt={notif.firstName + " " + notif.lastName}
 			/>
 			<h5 class="font-xsss text-grey-900 mb-1 mt-0 fw-700 d-block">
 				{notif.firstname + " " + notif.lastname}<span
@@ -58,7 +60,7 @@
 				>
 			</h5>
 			<h6 class="text-grey-500 fw-500 font-xssss lh-4">
-				There are many variations of pass..
+				has sent a follow request
 			</h6>
 		</div>
 		<div class="card-body d-flex pt-0 ps-4 pe-4 pb-4 w50">

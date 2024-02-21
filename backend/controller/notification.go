@@ -69,12 +69,12 @@ func GetNotification(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func SendSocketNotification(w http.ResponseWriter, receiverId int) {
+func SendSocketNotification(w http.ResponseWriter, receiverId int, notificationObject models.Notification) {
 	mutex.RLock()
 	receiverConn := UsersNotif[receiverId].conn
 	mutex.RUnlock()
 
-	err := receiverConn.WriteJSON("new message")
+	err := receiverConn.WriteJSON(notificationObject)
 	if err != nil {
 		fmt.Println("Error sending socket notification", err)
 		helper.ErrorPage(w, 500)

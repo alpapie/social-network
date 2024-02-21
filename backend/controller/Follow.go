@@ -44,19 +44,26 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if follower.IsPublic == 1 {
-		errreq := follower.AddFlow(DB, user_id)
-		if errreq != nil {
-			helper.ErrorPage(w, 500)
-			return
-		}
-	} else {
+		// errreq := follower.AddFlow(DB, user_id)
+		// if errreq != nil {
+		// 	helper.ErrorPage(w, 500)
+		// 	return
+		// }
 		newNotification := models.Notification{User_id: current_user.ID, SenderID: follower.ID, FirstName: follower.FirstName, LastName: follower.LastName, Avatar: follower.Avatar, Type: "Follow"}
 		errNotification := newNotification.CreateNotification(DB)
 		if errNotification != nil {
 			helper.ErrorPage(w, 500)
 			return
 		}
-		SendSocketNotification(w, follow_id)
+		SendSocketNotification(w, follow_id, newNotification)
+	} else {
+		newNotification := models.Notification{User_id: current_user.ID, SenderID: follower.ID, FirstName: follower.FirstName, LastName: follower.LastName, Avatar: follower.Avatar, Type: "FollowRequest"}
+		errNotification := newNotification.CreateNotification(DB)
+		if errNotification != nil {
+			helper.ErrorPage(w, 500)
+			return
+		}
+		SendSocketNotification(w, follow_id, newNotification)
 	}
 
 	err = helper.WriteJSON(w, http.StatusOK, map[string]interface{}{"success": true, "user_id": user_id}, nil)
