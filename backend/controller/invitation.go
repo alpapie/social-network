@@ -166,6 +166,7 @@ func CreateInvitationGroup(w http.ResponseWriter, r *http.Request) {
 		notification.Type = "invite-Group"
 		notification.Group_id = groupID
 		notification.Status = "false"
+		
 		ern := notification.CreateNotification(DB)
 		if ern != nil {
 			fmt.Println(ern)

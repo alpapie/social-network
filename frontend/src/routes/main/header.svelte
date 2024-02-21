@@ -1,7 +1,9 @@
 <script>
 
     export let data
+    import { logOutUser } from "$lib/auth/auth";
     import Notification from "./notification.svelte";
+    logOutUser
 
 </script>
 
@@ -118,7 +120,7 @@
                 
             </div>
         </div>
-        <a href="/main/logout"class="p-2 text-center ms-3 menu-icon "><i class="btn-round-md bg-red-gradiant text-white feather-lock font-md me-3"></i></a>
+        <a href="#" class="p-2 text-center ms-3 menu-icon "><i class="btn-round-md bg-red-gradiant text-white feather-lock font-md me-3"></i></a>
 
         <a href="/main/profile" class="p-0 ms-3 menu-icon"><img src="/images/profile-4.png" alt="user" class="w40 mt--1"></a>
         
