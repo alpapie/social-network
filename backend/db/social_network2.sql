@@ -2,7 +2,8 @@
 /* Nom de SGBD :  Sybase SQL Anywhere 11                        */
 /* Date de cr�ation :  31/01/2024 15:09:16                      */
 /*==============================================================*/
-
+SELECT u.* FROM "User" u JOIN "Follow" f ON u.id = f.User_id WHERE f.Follower_id = 2 
+SELECT u.email FROM "User" u JOIN "Follow" f ON u.id = f."User_id" WHERE f.User_id = 2 
 
 if exists(select 1 from sys.sysforeignkey where role='FK_COMMENT_AVOIR_POST') then
     alter table "Comment"

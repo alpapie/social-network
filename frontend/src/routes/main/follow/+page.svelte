@@ -73,7 +73,6 @@
                                                 <img src="//ui-avatars.com/api/?name={user.FirstName +" "+ user.LastName}e&size=100&rounded=true&color=fff&background=random" alt="{user.FirstName +" "+ user.LastName}" />
                                             {/if}
                                         </figure>
-                                        <div class="clearfix"></div>
                                         <h4 class="fw-700 font-xsss mt-3 mb-1">{user.FirstName +" "+ user.LastName}</h4>
                                         <p class="fw-500 font-xsssss text-grey-500 mt-0 mb-3">{user.Email}</p>
                                         <a href="#" on:click={ RequestFollow(user.ID)} class="mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl bg-success font-xsssss fw-700 ls-lg text-white">ADD FRIEND</a>

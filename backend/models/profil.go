@@ -24,9 +24,13 @@ func (u *User) GetUnFollow(DB *sql.DB, limit int) ([]User, error) {
 }
 
 func (U *User) Folower(DB *sql.DB, user_id int) ([]User, error) {
-	req := `SELECT  u.id,u."firstName",u."lastName", u.email,u.avatar from "User" AS "u" inner JOIN "Follow" AS "f" on f."Follower_id"=u.id  where u.id!=?`
+	req := `SELECT  u.id,u."firstName",u."lastName", u.email,u.avatar
+		FROM "User" u
+		JOIN "Follow" f ON u.id = f.Follower_id
+		WHERE f.User_id = ?`
 	row, err := DB.Query(req, user_id)
 	users := []User{}
+	
 	if err != nil {
 		return users, err
 	}
@@ -34,7 +38,12 @@ func (U *User) Folower(DB *sql.DB, user_id int) ([]User, error) {
 }
 
 func (U *User) Following(DB *sql.DB, user_id int) ([]User, error) {
-	req := ` SELECT u.id,u."firstName",u."lastName", u.email,u.avatar from "User" AS "u" inner JOIN "Follow" AS "f" on f."User_id"=u.id  where u.id!=?`
+	req := ` 
+		SELECT u.id,u."firstName",u."lastName", u.email,u.avatar
+		FROM "User" u
+		JOIN "Follow" f ON u.id = f.User_id
+		WHERE f.Follower_id =?
+	`
 	row, err := DB.Query(req, user_id)
 
 	users := []User{}

@@ -22,6 +22,7 @@
         NotifSocket.onerror = function(error) {
             NotifSocket=null
         };
+        
     })
 
 </script>

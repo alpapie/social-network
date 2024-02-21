@@ -142,7 +142,7 @@
         </div>
         <div class="tab-content mt-2">
           <div id="about" class="tab-pane fade show active">
-            <div class="d-flex">
+            <div class="d-flex gap-3">
                 <div class="col-xl-4 col-xxl-3 col-lg-4 pe-0 ">
                   <div class="card w-100 shadow-xss rounded-xxl border-0 mt-2 mb-3">
                     <div class="card-body d-block p-4">

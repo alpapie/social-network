@@ -14,6 +14,7 @@ func Routes() {
 	http.HandleFunc("/server/login", middleware.Ispath(middleware.CheckMethod(controller.Login, "post"), "login"))
 	http.HandleFunc("/server/register", middleware.Ispath(middleware.CheckMethod(controller.RegisterUser,"post"),"register"))
 	http.HandleFunc("/server/profile", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.Profil, "get"), "profile")))
+	http.HandleFunc("/server/profile_follow", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.FollowerProfil, "get"), "profile_follow")))
 	http.HandleFunc("/server/unfollower", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.UnFollow, "get"), "unfollower")))
 	http.HandleFunc("/server/follow", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.Follow, "get"),"follow")))
 	http.HandleFunc("/server/changestatus", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.UpdateProfil, "get"),"changestatus")))
