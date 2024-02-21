@@ -50,6 +50,7 @@
 		console.log("initialise socket", NotifSocket);
 
 		NotifSocket.onmessage = function (event) {
+			console.log("new event", event);
 			alert(`[message] Data received from server: ${event.data}`);
 			let incomingNotification = JSON.parse(event.data);
 			// let eventType = event.data.type;
