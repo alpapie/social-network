@@ -14,6 +14,7 @@ export const load = async ({cookies})=>{
 
     const response= await makeRequest("home","get",{},{},cookies)
     if (response?.data?.success) {
+        console.log("DATA FROM HOME" , response.data)
         return response?.data;
     }
     throw error(400,"bad request")

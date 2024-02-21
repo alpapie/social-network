@@ -92,9 +92,12 @@
 			<!-- {#if modalDisplay == "block"} -->
 			<div style="display: {modalDisplay};">
 				<select name="allowedusers" id="allowed" multiple>
-					{#each users as user}
-						<option value={user.ID}>{user.FirstName} {user.LastName}</option>
-					{/each}
+					{#if users?.length > 0} 
+						{#each users as user}
+							<option value={user?.ID}>{user?.FirstName} {user?.LastName}</option>
+						{/each}
+					{/if}
+					
 				</select>
 			</div>
 			<!-- {/if} -->

@@ -111,6 +111,6 @@
   </div>
 </div>
 <!-- main content -->
-<Contacts />
+<Contacts Users={data?.contacts}/>
 
 <Comment bind:CommSection />
