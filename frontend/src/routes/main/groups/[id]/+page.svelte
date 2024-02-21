@@ -71,7 +71,7 @@
                                 </Trigger>
                             </Modal>
                             
-                            <a href="#" class="bg-greylight btn-round-lg ms-2 rounded-3 text-grey-700"><i class="feather-mail font-md"></i></a>
+                            <a href={`/main/groups/${grpInfo?.id}/messages`} class="bg-greylight btn-round-lg ms-2 rounded-3 text-grey-700"><i class="feather-mail font-md"></i></a>
                             <a href="#" class="bg-greylight theme-white-bg btn-round-lg ms-2 rounded-3 text-grey-700"><i class="ti-more font-md"></i></a>
                         </div>
                     </div>

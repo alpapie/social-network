@@ -1,8 +1,12 @@
 <!-- right chat -->
 <script>
     import { displayContacts } from "./stores";
+    import { contactsStore } from './stores';
     let show;
-    export let Users;
+    let Users;
+    contactsStore.subscribe(value => {
+        Users = value;
+    });
     displayContacts.subscribe((value) =>{
         show = value;
     });
@@ -48,9 +52,10 @@
                         <img src="images/user-8.png" alt="display photo" class="w35">
                     </figure>
                     <h3 class="fw-700 mb-0 mt-0">
-                        <a class="font-xssss text-grey-600 d-block text-dark model-popup-chat" href="/">{user.FirstName} {user.LastName}</a>
+                        <a class="font-xssss text-grey-600 d-block text-dark model-popup-chat" href="/main/chat/{user?.ID}">{user.FirstName} {user.LastName}</a>
                     </h3>
-                    <span class="badge badge-primary text-white badge-pill fw-500 mt-0">2</span>
+                    <span class="bg-success ms-auto btn-round-xss"></span>
+                    <!-- <span class="badge badge-primary text-white badge-pill fw-500 mt-0">2</span> -->
                 </li>
                 {/each}
                 <!-- <li class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center">
