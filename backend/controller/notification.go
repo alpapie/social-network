@@ -54,7 +54,7 @@ func InitSocketNotification(w http.ResponseWriter, r *http.Request) {
 func GetNotification(w http.ResponseWriter, r *http.Request) {
 	notif := models.Notification{}
 	_, _, user_id := helper.Auth(DB, r)
-	notifications, err := notif.GetNotf(DB, user_id)
+	notifications, err := notif.GetNotification(DB, user_id)
 
 	if err != nil {
 		fmt.Println("notif error", err)
@@ -70,14 +70,19 @@ func GetNotification(w http.ResponseWriter, r *http.Request) {
 }
 
 func SendSocketNotification(w http.ResponseWriter, receiverId int, notificationObject models.Notification) {
+	var receiverConn *websocket.Conn
+
 	mutex.RLock()
-	receiverConn := UsersNotif[receiverId].conn
+	receiver, isOnline := UsersNotif[receiverId]
 	mutex.RUnlock()
 
-	err := receiverConn.WriteJSON(notificationObject)
-	if err != nil {
-		fmt.Println("Error sending socket notification", err)
-		helper.ErrorPage(w, 500)
-		return
+	if isOnline {
+		receiverConn = receiver.conn
+		err := receiverConn.WriteJSON(notificationObject)
+		if err != nil {
+			fmt.Println("Error sending socket notification", err)
+			helper.ErrorPage(w, 500)
+			return
+		}
 	}
 }

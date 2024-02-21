@@ -1,8 +1,47 @@
 <script>
+	import { makeRequest } from "$lib/api";
 	import { onMount } from "svelte";
 
 	let NotifSocket;
 	export let data;
+
+	const getNotifMessageSwitchType = (type) => {
+		let message = "";
+		switch (type) {
+			case "follow":
+				message = "is following you.";
+				break;
+			case "followRequest":
+				message = "has sent you a follow request.";
+				break;
+			case "acceptedFollowRequest":
+				message = "accepted your follow request.";
+				break;
+			case "declinedFollowRequest":
+				message = "declined your follow request.";
+				break;
+			default:
+				message = "no message";
+				break;
+		}
+		console.log("notification type:", type);
+		return message;
+	};
+
+	const respondToRequest = (response, userId) => {
+		switch (response) {
+			case "accept":
+				console.log(response, userId);
+				// makeRequest("acceptfollow", "get");
+				break;
+			case "decline":
+				console.log(response, userId);
+				// makeRequest("declinefollow", "get");
+				break;
+			default:
+				break;
+		}
+	};
 
 	onMount(async () => {
 		if (!NotifSocket) {
@@ -12,9 +51,22 @@
 
 		NotifSocket.onmessage = function (event) {
 			alert(`[message] Data received from server: ${event.data}`);
-			let newMessage = JSON.parse(event.data);
-			console.log(newMessage);
-			data.notifications.push(newMessage);
+			let incomingNotification = JSON.parse(event.data);
+			// let eventType = event.data.type;
+			// switch (incomingNotification.type) {
+			// 	case "follow":
+			// 		break;
+			// 	case "followRequest":
+			// 		break;
+			// 	case "AcceptedFollowRequest":
+			// 		break;
+			// 	case "DeclinedFollowRequest":
+			// 		break;
+			// 	default:
+			// 		break;
+			// }
+			console.log("new notification message:", incomingNotification);
+			data.notifications.push(incomingNotification);
 		};
 
 		NotifSocket.onclose = function (event) {
@@ -48,7 +100,7 @@
 				class="w40 position-absolute left-0"
 				src="//ui-avatars.com/api/?name={notif.firstname +
 					' ' +
-					notif.lastname}&size=10&rounded=true&color=fff&background=random"
+					notif.lastname}&size=100&rounded=true&color=fff&background=random"
 				width="50"
 				alt={notif.firstName + " " + notif.lastName}
 			/>
@@ -60,19 +112,23 @@
 				>
 			</h5>
 			<h6 class="text-grey-500 fw-500 font-xssss lh-4">
-				has sent a follow request
+				{getNotifMessageSwitchType(notif.type)}
 			</h6>
 		</div>
 		<div class="card-body d-flex pt-0 ps-4 pe-4 pb-4 w50">
-			<a
-				href="/"
+			<span
+				on:click={() => {
+					respondToRequest("accept", notif.lastName);
+				}}
 				class="p-2 w100 bg-success me-2 text-white text-center font-xssss fw-400 ls-1 rounded-xl"
-				>Confirm</a
+				>Confirm</span
 			>
-			<a
-				href="/"
+			<span
+				on:click={() => {
+					respondToRequest("decline", notif.lastName);
+				}}
 				class="p-2 lh-20 text-white bg-danger w100 text-center font-xssss fw-400 ls-1 rounded-xl"
-				>Decline</a
+				>Decline</span
 			>
 		</div>
 	{/each}
