@@ -44,29 +44,27 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	notificationType := ""
+
 	if follower.IsPublic == 1 {
-		// errreq := follower.AddFollower(DB, user_id)
-		// if errreq != nil {
-		// 	helper.ErrorPage(w, 500)
-		// 	return
-		// }
-		newNotification := models.Notification{User_id: current_user.ID, SenderID: follower.ID, FirstName: follower.FirstName, LastName: follower.LastName, Avatar: follower.Avatar, Type: "follow"}
-		errNotification := newNotification.CreateNotification(DB)
-		if errNotification != nil {
-			fmt.Println(errNotification)
+		errreq := follower.AddFollower(DB, user_id)
+		if errreq != nil {
 			helper.ErrorPage(w, 500)
 			return
 		}
-		SendSocketNotification(w, follow_id, newNotification)
+		notificationType = "follow"
 	} else {
-		newNotification := models.Notification{User_id: current_user.ID, SenderID: follower.ID, FirstName: follower.FirstName, LastName: follower.LastName, Avatar: follower.Avatar, Type: "followRequest"}
-		errNotification := newNotification.CreateNotification(DB)
-		if errNotification != nil {
-			helper.ErrorPage(w, 500)
-			return
-		}
-		SendSocketNotification(w, follow_id, newNotification)
+		notificationType = "followRequest"
+		fmt.Println("sending notification for private profile")
 	}
+
+	newNotification := models.Notification{User_id: follower.ID, SenderID: current_user.ID, FirstName: follower.FirstName, Status: "0", LastName: follower.LastName, Avatar: follower.Avatar, Type: notificationType}
+	errNotification := newNotification.CreateNotification(DB)
+	if errNotification != nil {
+		helper.ErrorPage(w, 500)
+		return
+	}
+	SendSocketMessage(w, follow_id, newNotification, "notification")
 
 	err = helper.WriteJSON(w, http.StatusOK, map[string]interface{}{"success": true, "user_id": user_id}, nil)
 	if err != nil {
@@ -76,6 +74,7 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 }
 
 func AcceptFollowRequest(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Follow request accepted!")
 	follow_id, err := strconv.Atoi(r.URL.Query().Get("user_id"))
 	if err != nil {
 		helper.ErrorPage(w, 400)
@@ -100,16 +99,26 @@ func AcceptFollowRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newNotification := models.Notification{User_id: current_user.ID, SenderID: follower.ID, FirstName: follower.FirstName, LastName: follower.LastName, Avatar: follower.Avatar, Type: "AcceptedFollowRequest"}
-	errNotification := newNotification.CreateNotification(DB)
-	if errNotification != nil {
+	currentNotificationsByType, errGettingNotifs := models.GetNotificationByUserIDAndType(DB, follow_id, user_id, "followRequest", 0)
+	if errGettingNotifs != nil {
 		helper.ErrorPage(w, 500)
 		return
 	}
-	SendSocketNotification(w, follow_id, newNotification)
+
+	if len(currentNotificationsByType) > 0 {
+		err := currentNotificationsByType[0].MarkAsRead(DB, user_id)
+		if err != nil {
+			helper.ErrorPage(w, 500)
+			return
+		}
+	}
+
+	newNotification := models.Notification{User_id: current_user.ID, SenderID: follower.ID, FirstName: follower.FirstName, LastName: follower.LastName, Avatar: follower.Avatar, Type: "acceptedFollowRequest"}
+	SendSocketMessage(w, follow_id, newNotification, "notification")
 }
 
 func DeclineFollowRequest(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Follow request declined!")
 	follow_id, err := strconv.Atoi(r.URL.Query().Get("user_id"))
 	if err != nil {
 		helper.ErrorPage(w, 400)
@@ -132,8 +141,17 @@ func DeclineFollowRequest(w http.ResponseWriter, r *http.Request) {
 		helper.ErrorPage(w, 500)
 		return
 	}
+
+	if len(currentNotificationsByType) > 0 {
+		err := currentNotificationsByType[0].MarkAsRead(DB, user_id)
+		if err != nil {
+			helper.ErrorPage(w, 500)
+			return
+		}
+	}
+
 	fmt.Println("----------------------------User Notifications---------------------------")
-	fmt.Println(currentNotificationsByType)
+	fmt.Println("length", len(currentNotificationsByType), "content", currentNotificationsByType[0])
 	fmt.Println("--------------------------------------------------------------------------")
 
 }

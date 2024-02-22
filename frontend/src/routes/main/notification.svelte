@@ -1,5 +1,5 @@
 <script>
-	import { makeRequest } from "$lib/api";
+	import axios from "axios";
 	import { onMount } from "svelte";
 
 	let NotifSocket;
@@ -28,18 +28,35 @@
 		return message;
 	};
 
-	const respondToRequest = (response, userId) => {
-		switch (response) {
+	const respondToRequest = async (reply, receiverId) => {
+		let httpResponse;
+		let url = "";
+		switch (reply) {
 			case "accept":
-				console.log(response, userId);
-				// makeRequest("acceptfollow", "get");
+				url = "acceptfollow";
 				break;
 			case "decline":
-				console.log(response, userId);
-				// makeRequest("declinefollow", "get");
+				url = "declinefollow";
 				break;
 			default:
 				break;
+		}
+
+		try {
+			let header = {
+				cookie: document.cookie,
+			};
+			const config = {
+				method: "get",
+				withCredentials: true,
+				header,
+				mode: "no-cors",
+				params: { user_id: receiverId },
+			};
+			httpResponse = await axios(`http://localhost:8080/server/${url}`, config);
+			console.log("reply response", httpResponse);
+		} catch (error) {
+			console.log(error);
 		}
 	};
 
@@ -47,27 +64,18 @@
 		if (!NotifSocket) {
 			NotifSocket = new WebSocket("ws://localhost:8080/server/initnotifsocket");
 		}
+
 		console.log("initialise socket", NotifSocket);
+		// console.log("all notifications: ", data);
 
 		NotifSocket.onmessage = function (event) {
-			console.log("new event", event);
-			alert(`[message] Data received from server: ${event.data}`);
-			let incomingNotification = JSON.parse(event.data);
-			// let eventType = event.data.type;
-			// switch (incomingNotification.type) {
-			// 	case "follow":
-			// 		break;
-			// 	case "followRequest":
-			// 		break;
-			// 	case "AcceptedFollowRequest":
-			// 		break;
-			// 	case "DeclinedFollowRequest":
-			// 		break;
-			// 	default:
-			// 		break;
-			// }
-			console.log("new notification message:", incomingNotification);
-			data.notifications.push(incomingNotification);
+			// alert(`[message] Data received from server: ${event.data}`);
+			console.log(event.data);
+			let newEvent = JSON.parse(event.data);
+
+			if (newEvent?.action == "notification") {
+				data.notifications = [...data.notifications, newEvent.notification];
+			}
 		};
 
 		NotifSocket.onclose = function (event) {
@@ -116,21 +124,23 @@
 				{getNotifMessageSwitchType(notif.type)}
 			</h6>
 		</div>
-		<div class="card-body d-flex pt-0 ps-4 pe-4 pb-4 w50">
-			<span
-				on:click={() => {
-					respondToRequest("accept", notif.lastName);
-				}}
-				class="p-2 w100 bg-success me-2 text-white text-center font-xssss fw-400 ls-1 rounded-xl"
-				>Confirm</span
-			>
-			<span
-				on:click={() => {
-					respondToRequest("decline", notif.lastName);
-				}}
-				class="p-2 lh-20 text-white bg-danger w100 text-center font-xssss fw-400 ls-1 rounded-xl"
-				>Decline</span
-			>
-		</div>
+		{#if notif.type != "acceptedFollowRequest"}
+			<div class="card-body d-flex pt-0 ps-4 pe-4 pb-4 w50">
+				<span
+					on:click={() => {
+						respondToRequest("accept", notif.sender_id);
+					}}
+					class="p-2 w100 bg-success me-2 text-white text-center font-xssss fw-400 ls-1 rounded-xl"
+					>Confirm</span
+				>
+				<span
+					on:click={() => {
+						respondToRequest("decline", notif.sender_id);
+					}}
+					class="p-2 lh-20 text-white bg-danger w100 text-center font-xssss fw-400 ls-1 rounded-xl"
+					>Decline</span
+				>
+			</div>
+		{/if}
 	{/each}
 </div>

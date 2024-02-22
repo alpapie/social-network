@@ -21,7 +21,6 @@ type Notification struct {
 }
 
 func (n *Notification) CreateNotification(db *sql.DB) error {
-
 	checkQuery := `SELECT COUNT(*) FROM Notification WHERE User_id = ? AND send_id = ? AND Type = ?`
 	row := db.QueryRow(checkQuery, n.User_id, n.SenderID, n.Type)
 	var count int
@@ -75,16 +74,25 @@ func GetNotificationByUserIDAndType(db *sql.DB, SenderID int, userID int, notifi
 	return notifications, nil
 }
 
+func (n Notification) MarkAsRead(db *sql.DB, user_id int) error {
+	req := `UPDATE Notification SET status = 1 WHERE User_id=? and send_id=?`
+	_, err := db.Exec(req, user_id, n.SenderID)
+	if err != nil {
+		return fmt.Errorf("error when marking as read: %v", err)
+	}
+	return nil
+}
+
 func (N Notification) GetNotification(db *sql.DB, user_id int) ([]Notification, error) {
-	req := `SELECT notif.id,notif.status, notif.send_id , coalesce(g.id, 0), u."firstName", u."lastName",u.avatar, coalesce(g.title,"") from "User" as u INNER join "Notification" as notif on notif.send_id=u.id LEFT join "Group" as g on g.id=notif."Group_id" WHERE notif."User_id"=? `
+	req := `SELECT notif.id,notif.status, notif.type, notif.send_id , coalesce(g.id, 0), u."firstName", u."lastName",u.avatar, coalesce(g.title,"") from "User" as u INNER join "Notification" as notif on notif.send_id=u.id LEFT join "Group" as g on g.id=notif."Group_id" WHERE notif."User_id"=? and notif.status!=1 `
 	row, err := db.Query(req, user_id)
 	notifications := []Notification{}
 	if err != nil {
 		return notifications, err
 	}
-	
+
 	for row.Next() {
-		row.Scan(&N.ID, &N.Status, &N.SenderID, &N.Group_id, &N.FirstName, &N.LastName, &N.Avatar, &N.GroupTitle)
+		row.Scan(&N.ID, &N.Status, &N.Type, &N.SenderID, &N.Group_id, &N.FirstName, &N.LastName, &N.Avatar, &N.GroupTitle)
 		notifications = append(notifications, N)
 	}
 	return notifications, nil

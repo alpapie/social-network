@@ -69,7 +69,7 @@ func GetNotification(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func SendSocketNotification(w http.ResponseWriter, receiverId int, notificationObject models.Notification) {
+func SendSocketMessage(w http.ResponseWriter, receiverId int, notificationObject interface{}, action string) {
 	var receiverConn *websocket.Conn
 
 	mutex.RLock()
@@ -78,7 +78,7 @@ func SendSocketNotification(w http.ResponseWriter, receiverId int, notificationO
 
 	if isOnline {
 		receiverConn = receiver.conn
-		err := receiverConn.WriteJSON(notificationObject)
+		err := receiverConn.WriteJSON(map[string]interface{}{"success": true, "action": action, "notification": notificationObject})
 		if err != nil {
 			fmt.Println("Error sending socket notification", err)
 			helper.ErrorPage(w, 500)
