@@ -43,11 +43,9 @@ func InitSocketNotification(w http.ResponseWriter, r *http.Request) {
 	UsersNotif[user_id] = user
 	mutex.RUnlock()
 
-	fmt.Println("--------------online users-------------")
+	fmt.Println("--------------online users IDs-------------")
 	for _, v := range UsersNotif {
-		fmt.Println("**************")
 		fmt.Println(v.userID)
-		fmt.Println("***************")
 	}
 }
 

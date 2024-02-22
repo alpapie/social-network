@@ -58,7 +58,7 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("sending notification for private profile")
 	}
 
-	newNotification := models.Notification{User_id: follower.ID, SenderID: current_user.ID, FirstName: follower.FirstName, Status: "0", LastName: follower.LastName, Avatar: follower.Avatar, Type: notificationType}
+	newNotification := models.Notification{User_id: follower.ID, SenderID: current_user.ID, FirstName: current_user.FirstName, Status: "0", LastName: current_user.LastName, Avatar: current_user.Avatar, Type: notificationType}
 	errNotification := newNotification.CreateNotification(DB)
 	if errNotification != nil {
 		helper.ErrorPage(w, 500)
@@ -113,7 +113,7 @@ func AcceptFollowRequest(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	newNotification := models.Notification{User_id: current_user.ID, SenderID: follower.ID, FirstName: follower.FirstName, LastName: follower.LastName, Avatar: follower.Avatar, Type: "acceptedFollowRequest"}
+	newNotification := models.Notification{User_id: current_user.ID, SenderID: current_user.ID, FirstName: current_user.FirstName, LastName: current_user.LastName, Avatar: current_user.Avatar, Type: "acceptedFollowRequest"}
 	SendSocketMessage(w, follow_id, newNotification, "notification")
 }
 
@@ -149,6 +149,9 @@ func DeclineFollowRequest(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+
+	newNotification := models.Notification{User_id: current_user.ID, SenderID: current_user.ID, FirstName: current_user.FirstName, LastName: current_user.LastName, Avatar: current_user.Avatar, Type: "declinedFollowRequest"}
+	SendSocketMessage(w, follow_id, newNotification, "notification")
 
 	fmt.Println("----------------------------User Notifications---------------------------")
 	fmt.Println("length", len(currentNotificationsByType), "content", currentNotificationsByType[0])

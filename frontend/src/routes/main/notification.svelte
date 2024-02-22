@@ -24,7 +24,7 @@
 				message = "no message";
 				break;
 		}
-		console.log("notification type:", type);
+		// console.log("notification type:", type);
 		return message;
 	};
 
@@ -66,12 +66,12 @@
 		}
 
 		console.log("initialise socket", NotifSocket);
-		// console.log("all notifications: ", data);
 
+		// console.log("all notifications: ", data);
 		NotifSocket.onmessage = function (event) {
 			// alert(`[message] Data received from server: ${event.data}`);
-			console.log(event.data);
 			let newEvent = JSON.parse(event.data);
+			console.log(newEvent);
 
 			if (newEvent?.action == "notification") {
 				data.notifications = [...data.notifications, newEvent.notification];
@@ -124,21 +124,22 @@
 				{getNotifMessageSwitchType(notif.type)}
 			</h6>
 		</div>
-		{#if notif.type != "acceptedFollowRequest"}
+
+		{#if notif.type.toLowerCase().includes("request")}
 			<div class="card-body d-flex pt-0 ps-4 pe-4 pb-4 w50">
 				<span
 					on:click={() => {
 						respondToRequest("accept", notif.sender_id);
 					}}
 					class="p-2 w100 bg-success me-2 text-white text-center font-xssss fw-400 ls-1 rounded-xl"
-					>Confirm</span
+					style="cursor: pointer;">Confirm</span
 				>
 				<span
 					on:click={() => {
 						respondToRequest("decline", notif.sender_id);
 					}}
 					class="p-2 lh-20 text-white bg-danger w100 text-center font-xssss fw-400 ls-1 rounded-xl"
-					>Decline</span
+					style="cursor: pointer;">Decline</span
 				>
 			</div>
 		{/if}
