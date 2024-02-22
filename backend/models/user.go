@@ -36,6 +36,19 @@ func (u *User) IsGroupmemeber(db *sql.DB, groupID int) (bool, error) {
 
 	return true, nil
 }
+func AreFriend(db *sql.DB, userId1 int, userId2 int) (bool, error)  {
+	var count int
+	query := `SELECT count(F.id)from Follow as F  where (F.User_id = ? and F.Follower_id = ?) or
+		(F.Follower_id = ?  and F.User_id = ?)`
+	err := db.QueryRow(query, userId1, userId2 , userId1, userId2).Scan(&count)
+	if err != nil {
+		return false, fmt.Errorf("failed to check friendship: %v", err)
+	}
+	if count < 1 {
+		return false, nil
+	}
+	return true, nil
+}
 
 func (u *User) GetUserById(db *sql.DB, id int) error {
 	query := `SELECT id, firstName, lastName, email, nickName, birthDate, avatar, aboutMe, ispublic FROM User WHERE id = ?`

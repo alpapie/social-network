@@ -12,7 +12,7 @@
                                 <div class="message-item">
                                     <div class="message-user">
                                         <figure class="avatar">
-                                            <img src="images/user-9.png" alt="display photo">
+                                            <img src="/images/user-9.png" alt="display photo">
                                         </figure>
                                         <div>
                                             <h5>Byrom Guittet</h5>
@@ -25,7 +25,7 @@
                                 <div class="message-item outgoing-message">
                                     <div class="message-user">
                                         <figure class="avatar">
-                                            <img src="images/user-1.png" alt="display photo">
+                                            <img src="/images/user-1.png" alt="display photo">
                                         </figure>
                                         <div>
                                             <h5>Byrom Guittet</h5>
@@ -38,7 +38,7 @@
                                 <div class="message-item">
                                     <div class="message-user">
                                         <figure class="avatar">
-                                            <img src="images/user-9.png" alt="display photo">
+                                            <img src="/images/user-9.png" alt="display photo">
                                         </figure>
                                         <div>
                                             <h5>Byrom Guittet</h5>
@@ -51,7 +51,7 @@
                                 <div class="message-item outgoing-message">
                                     <div class="message-user">
                                         <figure class="avatar">
-                                            <img src="images/user-1.png" alt="display photo">
+                                            <img src="/images/user-1.png" alt="display photo">
                                         </figure>
                                         <div>
                                             <h5>Byrom Guittet</h5>
@@ -64,7 +64,7 @@
                                 <div class="message-item">
                                     <div class="message-user">
                                         <figure class="avatar">
-                                            <img src="images/user-9.png" alt="display photo">
+                                            <img src="/images/user-9.png" alt="display photo">
                                         </figure>
                                         <div>
                                             <h5>Byrom Guittet</h5>
@@ -72,7 +72,7 @@
                                         </div>
                                     </div>
                                     <figure>
-                                        <img src="images/bb-9.jpg" class="w-25 img-fluid rounded-3" alt="display photo">
+                                        <img src="/images/bb-9.jpg" class="w-25 img-fluid rounded-3" alt="display photo">
                                     </figure>
                                     
                                 
@@ -81,7 +81,7 @@
                                 <div class="message-item outgoing-message">
                                     <div class="message-user">
                                         <figure class="avatar">
-                                            <img src="images/user-1.png" alt="display photo">
+                                            <img src="/images/user-1.png" alt="display photo">
                                         </figure>
                                         <div>
                                             <h5>Byrom Guittet</h5>

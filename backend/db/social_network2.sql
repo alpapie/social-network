@@ -610,8 +610,9 @@ create table GroupMessage
    Use_id               integer                        not null,
    Gro_id               integer                        not null,
    content              varchar(254)                   null,
-   dateCreation         timestamp                      null,
-   constraint PK_GROUPMESSAGE primary key (id)
+   dateCreation         time default(current_timestamp)                      null,
+   constraint PK_GROUPMESSAGE primary key (id),
+   constraint 
 );
 
 /*==============================================================*/
@@ -674,10 +675,13 @@ Use_id ASC
 create table "Message" 
 (
    id                   integer                        not null,
-   Fol_id               integer                        not null,
-   content              varchar(254)                   null,
-   dateCreation         timestamp                      null,
-   constraint PK_MESSAGE primary key (id)
+   Sender_id               integer                        not null,
+   Receiver_id               integer                        not null,
+   content              varchar(254)                   not null,
+   dateCreation         time default(current_timestamp)                    not null,
+   constraint PK_MESSAGE primary key (id),
+   FOREIGN KEY (Receiver_id) REFERENCES "User" (id),
+   FOREIGN KEY (Sender_id) REFERENCES "User" (id)
 );
 
 /*==============================================================*/
