@@ -5,6 +5,7 @@ go 1.18
 require (
 	github.com/gofrs/uuid v4.4.0+incompatible
 	github.com/golang-migrate/migrate/v4 v4.17.0
+	github.com/gorilla/websocket v1.5.1
 )
 
 require (
@@ -13,6 +14,7 @@ require (
 	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20200410134404-eec4a21b6bb0 // indirect
 	golang.org/x/mod v0.11.0 // indirect
+	golang.org/x/net v0.18.0 // indirect
 	golang.org/x/sys v0.16.0 // indirect
 	golang.org/x/tools v0.10.0 // indirect
 	lukechampine.com/uint128 v1.2.0 // indirect
@@ -28,10 +30,8 @@ require (
 )
 
 require (
-	github.com/golang-migrate/migrate v3.5.4+incompatible
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/mattn/go-sqlite3 v1.14.22
 	go.uber.org/atomic v1.7.0 // indirect
-	golang.org/x/crypto v0.18.0
 )

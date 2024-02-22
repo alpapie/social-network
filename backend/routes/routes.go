@@ -4,9 +4,13 @@ import (
 	"net/http"
 	"social_network/controller"
 	"social_network/middleware"
+	"social_network/ws"
 )
 
 func Routes() {
+	hub := ws.NewHub(controller.DB)
+	wsHandler := ws.NewHandler(hub)
+	go hub.Run()
 	http.HandleFunc("/server/", middleware.Ispath(middleware.CheckMethod(controller.Auth, "get"),""))
 	http.HandleFunc("/server/home", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.Home, "get"),"home")))
 
@@ -37,5 +41,9 @@ func Routes() {
 	http.HandleFunc("/server/chat", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.GetChatMessageHandler, "get"), "chat")))
 	http.HandleFunc("/server/chatgroup", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.GetGroupMessageHandler, "get"), "chatgroup")))
 
-
+	//socket Handlers
+	http.HandleFunc("/server/createRoom", middleware.Ispath(middleware.CheckMethod(wsHandler.CreateRoom, "post"), "createRoom"))
+	http.HandleFunc("/server/joinRoom", middleware.Ispath(middleware.CheckMethod(wsHandler.JoinRoom, "get"), "joinRoom"))
+	http.HandleFunc("/server/getClients", middleware.Ispath(middleware.CheckMethod(wsHandler.GetClients, "get"), "getClients"))
+	http.HandleFunc("/server/getRooms", middleware.Ispath(middleware.CheckMethod(wsHandler.GetRooms, "get"), "getRooms"))
 }
