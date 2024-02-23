@@ -19,7 +19,11 @@
         socket.onmessage = (e) => {
         var newMessage = JSON.parse(e.data);
         console.log("receive new message ", newMessage)
-        allmessage = [...allmessage , newMessage]
+        if (allmessage) {
+            allmessage = [...allmessage , newMessage]
+        } else {
+            allmessage = [newMessage]
+        }
     }
     })
     let Message = ''
@@ -48,7 +52,7 @@
                     <div class="chat-wrapper pt-0 w-100 position-relative scroll-bar bg-white theme-dark-bg">
                         <div class="chat-body p-3 ">
                             <div class="messages-content pb-5">
-                                {#if allmessage.length > 0}
+                                {#if allmessage?.length > 0}
                                     {#each allmessage as message }
                                     {#if message.receiver_id != receiver_id}
                                         <div class="message-item">
