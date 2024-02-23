@@ -33,7 +33,7 @@ func (n *Notification) CreateNotification(db *sql.DB) error {
 	}
 
 	query := `INSERT INTO Notification (User_id, send_id, type, status, group_id) VALUES (?, ?, ?, ?, ?)`
-	_, err1 := db.Exec(query, n.User_id, n.SenderID, n.Type, n.Status, n.Group_id)
+	_, err1 := db.Exec(query, n.User_id, n.SenderID, n.Type, "0", n.Group_id)
 	if err1 != nil {
 		return fmt.Errorf("failed to create notification: %v", err1)
 	}
@@ -75,8 +75,8 @@ func GetNotificationByUserIDAndType(db *sql.DB, SenderID int, userID int, notifi
 }
 
 func (n Notification) MarkAsRead(db *sql.DB, user_id int) error {
-	req := `UPDATE Notification SET status = 1 WHERE User_id=? and send_id=?`
-	_, err := db.Exec(req, user_id, n.SenderID)
+	req := `UPDATE Notification SET status = 1 WHERE id=? and User_id=? and send_id=?`
+	_, err := db.Exec(req, n.ID, n.User_id, n.SenderID)
 	if err != nil {
 		return fmt.Errorf("error when marking as read: %v", err)
 	}

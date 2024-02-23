@@ -33,7 +33,7 @@ func Auth(Db *sql.DB, r *http.Request) (bool, string, int) {
 	if err != nil || sessionpi.String() == "" {
 		return false, "", 0
 	}
-	fmt.Println(sessionpi.Value)
+	// fmt.Println(sessionpi.Value)
 
 	var sessionId, email string
 	var datef time.Time
@@ -45,7 +45,7 @@ func Auth(Db *sql.DB, r *http.Request) (bool, string, int) {
 		return false, "", 0
 	}
 
-	fmt.Println(email)
+	// fmt.Println(email)
 
 	if sessionId != "" && email != "" && datef.After(time.Now()) {
 		return true, email, user_id

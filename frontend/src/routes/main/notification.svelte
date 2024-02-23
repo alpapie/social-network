@@ -5,6 +5,10 @@
 	let NotifSocket;
 	export let data;
 
+	const notificationRequireConfirmation = (type) => {
+		return type == "followRequest";
+	};
+
 	const getNotifMessageSwitchType = (type) => {
 		let message = "";
 		switch (type) {
@@ -24,8 +28,31 @@
 				message = "no message";
 				break;
 		}
-		// console.log("notification type:", type);
 		return message;
+	};
+
+	const markAsRead = async (notifId, receiverId) => {
+		try {
+			let header = {
+				cookie: document.cookie,
+			};
+
+			const config = {
+				method: "get",
+				withCredentials: true,
+				header,
+				mode: "no-cors",
+				params: { user_id: receiverId, notif_id: notifId },
+			};
+
+			let httpResponse = await axios(
+				`http://localhost:8080/server/notifAsRead`,
+				config
+			);
+			console.log(httpResponse);
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	const respondToRequest = async (reply, receiverId) => {
@@ -125,23 +152,31 @@
 			</h6>
 		</div>
 
-		{#if notif.type.toLowerCase().includes("request")}
+		{#if notificationRequireConfirmation(notif.type)}
 			<div class="card-body d-flex pt-0 ps-4 pe-4 pb-4 w50">
-				<span
+				<button
 					on:click={() => {
 						respondToRequest("accept", notif.sender_id);
 					}}
 					class="p-2 w100 bg-success me-2 text-white text-center font-xssss fw-400 ls-1 rounded-xl"
-					style="cursor: pointer;">Confirm</span
+					style="cursor: pointer;">Confirm</button
 				>
-				<span
+				<button
 					on:click={() => {
 						respondToRequest("decline", notif.sender_id);
 					}}
 					class="p-2 lh-20 text-white bg-danger w100 text-center font-xssss fw-400 ls-1 rounded-xl"
-					style="cursor: pointer;">Decline</span
+					style="cursor: pointer;">Decline</button
 				>
 			</div>
+		{:else}
+			<button
+				on:click={() => {
+					markAsRead(notif.id, notif.sender_id);
+				}}
+				class="p-2 lh-20 text-white bg-danger w100 text-center font-xssss fw-400 ls-1 rounded-xl"
+				style="border: none;">Mark as read</button
+			>
 		{/if}
 	{/each}
 </div>

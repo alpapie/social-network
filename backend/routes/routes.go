@@ -39,4 +39,5 @@ func Routes() {
 	http.HandleFunc("/server/initnotifsocket", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.InitSocketNotification, "get"), "initnotifsocket")))
 	http.HandleFunc("/server/acceptfollow", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.AcceptFollowRequest, "get"), "acceptfollow")))
 	http.HandleFunc("/server/declinefollow", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.DeclineFollowRequest, "get"), "declinefollow")))
+	http.HandleFunc("/server/notifAsRead", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.MarkNotificationAsRead, "get"), "notifAsRead")))
 }
