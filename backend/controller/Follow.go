@@ -137,7 +137,6 @@ func MarkNotificationAsRead(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_, _, user_id := helper.Auth(DB, r)
-	fmt.Println("userIDDDD", user_id)
 
 	follower := models.User{}
 	current_user := models.User{}
@@ -149,7 +148,7 @@ func MarkNotificationAsRead(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newNotification := models.Notification{ID: notificationId, User_id: current_user.ID, SenderID: follower.ID, FirstName: current_user.FirstName, LastName: current_user.LastName, Avatar: current_user.Avatar, Type: "declinedFollowRequest"}
+	newNotification := models.Notification{ID: notificationId, User_id: current_user.ID, SenderID: follower.ID, FirstName: current_user.FirstName, LastName: current_user.LastName, Avatar: current_user.Avatar, Type: ""}
 	newNotification.MarkAsRead(DB, follow_id)
 	if err != nil {
 		helper.ErrorPage(w, 500)
@@ -170,6 +169,13 @@ func DeclineFollowRequest(w http.ResponseWriter, r *http.Request) {
 		helper.ErrorPage(w, 400)
 		return
 	}
+
+	// notificationId, err := strconv.Atoi(r.URL.Query().Get("notif_id"))
+	// if err != nil {
+	// 	helper.ErrorPage(w, 400)
+	// 	return
+	// }
+
 	_, _, user_id := helper.Auth(DB, r)
 
 	follower := models.User{}
@@ -189,14 +195,15 @@ func DeclineFollowRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(currentNotificationsByType) > 0 {
-		err := currentNotificationsByType[0].MarkAsRead(DB, user_id)
+		fmt.Println("cureent notification id:", currentNotificationsByType[0].ID)
+		err := currentNotificationsByType[0].MarkAsRead(DB, current_user.ID)
 		if err != nil {
 			helper.ErrorPage(w, 500)
 			return
 		}
 	}
 
-	newNotification := models.Notification{User_id: current_user.ID, SenderID: current_user.ID, FirstName: current_user.FirstName, LastName: current_user.LastName, Avatar: current_user.Avatar, Type: "declinedFollowRequest"}
+	newNotification := models.Notification{User_id: follower.ID, SenderID: current_user.ID, FirstName: current_user.FirstName, LastName: current_user.LastName, Avatar: current_user.Avatar, Type: "declinedFollowRequest"}
 	err = newNotification.CreateNotification(DB)
 	if err != nil {
 		helper.ErrorPage(w, 500)

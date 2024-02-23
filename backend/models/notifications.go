@@ -42,7 +42,7 @@ func (n *Notification) CreateNotification(db *sql.DB) error {
 
 func GetNotificationByUserIDAndType(db *sql.DB, SenderID int, userID int, notificationType string, groupID int) ([]Notification, error) {
 	stmt, err := db.Prepare(`
-        SELECT User_id, send_id, Type, Status
+        SELECT id , User_id, send_id, Type, Status
         FROM Notification
         WHERE send_id = ? AND Type = ? AND User_id = ? AND Group_id = ?
     `)
@@ -60,7 +60,7 @@ func GetNotificationByUserIDAndType(db *sql.DB, SenderID int, userID int, notifi
 	var notifications []Notification
 	for rows.Next() {
 		var n Notification
-		err := rows.Scan(&n.User_id, &n.SenderID, &n.Type, &n.Status)
+		err := rows.Scan(&n.ID, &n.User_id, &n.SenderID, &n.Type, &n.Status)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan row: %v", err)
 		}
@@ -76,6 +76,7 @@ func GetNotificationByUserIDAndType(db *sql.DB, SenderID int, userID int, notifi
 
 func (n Notification) MarkAsRead(db *sql.DB, user_id int) error {
 	req := `UPDATE Notification SET status = 1 WHERE id=? and User_id=? and send_id=?`
+	fmt.Println("marke as read ids", n.ID, n.User_id, n.SenderID)
 	_, err := db.Exec(req, n.ID, n.User_id, n.SenderID)
 	if err != nil {
 		return fmt.Errorf("error when marking as read: %v", err)

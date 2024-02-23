@@ -4,6 +4,7 @@
 
 	let NotifSocket;
 	export let data;
+	let showDot = false;
 
 	const notificationRequireConfirmation = (type) => {
 		return type == "followRequest";
@@ -55,7 +56,7 @@
 		}
 	};
 
-	const respondToRequest = async (reply, receiverId) => {
+	const respondToRequest = async (reply, notifId, receiverId) => {
 		let httpResponse;
 		let url = "";
 		switch (reply) {
@@ -78,7 +79,7 @@
 				withCredentials: true,
 				header,
 				mode: "no-cors",
-				params: { user_id: receiverId },
+				params: { user_id: receiverId, notif_id: notifId },
 			};
 			httpResponse = await axios(`http://localhost:8080/server/${url}`, config);
 			console.log("reply response", httpResponse);
@@ -92,17 +93,21 @@
 			NotifSocket = new WebSocket("ws://localhost:8080/server/initnotifsocket");
 		}
 
+		console.log("component data:", data);
+
+		if (data.notifications.length > 0) {
+			showDot = true;
+		}
+
 		console.log("initialise socket", NotifSocket);
 
-		// console.log("all notifications: ", data);
 		NotifSocket.onmessage = function (event) {
-			// alert(`[message] Data received from server: ${event.data}`);
 			let newEvent = JSON.parse(event.data);
-			console.log(newEvent);
 
 			if (newEvent?.action == "notification") {
 				data.notifications = [...data.notifications, newEvent.notification];
 			}
+			showDot = true;
 		};
 
 		NotifSocket.onclose = function (event) {
@@ -121,15 +126,22 @@
 	id="dropdownMenu3"
 	data-bs-toggle="dropdown"
 	aria-expanded="false"
-	><span class="dot-count bg-warning"></span><i
-		class="feather-bell font-xl text-current"
-	></i></a
 >
+	{#if showDot}
+		<span class="dot-count bg-warning"></span>
+	{/if}
+	<i class="feather-bell font-xl text-current"></i>
+</a>
 <div
 	class="dropdown-menu dropdown-menu-end p-4 rounded-3 border-0 shadow-lg"
 	aria-labelledby="dropdownMenu3"
 >
-	<h4 class="fw-700 font-xss mb-4">Notification</h4>
+	<h4 class="fw-700 font-xss mb-4">Notifications</h4>
+	<!-- {#if !showDot}
+		<div class="card bg-transparent-card w-100 border-0 ps-5 mb-3">
+			<p>No new notifications</p>
+		</div>
+	{:else} -->
 	{#each data.notifications as notif}
 		<div class="card bg-transparent-card w-100 border-0 ps-5 mb-3">
 			<img
@@ -156,14 +168,14 @@
 			<div class="card-body d-flex pt-0 ps-4 pe-4 pb-4 w50">
 				<button
 					on:click={() => {
-						respondToRequest("accept", notif.sender_id);
+						respondToRequest("accept", notif.id, notif.sender_id);
 					}}
 					class="p-2 w100 bg-success me-2 text-white text-center font-xssss fw-400 ls-1 rounded-xl"
 					style="cursor: pointer;">Confirm</button
 				>
 				<button
 					on:click={() => {
-						respondToRequest("decline", notif.sender_id);
+						respondToRequest("decline", notif.id, notif.sender_id);
 					}}
 					class="p-2 lh-20 text-white bg-danger w100 text-center font-xssss fw-400 ls-1 rounded-xl"
 					style="cursor: pointer;">Decline</button
@@ -179,4 +191,5 @@
 			>
 		{/if}
 	{/each}
+	<!-- {/if} -->
 </div>
