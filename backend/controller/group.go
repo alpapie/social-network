@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"html"
+	"log"
 	"net/http"
+	"social_network/global"
 	helper "social_network/helper"
 	"social_network/models"
 	"strconv"
@@ -81,14 +83,21 @@ func CreateFollowGroup(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
-
-	_, userEmail, _ := helper.Auth(DB, r)
-
+	// auth, _ := helper.Auth(DB, r)
+	// if !auth {
+	// 	http.Error(w, "Unauthorized", http.StatusUnauthorized)
+	// 	return
+	// }
+	fmt.Println("salam dialo 1")
+	auth, userEmail, _ := helper.Auth(DB, r)
+	if !auth {
+		fmt.Println("Not registered")
+		return
+	}
 	var user = models.User{}
 	err := user.GetUserByEmail(DB, userEmail)
 	if err != nil {
 		fmt.Println(err)
-		helper.ErrorPage(w, 500)
 		return
 	}
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -96,18 +105,18 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(r)
 	err = json.NewDecoder(r.Body).Decode(&newGroup)
 	if err != nil {
-		helper.ErrorPage(w, 500)
+		http.Error(w, "Failed to parse request body", http.StatusBadRequest)
 		fmt.Println("in decode")
 		return
 	}
 	if newGroup.Title == "" || newGroup.Description == "" {
-		helper.ErrorPage(w, 500)
+		http.Error(w, "Title and description cannot be empty", http.StatusBadRequest)
 		return
 	}
 	newGroup.UserID = user.ID
 	lastInsertId, err := newGroup.CreateGroup(DB)
 	if err != nil {
-		helper.ErrorPage(w, 500)
+		http.Error(w, "Failed to create group", http.StatusInternalServerError)
 		fmt.Println(err)
 		fmt.Println("in user")
 		return
@@ -115,7 +124,20 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 	er := models.JoinGroup(DB, user.ID, int(lastInsertId))
 	if er != nil {
 		fmt.Println(er)
-		helper.ErrorPage(w, 500)
+		return
+	}
+
+	roomId := strconv.FormatInt(lastInsertId,  10)
+    err = global.WS_HANDLER.CreateRoomFunc(roomId, newGroup.Title)
+    if err != nil {
+        http.Error(w, "Failed to create room", http.StatusInternalServerError)
+        fmt.Println(err)
+        return
+    }
+	fmt.Println("salam dialo")
+	err = global.WS_HANDLER.JoinRoomFunc(w, r, roomId, strconv.Itoa(user.ID), "username")
+	if err != nil {
+		log.Printf("Failed to join room: %v", err)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
