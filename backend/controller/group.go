@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"html"
-	"log"
 	"net/http"
 	"social_network/global"
 	helper "social_network/helper"
@@ -83,11 +82,6 @@ func CreateFollowGroup(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
-	// auth, _ := helper.Auth(DB, r)
-	// if !auth {
-	// 	http.Error(w, "Unauthorized", http.StatusUnauthorized)
-	// 	return
-	// }
 	fmt.Println("salam dialo 1")
 	auth, userEmail, _ := helper.Auth(DB, r)
 	if !auth {
@@ -127,19 +121,14 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	roomId := strconv.FormatInt(lastInsertId,  10)
-    err = global.WS_HANDLER.CreateRoomFunc(roomId, newGroup.Title)
-    if err != nil {
-        http.Error(w, "Failed to create room", http.StatusInternalServerError)
-        fmt.Println(err)
-        return
-    }
-	fmt.Println("salam dialo")
-	err = global.WS_HANDLER.JoinRoomFunc(w, r, roomId, strconv.Itoa(user.ID), "username")
+	roomId := strconv.FormatInt(lastInsertId, 10)
+	err = global.WS_HANDLER.CreateRoomFunc(roomId, newGroup.Title)
 	if err != nil {
-		log.Printf("Failed to join room: %v", err)
+		http.Error(w, "Failed to create room", http.StatusInternalServerError)
+		fmt.Println(err)
 		return
 	}
+	
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(map[string]interface{}{
