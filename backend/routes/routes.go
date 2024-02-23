@@ -3,7 +3,6 @@ package route
 import (
 	"net/http"
 	"social_network/controller"
-	"social_network/global"
 	"social_network/middleware"
 )
 
@@ -38,8 +37,6 @@ func Routes() {
 	http.HandleFunc("/server/chatgroup", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.GetGroupMessageHandler, "get"), "chatgroup")))
 
 	//socket Handlers
-	http.HandleFunc("/server/createRoom", middleware.Ispath(middleware.CheckMethod(global.WS_HANDLER.CreateRoom, "post"), "createRoom"))
-	http.HandleFunc("/server/joinRoom", middleware.Ispath(middleware.CheckMethod(global.WS_HANDLER.JoinRoom, "get"), "joinRoom"))
-	http.HandleFunc("/server/getClients", middleware.Ispath(middleware.CheckMethod(global.WS_HANDLER.GetClients, "get"), "getClients"))
-	http.HandleFunc("/server/getRooms", middleware.Ispath(middleware.CheckMethod(global.WS_HANDLER.GetRooms, "get"), "getRooms"))
+	http.HandleFunc("/server/ws", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.WsHandler, "get"), "ws")))
+
 }
