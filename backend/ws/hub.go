@@ -28,7 +28,13 @@ func NewHub(DB *sql.DB) *Hub {
 		Broadcast:  make(chan *Message, 100),
 	}
 
-	// Appelez GetAllGroups et ajoutez chaque groupe à la structure Rooms
+	generalRoom := &Room{
+        ID:      "sociala",
+        Name:    "sociala",
+        Clients: make(map[string]*Client),
+    }
+    hub.Rooms["sociala"] = generalRoom
+	
 	groups, err := models.GetAllGroups(DB)
 	if err != nil {
 		log.Printf("Error getting all groups: %v", err)
