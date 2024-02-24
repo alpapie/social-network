@@ -21,10 +21,12 @@
         socket.onmessage = (e) => {
         var newMessage = JSON.parse(e.data);
         console.log("receive new message ", newMessage)
-        if (allmessage) {
-            allmessage = [...allmessage , newMessage]
-        } else {
-            allmessage = [newMessage]
+        if (newMessage.sender_id == receiver_id || newMessage.receiver_id == receiver_id) {
+            if (allmessage) {
+                allmessage = [...allmessage , newMessage]
+            } else {
+                allmessage = [newMessage]
+            }
         }
     }
     })
