@@ -64,7 +64,7 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 		helper.ErrorPage(w, 500)
 		return
 	}
-	SendSocketMessage(w, follow_id, newNotification, "notification")
+	SendSocketNotification( newNotification, "notification")
 
 	err = helper.WriteJSON(w, http.StatusOK, map[string]interface{}{"success": true, "user_id": user_id}, nil)
 	if err != nil {
@@ -73,53 +73,74 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func AcceptFollowRequest(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Follow request accepted!")
+func NotificationRequestTraiment(w http.ResponseWriter, r *http.Request) {
 	follow_id, err := strconv.Atoi(r.URL.Query().Get("user_id"))
-	if err != nil {
+	notificationId, errnotifid := strconv.Atoi(r.URL.Query().Get("notif_id"))
+	accept,erraccept:=strconv.Atoi(r.URL.Query().Get("accept"))
+	group_id,errgroup_id:=strconv.Atoi(r.URL.Query().Get("group_id"))
+
+	if err != nil || errnotifid!=nil || erraccept!=nil || errgroup_id!=nil{
+		fmt.Println(err , errnotifid, erraccept, errgroup_id)
 		helper.ErrorPage(w, 400)
 		return
 	}
 
 	_, _, user_id := helper.Auth(DB, r)
 
-	follower := models.User{}
-	current_user := models.User{}
-	errFollow := follower.GetUserById(DB, follow_id)
-	errUser := current_user.GetUserById(DB, user_id)
-
-	if errFollow != nil || errUser != nil {
-		helper.ErrorPage(w, 400)
-		return
-	}
-
-	errReq := current_user.AddFollower(DB, follow_id)
-	if errReq != nil {
+	
+	newNotification := models.Notification{}
+	errGettingNotifs:=newNotification.GetNotificationByUserIDAndTypeAndnotifid(DB,notificationId ,follow_id, user_id,group_id)
+	
+	if errGettingNotifs != nil || newNotification.ID==0 {
+		fmt.Println("error get notif",errGettingNotifs)
 		helper.ErrorPage(w, 500)
 		return
 	}
 
-	currentNotificationsByType, errGettingNotifs := models.GetNotificationByUserIDAndType(DB, follow_id, user_id, "followRequest", 0)
-	if errGettingNotifs != nil {
-		helper.ErrorPage(w, 500)
-		return
-	}
+	if accept==1 {
+		errTra := TraiteNotif(user_id, follow_id,group_id )
+		if errTra != nil {
+			fmt.Println("error traitement",errTra)
+			helper.ErrorPage(w, 500)
+			return
+		}
 
-	if len(currentNotificationsByType) > 0 {
-		err := currentNotificationsByType[0].MarkAsRead(DB, current_user.ID)
+		fmt.Println(newNotification)
+		newNotification.User_id=newNotification.SenderID
+		newNotification.SenderID=user_id
+		newNotification.Type="succesrequest"
+		err = newNotification.CreateNotification(DB)
 		if err != nil {
+			fmt.Println("error create notif",err)
 			helper.ErrorPage(w, 500)
 			return
 		}
 	}
 
-	newNotification := models.Notification{User_id: follower.ID, SenderID: current_user.ID, FirstName: current_user.FirstName, LastName: current_user.LastName, Avatar: current_user.Avatar, Type: "acceptedFollowRequest"}
-	err = newNotification.CreateNotification(DB)
+	err = newNotification.MarkAsRead(DB)
 	if err != nil {
+		fmt.Println("error create mask notf",err)
 		helper.ErrorPage(w, 500)
 		return
 	}
-	SendSocketMessage(newNotification, "notification")
+
+
+	SendSocketNotification(newNotification, "notification")
+	err = helper.WriteJSON(w, http.StatusOK, map[string]interface{}{"success": true, "user_id": user_id}, nil)
+	if err != nil {
+		helper.ErrorPage(w, 400)
+		return
+	}
+}
+
+func TraiteNotif(user_id , follow_id  ,group_id int) error {
+	if group_id>0 {
+		return models.JoinGroup(DB,follow_id,group_id)
+	}
+
+	current_user := models.User{ID: user_id}
+	return current_user.AddFollower(DB, follow_id)
+	
 }
 
 func MarkNotificationAsRead(w http.ResponseWriter, r *http.Request) {
@@ -149,7 +170,7 @@ func MarkNotificationAsRead(w http.ResponseWriter, r *http.Request) {
 	}
 
 	newNotification := models.Notification{ID: notificationId, User_id: current_user.ID, SenderID: follower.ID, FirstName: current_user.FirstName, LastName: current_user.LastName, Avatar: current_user.Avatar, Type: ""}
-	newNotification.MarkAsRead(DB, follow_id)
+	newNotification.MarkAsRead(DB)
 	if err != nil {
 		helper.ErrorPage(w, 500)
 		return
@@ -162,52 +183,3 @@ func MarkNotificationAsRead(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func DeclineFollowRequest(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Follow request declined!")
-	follow_id, err := strconv.Atoi(r.URL.Query().Get("user_id"))
-	if err != nil {
-		helper.ErrorPage(w, 400)
-		return
-	}
-
-	// notificationId, err := strconv.Atoi(r.URL.Query().Get("notif_id"))
-	// if err != nil {
-	// 	helper.ErrorPage(w, 400)
-	// 	return
-	// }
-
-	_, _, user_id := helper.Auth(DB, r)
-
-	follower := models.User{}
-	current_user := models.User{}
-	errFollow := follower.GetUserById(DB, follow_id)
-	errUser := current_user.GetUserById(DB, user_id)
-
-	if errFollow != nil || errUser != nil {
-		helper.ErrorPage(w, 400)
-		return
-	}
-
-	currentNotificationsByType, errGettingNotifs := models.GetNotificationByUserIDAndType(DB, follow_id, user_id, "followRequest", 0)
-	if errGettingNotifs != nil {
-		helper.ErrorPage(w, 500)
-		return
-	}
-
-	if len(currentNotificationsByType) > 0 {
-		fmt.Println("cureent notification id:", currentNotificationsByType[0].ID)
-		err := currentNotificationsByType[0].MarkAsRead(DB, current_user.ID)
-		if err != nil {
-			helper.ErrorPage(w, 500)
-			return
-		}
-	}
-
-	newNotification := models.Notification{User_id: follower.ID, SenderID: current_user.ID, FirstName: current_user.FirstName, LastName: current_user.LastName, Avatar: current_user.Avatar, Type: "declinedFollowRequest"}
-	err = newNotification.CreateNotification(DB)
-	if err != nil {
-		helper.ErrorPage(w, 500)
-		return
-	}
-	SendSocketMessage( newNotification, "notification")
-}

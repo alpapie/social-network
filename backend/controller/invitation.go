@@ -28,7 +28,7 @@ func GetAllNotjoinedGroups(w http.ResponseWriter, r *http.Request) {
 	}
 	var groupss []NewGroup
 	for i := 0; i < len(groups); i++ {
-		not, errn := models.GetNotificationByUserIDAndType(DB, user.ID, groups[i].UserID, "follow-Group", groups[i].ID)
+		not, errn := models.GetNotificationByUserIDAndType(DB, user.ID, groups[i].UserID, "invited-to-join-Group", groups[i].ID)
 		if errn != nil {
 			return
 		}

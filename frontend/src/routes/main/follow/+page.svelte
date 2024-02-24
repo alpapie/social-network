@@ -38,7 +38,52 @@
 		}
 	}
 </script>
-
+{#key data}
+	<div class="main-content right-chat-active">
+		<div class="container">
+			<!-- Alert Success -->
+			<div
+				id="success-alert"
+				class="alert alert-success alert-dismissible {success
+					? 'd-none'
+					: ''} fade show"
+				role="alert"
+			>
+				friend request success!
+			</div>
+			<!-- Alert Error -->
+			<div
+				id="error-alert"
+				class="alert alert-danger alert-dismissible {erroralert
+					? 'd-none'
+					: ''} fade show"
+				role="alert"
+			>
+				Error for request friend!
+			</div>
+		</div>
+		<div class="middle-sidebar-bottom">
+			<div class="middle-sidebar-left pe-0">
+				<div class="row">
+					<div class="col-xl-12">
+						<div class="card shadow-xss w-100 d-block d-flex border-0 p-4 mb-3">
+							<div class="card-body d-flex align-items-center p-0">
+								<h2 class="fw-700 mb-0 mt-0 font-md text-grey-900">Friends</h2>
+								<div class="search-form-2 ms-auto">
+									<i class="ti-search font-xss"></i>
+									<input
+										type="text"
+										class="form-control text-grey-500 mb-0 bg-greylight theme-dark-bg border-0"
+										placeholder="Search here."
+									/>
+								</div>
+								<a
+									href="#"
+									class="btn-round-md ms-2 bg-greylight theme-dark-bg rounded-3"
+									><i class="feather-filter font-xss text-grey-500"></i></a
+								>
+							</div>
+						</div>
                     <div class="row ps-2 pe-2">
                         {#each data.listusers as user}
                             <div class="col-md-3 col-sm-4 pe-2 ps-2">

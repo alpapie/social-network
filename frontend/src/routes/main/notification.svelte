@@ -4,19 +4,23 @@
 
 	let NotifSocket;
 	export let data;
-	let showDot = false;
 
-    const getNotifMessageSwitchType = (type,name) => {
+    const notificationRequireConfirmation = (type) => {
+		return   ["follow","join-Group","invited-to-join-Group"].includes(type)
+	};
+
+
+    const getNotifMessageSwitchType = (type,name,group_title) => {
 		let message = "";
 		switch (type) {
 			case "follow":
-				message = name+ " is following you.";
+				message = name+ " request to following you.";
 				break;
 			case "invited-to-join-Group":
-				message = name+ " accepted your follow request.";
+				message = `${name} invite you to join ${group_title} group.`;
 				break;
 			case "join-Group":
-				message = name+ " declined your follow request.";
+				message = `${name}equest to join ${group_title}  group.`;
 				break;
 			default:
 				message = "no message";
@@ -51,33 +55,26 @@
 		}
 	};
 
-	const respondToRequest = async (reply, notifId, receiverId) => {
-		let httpResponse;
-		let url = "";
-		switch (reply) {
-			case "accept":
-				url = "acceptfollow";
-				break;
-			case "decline":
-				url = "declinefollow";
-				break;
-			default:
-				break;
-		}
+	const respondToRequest = async (accept,notifId, receiverId,group_id=0) => {
 
 		try {
 			let header = {
 				cookie: document.cookie,
 			};
+
 			const config = {
 				method: "get",
 				withCredentials: true,
 				header,
 				mode: "no-cors",
-				params: { user_id: receiverId, notif_id: notifId },
+				params: { user_id: receiverId, notif_id: notifId, group_id,accept },
 			};
-			httpResponse = await axios(`http://localhost:8080/server/${url}`, config);
-			console.log("reply response", httpResponse);
+			let response = await axios(`http://localhost:8080/server/notiftraitement`, config);
+			if (response?.data?.success) {
+				console.log(data.notifications);
+				data.notifications= data.notifications.filter((notif)=>notif.id!==notifId)
+				console.log(data.notifications);
+            }
 		} catch (error) {
 			console.log(error);
 		}
@@ -88,21 +85,12 @@
 			NotifSocket = new WebSocket("ws://localhost:8080/server/initnotifsocket");
 		}
 
-		console.log("component data:", data);
-
-		if (data.notifications.length > 0) {
-			showDot = true;
-		}
-
-		console.log("initialise socket", NotifSocket);
-
 		NotifSocket.onmessage = function (event) {
 			let newEvent = JSON.parse(event.data);
 
 			if (newEvent?.action == "notification") {
 				data.notifications = [...data.notifications, newEvent.notification];
 			}
-			showDot = true;
 		};
 
 		NotifSocket.onclose = function (event) {
@@ -122,7 +110,7 @@
 	data-bs-toggle="dropdown"
 	aria-expanded="false"
 >
-	{#if showDot}
+	{#if  data.notifications.length>0 }
 		<span class="dot-count bg-warning"></span>
 	{/if}
 	<i class="feather-bell font-xl text-current"></i>
@@ -132,11 +120,8 @@
 	aria-labelledby="dropdownMenu3"
 >
 	<h4 class="fw-700 font-xss mb-4">Notifications</h4>
-	<!-- {#if !showDot}
-		<div class="card bg-transparent-card w-100 border-0 ps-5 mb-3">
-			<p>No new notifications</p>
-		</div>
-	{:else} -->
+
+	
 	{#each data.notifications as notif}
 		<div class="card bg-transparent-card w-100 border-0 ps-5 mb-3">
 			<img
@@ -148,43 +133,35 @@
 				alt={notif.firstName + " " + notif.lastName}
 			/>
 			<h5 class="font-xsss text-grey-900 mb-1 mt-0 fw-700 d-block">
-				{notif.firstname + " " + notif.lastname}<span
-					class="text-grey-400 font-xsssss fw-600 float-right mt-1"
-				>
-					3 min</span
-				>
+				{notif.firstname + " " + notif.lastname}
 			</h5>
 			<h6 class="text-grey-500 fw-500 font-xssss lh-4">
-				{getNotifMessageSwitchType(notif.type)}
+				{getNotifMessageSwitchType(notif.type,notif.firstname + " " + notif.lastname,notif.grouptitle)}
 			</h6>
 		</div>
 
-		{#if notificationRequireConfirmation(notif.type)}
-			<div class="card-body d-flex pt-0 ps-4 pe-4 pb-4 w50">
-				<button
-					on:click={() => {
-						respondToRequest("accept", notif.id, notif.sender_id);
-					}}
-					class="p-2 w100 bg-success me-2 text-white text-center font-xssss fw-400 ls-1 rounded-xl"
-					style="cursor: pointer;">Confirm</button
-				>
-				<button
-					on:click={() => {
-						respondToRequest("decline", notif.id, notif.sender_id);
-					}}
-					class="p-2 lh-20 text-white bg-danger w100 text-center font-xssss fw-400 ls-1 rounded-xl"
-					style="cursor: pointer;">Decline</button
-				>
-			</div>
-		{:else}
-			<button
-				on:click={() => {
-					markAsRead(notif.id, notif.sender_id);
-				}}
-				class="p-2 lh-20 text-white bg-danger w100 text-center font-xssss fw-400 ls-1 rounded-xl"
-				style="border: none;">Mark as read</button
-			>
-		{/if}
+        <div class="card-body d-flex align-items-center pt-0 ps-4 pe-4 pb-4">
+            {#if notificationRequireConfirmation(notif.type)}
+                    <a href="#"  on:click={() => {
+                        respondToRequest(1, notif.id, notif.sender_id,notif.group_id);
+                    }} class="p-2 lh-20 w100 bg-primary-gradiant me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">Confirm</a>
+                    <a href="#"
+                    on:click={() => {
+                        respondToRequest(0, notif.id, notif.sender_id,notif.group_id);
+                    }}
+                     class="p-2 lh-20 w100 bg-grey text-grey-800 text-center font-xssss fw-600 ls-1 rounded-xl">Decline</a>
+                   
+            {:else}
+                    <a href="#"
+                        on:click={() => {
+                            markAsRead(notif.id, notif.sender_id);
+                        }}
+                        class="p-2 lh-20 w100 bg-grey text-grey-800 text-center font-xssss fw-600 ls-1 rounded-xl"
+                       >Delete</a
+                    >
+            {/if}
+        </div>
 	{/each}
+
 	<!-- {/if} -->
 </div>
