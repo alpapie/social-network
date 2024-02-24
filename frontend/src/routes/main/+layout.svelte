@@ -6,7 +6,7 @@
 </script>
 
 <div class="main-wrapper">
-	<Header data={data}/>
-	<SideBar />
+	<Header data={data.notif}/>
+	<SideBar data={data.user} />
 	<slot />
 </div>

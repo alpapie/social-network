@@ -1,5 +1,6 @@
 import { makeRequest } from "$lib/api.js"
 import { authenticateUser } from "$lib/auth/auth"
+import { localStorageObj } from "$lib/db.js"
 import { error, redirect } from "@sveltejs/kit"
 
 export const load= async ({cookies})=>{
@@ -10,7 +11,7 @@ export const load= async ({cookies})=>{
 
     const response= await makeRequest("notificatons","get",{},{},cookies)
     if (response?.data?.success) {
-        return response?.data;
+        return{notif: response?.data, user:localStorageObj.data.user}
     }
 
     throw error(400,"bad request")
