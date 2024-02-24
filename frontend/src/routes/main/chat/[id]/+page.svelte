@@ -56,11 +56,7 @@
                     <div class="chat-wrapper pt-0 w-100 position-relative scroll-bar bg-white theme-dark-bg">
                         <div class="chat-body p-3 ">
                             <div class="messages-content pb-5">
-<<<<<<< HEAD
-                                {#if allmessage && allmessage.length > 0}
-=======
                                 {#if allmessage?.length > 0}
->>>>>>> refs/remotes/origin/chat
                                     {#each allmessage as message }
                                     {#if message.receiver_id != receiver_id}
                                         <div class="message-item">
