@@ -8,20 +8,19 @@ import (
 )
 
 type Notification struct {
-	ID       int    `json:"id"`
-	User_id  int    `json:"user_id"`
-	SenderID int    `json:"sender_id"`
-	FirstName string `json:"firstname"`
-	LastName string `json:"lastname"`
-	Avatar 	 string `json:"avatar"`
+	ID         int    `json:"id"`
+	User_id    int    `json:"user_id"`
+	SenderID   int    `json:"sender_id"`
+	FirstName  string `json:"firstname"`
+	LastName   string `json:"lastname"`
+	Avatar     string `json:"avatar"`
 	GroupTitle string `json:"grouptitle"`
-	Group_id int `json:"group_id"`
-	Type     string `json:"type"`
-	Status   string `json:"status"`
+	Group_id   int    `json:"group_id"`
+	Type       string `json:"type"`
+	Status     string `json:"status"`
 }
 
 func (n *Notification) CreateNotification(db *sql.DB) error {
-
 	checkQuery := `SELECT COUNT(*) FROM Notification WHERE User_id = ? AND send_id = ? AND Type = ?`
 	row := db.QueryRow(checkQuery, n.User_id, n.SenderID, n.Type)
 	var count int
@@ -34,7 +33,7 @@ func (n *Notification) CreateNotification(db *sql.DB) error {
 	}
 
 	query := `INSERT INTO Notification (User_id, send_id, type, status, group_id) VALUES (?, ?, ?, ?, ?)`
-	_, err1 := db.Exec(query, n.User_id, n.SenderID, n.Type, n.Status, n.Group_id)
+	_, err1 := db.Exec(query, n.User_id, n.SenderID, n.Type, "0", n.Group_id)
 	if err1 != nil {
 		return fmt.Errorf("failed to create notification: %v", err1)
 	}
@@ -43,7 +42,7 @@ func (n *Notification) CreateNotification(db *sql.DB) error {
 
 func GetNotificationByUserIDAndType(db *sql.DB, SenderID int, userID int, notificationType string, groupID int) ([]Notification, error) {
 	stmt, err := db.Prepare(`
-        SELECT User_id, send_id, Type, Status
+        SELECT id , User_id, send_id, Type, Status
         FROM Notification
         WHERE send_id = ? AND Type = ? AND User_id = ? AND Group_id = ?
     `)
@@ -61,7 +60,7 @@ func GetNotificationByUserIDAndType(db *sql.DB, SenderID int, userID int, notifi
 	var notifications []Notification
 	for rows.Next() {
 		var n Notification
-		err := rows.Scan(&n.User_id, &n.SenderID, &n.Type, &n.Status)
+		err := rows.Scan(&n.ID, &n.User_id, &n.SenderID, &n.Type, &n.Status)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan row: %v", err)
 		}
@@ -75,18 +74,27 @@ func GetNotificationByUserIDAndType(db *sql.DB, SenderID int, userID int, notifi
 	return notifications, nil
 }
 
-
-func (N Notification)GetNotf(db *sql.DB, user_id int)([]Notification, error) {
-	req:=`SELECT notif.id,notif.status, notif.send_id , coalesce(g.id, 0), u."firstName", u."lastName",u.avatar, coalesce(g.title,"") from "User" as u INNER join "Notification" as notif on notif.send_id=u.id LEFT join "Group" as g on g.id=notif."Group_id" WHERE notif."User_id"=? `
-	row, err:=db.Query(req,user_id)
-	notifications:=[]Notification{}
-	if err!=nil {
-		return notifications,err
+func (n Notification) MarkAsRead(db *sql.DB, user_id int) error {
+	req := `UPDATE Notification SET status = 1 WHERE id=? and User_id=? and send_id=?`
+	fmt.Println("marke as read ids", n.ID, n.User_id, n.SenderID)
+	_, err := db.Exec(req, n.ID, n.User_id, n.SenderID)
+	if err != nil {
+		return fmt.Errorf("error when marking as read: %v", err)
 	}
+	return nil
+}
+
+func (N Notification) GetNotification(db *sql.DB, user_id int) ([]Notification, error) {
+	req := `SELECT notif.id,notif.status, notif.type, notif.send_id , coalesce(g.id, 0), u."firstName", u."lastName",u.avatar, coalesce(g.title,"") from "User" as u INNER join "Notification" as notif on notif.send_id=u.id LEFT join "Group" as g on g.id=notif."Group_id" WHERE notif."User_id"=? and notif.status!=1 `
+	row, err := db.Query(req, user_id)
+	notifications := []Notification{}
+	if err != nil {
+		return notifications, err
+	}
+
 	for row.Next() {
-		row.Scan(&N.ID,&N.Status,&N.SenderID,&N.Group_id,&N.FirstName,&N.LastName,&N.Avatar,&N.GroupTitle)
-		// fmt.Println("current notif",N)
+		row.Scan(&N.ID, &N.Status, &N.Type, &N.SenderID, &N.Group_id, &N.FirstName, &N.LastName, &N.Avatar, &N.GroupTitle)
 		notifications = append(notifications, N)
 	}
-	return notifications , nil
+	return notifications, nil
 }

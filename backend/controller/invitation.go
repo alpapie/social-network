@@ -173,7 +173,7 @@ func CreateInvitationGroup(w http.ResponseWriter, r *http.Request) {
 	    notification.LastName=currrentUser.LastName
 	    notification.Avatar=currrentUser.Avatar
 
-		SendSocketNotification(notification)
+		SendSocketNotification(notification,"notification")
 		ern := notification.CreateNotification(DB)
 		if ern != nil {
 			fmt.Println(ern)

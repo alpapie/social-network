@@ -19,7 +19,6 @@ func (u *User) GetUnFollow(DB *sql.DB, limit int) ([]User, error) {
 		return users, err
 	}
 	users = ExtractUserData(row, u, users)
-
 	return users, nil
 }
 
@@ -78,12 +77,12 @@ func (U *User) CreatedPost(DB *sql.DB, user_id int) ([]FeedPost, error) {
 
 func (U *User) UpdateStatus(DB *sql.DB) error {
 	req := `UPDATE User SET ispublic = ? WHERE id=?`
-	_, err := DB.Exec(req, U.IsPublic,U.ID)
+	_, err := DB.Exec(req, U.IsPublic, U.ID)
 	return err
 }
 
-func (U *User)GetFollowerAndFollowing(DB *sql.DB,user_id int) ([]User, error ){
-	req:=`SELECT  u.id,u."firstName",u."lastName", u.email,u.avatar from "User" AS "u" inner JOIN "Follow" AS "f" on f."Follower_id"=u.id  where u.id!=?`
+func (U *User) GetFollowerAndFollowing(DB *sql.DB, user_id int) ([]User, error) {
+	req := `SELECT  u.id,u."firstName",u."lastName", u.email,u.avatar from "User" AS "u" inner JOIN "Follow" AS "f" on f."Follower_id"=u.id  where u.id!=?`
 	row, err := DB.Query(req, user_id)
 	users := []User{}
 	if err != nil {

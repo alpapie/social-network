@@ -50,9 +50,8 @@ func InitSocketNotification(w http.ResponseWriter, r *http.Request) {
 func GetNotification(w http.ResponseWriter, r *http.Request) {
 	notif := models.Notification{}
 	_, _, user_id := helper.Auth(DB, r)
-	notifications, err := notif.GetNotf(DB, user_id)
+	notifications, err := notif.GetNotification(DB, user_id)
 
-	// fmt.Println("notification list",notifications)
 	if err != nil {
 		fmt.Println("notif error", err)
 		helper.ErrorPage(w, 500)
@@ -66,25 +65,26 @@ func GetNotification(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func SendSocketNotification( notificationObject models.Notification) {
+func SendSocketNotification( notificationObject models.Notification,action string) {
 	mutex.RLock()
 	receiver, isOnline := UsersNotif[notificationObject.User_id]
 	mutex.RUnlock()
 	if isOnline {
 
-		err:=receiver.conn.WriteMessage(websocket.TextMessage,toJSON(notificationObject,true))
+		err:=receiver.conn.WriteMessage(websocket.TextMessage,toJSON(notificationObject,true,action))
 		if err != nil {
 			fmt.Println("Error sending socket notification", err)
-			receiver.conn.WriteMessage(websocket.TextMessage,toJSON(models.Notification{},false))
+			receiver.conn.WriteMessage(websocket.TextMessage,toJSON(models.Notification{},false,action))
 			return
 		}
 	}
 }
 
-func toJSON(notificationObject models.Notification, success bool) []byte {
+func toJSON(notificationObject models.Notification, success bool,action string) []byte {
 	jsonData, _ := json.Marshal(map[string]interface{}{
 		"success": success,
 		"data":    notificationObject,
+		"action":action,
 	})
 	return jsonData
 }
