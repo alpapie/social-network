@@ -3,7 +3,6 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
-	"html"
 	"net/http"
 	"social_network/global"
 	helper "social_network/helper"
@@ -28,6 +27,7 @@ type NewUser struct {
 	Avatar      string `json:"avatar"`
 	Isrequested bool   `json:"is_requested"`
 }
+
 type GroupDetail struct {
 	NbrFollowers int            `json:"nbrfollowers"`
 	Events       []models.Event `json:"events"`
@@ -128,7 +128,7 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		return
 	}
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(map[string]interface{}{
@@ -136,48 +136,6 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 		"message": "Group created successfully",
 		"groupId": lastInsertId,
 	})
-}
-
-func CreateEvent(w http.ResponseWriter, r *http.Request) {
-	var user = models.User{}
-	_, userEmail, _ := helper.Auth(DB, r)
-
-	err := user.GetUserByEmail(DB, userEmail)
-	if err != nil {
-		fmt.Println("1")
-		fmt.Println(err)
-		helper.ErrorPage(w, 500)
-		return
-	}
-	fmt.Println("======------======")
-	fmt.Println(user)
-	groupId := r.FormValue("groupId")
-	title := html.EscapeString(strings.TrimSpace(r.FormValue("title")))
-	des := html.EscapeString(strings.TrimSpace(r.FormValue("description")))
-	date := r.FormValue("date")
-	time := r.FormValue("time")
-	var event = models.Event{}
-	event.Userid = user.ID
-	event.Title = title
-	event.Description = des
-	event.Date = date
-	event.Time = time
-	grId, errGrid := strconv.Atoi(groupId)
-	if errGrid != nil {
-		helper.ErrorPage(w, 500)
-		return
-	}
-
-	event.GroupId = grId
-
-	errc := event.CreateEvent(DB)
-	if errc != nil {
-		fmt.Println(errc)
-		helper.ErrorPage(w, 500)
-		return
-	}
-
-	helper.WriteJSON(w, 200, map[string]interface{}{"success": true}, nil)
 }
 
 func GetGroupDetail(w http.ResponseWriter, r *http.Request) {
@@ -208,6 +166,7 @@ func GetGroupDetail(w http.ResponseWriter, r *http.Request) {
 	}
 	events, erre := models.GetEventsByGroupId(DB, grId)
 	if erre != nil {
+		fmt.Println(erre)
 		helper.ErrorPage(w, 500)
 		return
 	}

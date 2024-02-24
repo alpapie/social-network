@@ -31,6 +31,7 @@ func Routes() {
 	http.HandleFunc("/server/invitegroup", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.CreateInvitationGroup, "post"), "invitegroup")))
 	http.HandleFunc("/server/followgroup", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.CreateFollowGroup, "post"), "followgroup")))
 	http.HandleFunc("/server/createEvent", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.CreateEvent, "post"), "createEvent")))
+	http.HandleFunc("/server/getoption", middleware.Log(middleware.CheckMethod(controller.GetOption, "get")))
 	http.HandleFunc("/server/getgroupdetail/", middleware.Log(controller.GetGroupDetail))
 
 	http.HandleFunc("/server/chat", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.GetChatMessageHandler, "get"), "chat")))
