@@ -163,10 +163,17 @@ func CreateInvitationGroup(w http.ResponseWriter, r *http.Request) {
 		var notification = models.Notification{}
 		notification.SenderID = user.ID
 		notification.User_id = groupData.UserIDs[i]
-		notification.Type = "invite-Group"
+		notification.Type = "invited-to-join-Group"
 		notification.Group_id = groupID
 		notification.Status = "false"
-		
+		currrentUser:=models.User{ } 
+        currrentUser.GetUserById(DB,groupData.UserIDs[i])
+
+		notification.FirstName=currrentUser.FirstName
+	    notification.LastName=currrentUser.LastName
+	    notification.Avatar=currrentUser.Avatar
+
+		SendSocketNotification(notification)
 		ern := notification.CreateNotification(DB)
 		if ern != nil {
 			fmt.Println(ern)

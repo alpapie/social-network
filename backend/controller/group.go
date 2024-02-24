@@ -65,12 +65,16 @@ func CreateFollowGroup(w http.ResponseWriter, r *http.Request) {
 	var notification = models.Notification{}
 	notification.SenderID = user.ID
 	notification.User_id = group.UserID
-	notification.Type = "follow-Group"
+	notification.Type = "join-Group"
 	notification.Group_id = group.ID
 	notification.Status = "false"
+	notification.FirstName=user.FirstName
+	notification.LastName=user.LastName
+	notification.Avatar=user.Avatar
 	ern := notification.CreateNotification(DB)
+	SendSocketNotification(notification)
 	if ern != nil {
-		fmt.Println(ern)
+		helper.ErrorPage(w,500)
 	}
 
 }

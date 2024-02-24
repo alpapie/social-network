@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"social_network/helper"
@@ -16,9 +17,9 @@ type UserToNotif struct {
 }
 
 var (
-	upgrader websocket.Upgrader
-	UsersNotif   = make(map[int]*UserToNotif)
-	mutex    = sync.RWMutex{}
+	upgrader   websocket.Upgrader
+	UsersNotif = make(map[int]*UserToNotif)
+	mutex      = sync.RWMutex{}
 )
 
 func init() {
@@ -42,7 +43,7 @@ func InitSocketNotification(w http.ResponseWriter, r *http.Request) {
 	mutex.RLock()
 	UsersNotif[user_id] = user
 	mutex.RUnlock()
-	
+
 	fmt.Println(UsersNotif)
 }
 
@@ -63,4 +64,27 @@ func GetNotification(w http.ResponseWriter, r *http.Request) {
 		helper.ErrorPage(w, 500)
 		return
 	}
+}
+
+func SendSocketNotification( notificationObject models.Notification) {
+	mutex.RLock()
+	receiver, isOnline := UsersNotif[notificationObject.User_id]
+	mutex.RUnlock()
+	if isOnline {
+
+		err:=receiver.conn.WriteMessage(websocket.TextMessage,toJSON(notificationObject,true))
+		if err != nil {
+			fmt.Println("Error sending socket notification", err)
+			receiver.conn.WriteMessage(websocket.TextMessage,toJSON(models.Notification{},false))
+			return
+		}
+	}
+}
+
+func toJSON(notificationObject models.Notification, success bool) []byte {
+	jsonData, _ := json.Marshal(map[string]interface{}{
+		"success": success,
+		"data":    notificationObject,
+	})
+	return jsonData
 }
