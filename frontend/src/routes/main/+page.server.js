@@ -6,6 +6,8 @@ import { fail } from '@sveltejs/kit';
 import { localStorageObj } from "$lib/db.js";
 import { createGroup } from "$lib/groups/createGroup";
 
+
+
 export const load = async ({cookies})=>{
     const IsAuth=await authenticateUser(cookies)
     if (!IsAuth) {

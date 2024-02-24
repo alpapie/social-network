@@ -1,6 +1,5 @@
 <script>
 	let activateSide = false
-	import { contactsStore } from './stores';
 	import Header from "./header.svelte";
 	import SideBar from "./sidebar.svelte";
 	import Contacts from "./messagerie.svelte";

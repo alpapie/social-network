@@ -4,12 +4,18 @@
     import { contactsStore } from './stores';
     let show;
     let Users;
+    
     contactsStore.subscribe(value => {
         Users = value;
     });
     displayContacts.subscribe((value) =>{
         show = value;
     });
+
+    const toggleConstants = () =>{
+        displayContacts.update((show) => !show)
+    }
+
 </script>
 <div class="right-chat nav-wrap mt-2 right-scroll-bar" class:active-sidebar={show}>
     <div class="middle-sidebar-right-content bg-white shadow-xss rounded-xxl">
@@ -47,7 +53,7 @@
             <h4 class="font-xsssss text-grey-500 text-uppercase fw-700 ls-3">CONTACTS</h4>
             <ul class="list-group list-group-flush">
                 {#each Users as user}
-                <li class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center">
+                <li class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center" on:click={toggleConstants}>
                     <figure class="avatar float-left mb-0 me-2">
                         <img src="images/user-8.png" alt="display photo" class="w35">
                     </figure>

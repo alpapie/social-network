@@ -1,4 +1,7 @@
 <script>
+    import { contactsStore } from '../stores';
+    
+    
     export let data
     let success=true
     let erroralert=true
@@ -17,7 +20,13 @@
                 setTimeout(() => {
                     success=true
                 }, 2000); 
+                const newContact = data.listusers.find(user => user.ID === id_user);
+
+                contactsStore.update(contacts => {
+                    return [...contacts, newContact];
+                });
                 data.listusers= data.listusers.filter((user)=> user.ID!=id_user)
+                
             }else{
                 erroralert=false
                 setTimeout(() => {

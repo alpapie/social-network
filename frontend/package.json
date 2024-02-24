@@ -32,6 +32,8 @@
 	"type": "module",
 	"dependencies": {
 		"axios": "^1.6.7",
+		"emoji-mart": "^5.5.2",
+		"svelte-emoji-picker": "^1.1.2",
 		"ws": "^8.16.0"
 	}
 }

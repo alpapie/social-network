@@ -2,12 +2,14 @@
     import {onMount} from "svelte"
     import { enhance } from "$app/forms";
     import { page } from "$app/stores"
+    import EmojiPicker from 'svelte-emoji-picker';
+
     export let data
     $:console.log('data GUEYE receiver', data);
-    $:allmessage = data.res.result.messages
+    $:allmessage = data?.res?.result?.messages
     let socket
-    const receiver_id = $page.params.id
-    console.log('RECEIVER ID', receiver_id);
+    $:receiver_id = $page.params.id
+    $:console.log('RECEIVER ID', receiver_id);
     onMount(async () => {
         if (!socket) {
             socket = new WebSocket("ws://localhost:8080/server/ws")
@@ -27,6 +29,8 @@
     }
     })
     let Message = ''
+    let showEmojis = false;
+
     function SendMessage() {
         console.log("THE NEW MESSAGE IS" , Message)
         let mess = {
@@ -52,7 +56,11 @@
                     <div class="chat-wrapper pt-0 w-100 position-relative scroll-bar bg-white theme-dark-bg">
                         <div class="chat-body p-3 ">
                             <div class="messages-content pb-5">
+<<<<<<< HEAD
+                                {#if allmessage && allmessage.length > 0}
+=======
                                 {#if allmessage?.length > 0}
+>>>>>>> refs/remotes/origin/chat
                                     {#each allmessage as message }
                                     {#if message.receiver_id != receiver_id}
                                         <div class="message-item">
@@ -150,9 +158,14 @@
                     </div>
                     <div class="chat-bottom dark-bg p-3 shadow-none theme-dark-bg" style="width: 98%;">
                         <div class="chat-form">
-                            <button class="bg-grey float-left"><i class="ti-microphone text-grey-600"></i></button>
+                            <div style="display: {showEmojis ? 'block' : 'none'};" >
+                                <EmojiPicker bind:value={Message} />
+                            </div>
+
+                            <button class="bg-current float-left" on:click={() => showEmojis = !showEmojis}>😀</button>
+
                             <div class="form-group">
-                                <input type="text" placeholder="Start typing.."  bind:value={Message} style="color: black;">
+                                <input id="messageInput" type="text" placeholder="Start typing.."  bind:value={Message} style="color: black;">
                             </div>          
                             <button class="bg-current" on:click={SendMessage}><i class="ti-arrow-right text-white" ></i></button>
                         </div>
