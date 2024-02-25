@@ -1,3 +1,47 @@
+<script>
+    import {onMount} from "svelte"
+    import { page } from "$app/stores"
+
+    export let data
+    $:groupid = $page.params.id
+    $:allmessage = data?.res?.result?.messages
+    $:console.log('les mess sont :', allmessage);
+    let socket
+
+    onMount(async () => {
+        if (!socket) {
+            socket = new WebSocket(`ws://localhost:8080/server/wss?groupId=${groupid}`)
+        }
+        
+        socket.addEventListener("open", ()=> {
+            console.log("Opened")
+        })
+        socket.onmessage = (e) => {
+            var newMessage = JSON.parse(e.data);
+            console.log("receive new message ", newMessage)
+            if (newMessage?.groupId == groupid) {
+                if (allmessage) {
+                    allmessage = [...allmessage , newMessage]
+                } else {
+                    allmessage = [newMessage]
+                }
+            }
+        }
+    })
+    let Message = ''
+    function SendMessage() {
+        console.log("THE NEW MESSAGE IS" , Message)
+        let mess = {
+            // sender_id: 9,
+            groupId : Number(groupid),
+            content : Message,
+        }
+        Message = ''
+        const messageJSON = JSON.stringify(mess);
+        socket.send(messageJSON)
+    }
+</script>
+
 <div class="main-content right-chat-active">
             
     <div class="middle-sidebar-bottom">
@@ -9,33 +53,41 @@
                     <div class="chat-wrapper pt-0 w-100 position-relative scroll-bar bg-white theme-dark-bg">
                         <div class="chat-body p-3 ">
                             <div class="messages-content pb-5">
-                                <div class="message-item">
-                                    <div class="message-user">
-                                        <figure class="avatar">
-                                            <img src="/images/user-9.png" alt="display photo">
-                                        </figure>
-                                        <div>
-                                            <h5>Byrom Guittet</h5>
-                                            <div class="time">01:35 PM</div>
+                                {#if allmessage?.length > 0}
+                                    {#each allmessage as message }
+                                    <!-- {#if message.receiver_id != receiver_id}
+                                        <div class="message-item">
+                                            <div class="message-user">
+                                                <figure class="avatar">
+                                                    <img src="/images/user-9.png" alt="display photo">
+                                                </figure>
+                                                <div>
+                                                    <h5>{message.firstName} {message.lastName}</h5>
+                                                    <div class="time">01:35 PM</div>
+                                                </div>
+                                            </div>
+                                            <div class="message-wrap">{message.content}</div>
                                         </div>
-                                    </div>
-                                    <div class="message-wrap">I'm fine, how are you 😃</div>
-                                </div>
-
-                                <div class="message-item outgoing-message">
-                                    <div class="message-user">
-                                        <figure class="avatar">
-                                            <img src="/images/user-1.png" alt="display photo">
-                                        </figure>
-                                        <div>
-                                            <h5>Byrom Guittet</h5>
-                                            <div class="time">01:35 PM<i class="ti-double-check text-info"></i></div>
+                                    {:else} -->
+                                        <div class="message-item outgoing-message">
+                                            <div class="message-user">
+                                                <figure class="avatar">
+                                                    <img src="/images/user-1.png" alt="display photo">
+                                                </figure>
+                                                <div>
+                                                    <h5>{message.firstName} {message.lastName}</h5>
+                                                    <div class="time">01:35 PM<i class="ti-double-check text-info"></i></div>
+                                                </div>
+                                            </div>
+                                            <div class="message-wrap">{message.content}</div>
                                         </div>
-                                    </div>
-                                    <div class="message-wrap">I want those files for you. I want you to send 1 PDF and 1 image file.</div>
-                                </div>
+                                    <!-- {/if}  -->
+                                   
+                                    {/each}
+                                {/if}
+                                    
 
-                                <div class="message-item">
+                                <!-- <div class="message-item">
                                     <div class="message-user">
                                         <figure class="avatar">
                                             <img src="/images/user-9.png" alt="display photo">
@@ -90,7 +142,7 @@
                                     </div>
                                     <div class="message-wrap" style="margin-bottom: 90px;">Hey mate! How are things going ?</div>
 
-                                </div>
+                                </div> -->
                                 <div class="clearfix"></div>
 
 
@@ -100,8 +152,8 @@
                     <div class="chat-bottom dark-bg p-3 shadow-none theme-dark-bg" style="width: 98%;">
                         <form class="chat-form">
                             <button class="bg-grey float-left"><i class="ti-microphone text-grey-600"></i></button>
-                            <div class="form-group"><input type="text" placeholder="Start typing.."></div>          
-                            <button class="bg-current"><i class="ti-arrow-right text-white"></i></button>
+                            <div class="form-group"><input type="text" placeholder="Start typing.." bind:value={Message}></div>          
+                            <button class="bg-current" on:click={SendMessage}><i class="ti-arrow-right text-white"></i></button>
                         </form>
                     </div> 
                 </div>
