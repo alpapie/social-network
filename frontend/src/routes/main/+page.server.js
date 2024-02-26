@@ -7,7 +7,6 @@ import { localStorageObj } from "$lib/db.js";
 import { createGroup } from "$lib/groups/createGroup";
 
 
-
 export const load = async ({cookies})=>{
     const IsAuth=await authenticateUser(cookies)
     if (!IsAuth) {
@@ -16,7 +15,7 @@ export const load = async ({cookies})=>{
 
     const response= await makeRequest("home","get",{},{},cookies)
     if (response?.data?.success) {
-        console.log("DATA FROM HOME" , response.data)
+        console.log("DATA FROM HOME" , response.data.user)
         return response?.data;
     }
     throw error(400,"bad request")

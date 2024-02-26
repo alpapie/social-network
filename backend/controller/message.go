@@ -26,7 +26,7 @@ func GetGroupMessageHandler(w http.ResponseWriter, r *http.Request) {
 		helper.ErrorPage(w, 500)
 		return
 	}
-	err := helper.WriteJSON(w, http.StatusOK, map[string]interface{}{"success": true, "messages": messages}, nil)
+	err := helper.WriteJSON(w, http.StatusOK, map[string]interface{}{"success": true, "messages": messages, "userid": UserID}, nil)
 	if err != nil {
 		fmt.Println(err)
 		helper.ErrorPage(w, 400)

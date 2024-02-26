@@ -1,18 +1,21 @@
 <script>
     import {onMount} from "svelte"
     import { page } from "$app/stores"
-
+    import {WS} from "../../../socket"
     export let data
+    $:console.log('les mess sont :', data);
+
     $:groupid = $page.params.id
     $:allmessage = data?.res?.result?.messages
+    $:currUserId = data?.res?.result?.userid
     $:console.log('les mess sont :', allmessage);
+    $:console.log('les mess sont :', currUserId);
     let socket
-
     onMount(async () => {
-        if (!socket) {
-            socket = new WebSocket(`ws://localhost:8080/server/wss?groupId=${groupid}`)
-        }
-        
+        // if (!socket) {
+        //     socket = new WebSocket(`ws://localhost:8080/server/wss?groupId=${groupid}`)
+        // }
+        WS.subscribe((val)=> socket = val)
         socket.addEventListener("open", ()=> {
             console.log("Opened")
         })
@@ -27,6 +30,7 @@
                 }
             }
         }
+       
     })
     let Message = ''
     function SendMessage() {
@@ -55,7 +59,7 @@
                             <div class="messages-content pb-5">
                                 {#if allmessage?.length > 0}
                                     {#each allmessage as message }
-                                    <!-- {#if message.receiver_id != receiver_id}
+                                    {#if  message.sender_id != currUserId}
                                         <div class="message-item">
                                             <div class="message-user">
                                                 <figure class="avatar">
@@ -68,7 +72,7 @@
                                             </div>
                                             <div class="message-wrap">{message.content}</div>
                                         </div>
-                                    {:else} -->
+                                    {:else}
                                         <div class="message-item outgoing-message">
                                             <div class="message-user">
                                                 <figure class="avatar">
@@ -81,7 +85,7 @@
                                             </div>
                                             <div class="message-wrap">{message.content}</div>
                                         </div>
-                                    <!-- {/if}  -->
+                                    {/if} 
                                    
                                     {/each}
                                 {/if}

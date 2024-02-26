@@ -35,7 +35,25 @@ func (m *Message) Create(controllerDB *sql.DB) (int , error){
 
 	return idmessage, nil
 }
+func (gm *Message) CreateGroupmesage(controllerDB *sql.DB) (int , error){
+	statement, err := controllerDB.Prepare("INSERT INTO groupmessage (user_id, group_id, content) VALUES (?,?,?)")
+	if err != nil {
+		return -1, err
+	}
 
+	sqlResult, err := statement.Exec(gm.Sender_id, gm.GroupId, gm.Content)
+	if err != nil {
+		return -1, err
+	}
+
+	lastInsertedId, err := sqlResult.LastInsertId()
+	if err != nil {
+		return -1, err
+	}
+	var idmessage = int(lastInsertedId)
+
+	return idmessage, nil
+}
 func GetDiscussion(db *sql.DB, receiverID int, senderId int) ([]Message, error) {
 	stmt, err := db.Prepare(`
 	SELECT  M.id , U.firstname, U.lastname , M.sender_id ,M.receiver_id , M.content , M.dateCreation from message as M 

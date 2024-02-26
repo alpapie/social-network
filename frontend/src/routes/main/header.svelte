@@ -1,13 +1,18 @@
 <script>
- 
-
+   import {onMount} from "svelte"
+    import {WS } from "./socket"
 // let logut=async (cookies)=>{
     import { displayContacts } from "./stores";
     import Notification from "./notification.svelte";
     const toggleConstants = () =>{
         displayContacts.update((show) => !show)
     }
-
+	onMount(async () => {
+		let ws = new WebSocket("ws://localhost:8080/server/ws")
+		console.log("sennd the request" , ws)
+		WS.set(ws)
+        
+	})
 </script>
 
     <div class="nav-header bg-white shadow-xs border-0">

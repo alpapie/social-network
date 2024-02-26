@@ -4,24 +4,22 @@
     import { page } from "$app/stores"
     import EmojiPicker from 'svelte-emoji-picker';
 
+    import {WS} from "../../socket"
     export let data
     $:console.log('data GUEYE receiver', data);
     $:allmessage = data?.res?.result?.messages
     let socket
     $:receiver_id = $page.params.id
     $:console.log('RECEIVER ID', receiver_id);
-    onMount(async () => {
-        if (!socket) {
-            socket = new WebSocket("ws://localhost:8080/server/ws")
-        }
-        
+    onMount(async () => { 
+        WS.subscribe((val)=> socket = val)
         socket.addEventListener("open", ()=> {
             console.log("Opened")
         })
         socket.onmessage = (e) => {
         var newMessage = JSON.parse(e.data);
         console.log("receive new message ", newMessage)
-        if (newMessage.sender_id == receiver_id || newMessage.receiver_id == receiver_id) {
+        if ((newMessage.sender_id == receiver_id || newMessage.receiver_id == receiver_id ) && newMessage.groupId == 0) {
             if (allmessage) {
                 allmessage = [...allmessage , newMessage]
             } else {

@@ -39,6 +39,6 @@ func Routes() {
 
 	//socket Handlers
 	http.HandleFunc("/server/ws", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.WsHandler, "get"), "ws")))
-	http.HandleFunc("/server/wss", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.WsGroupHandler, "get"), "wss")))
+	// http.HandleFunc("/server/wss", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.WsGroupHandler, "get"), "wss")))
 
 }

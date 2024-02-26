@@ -13,25 +13,25 @@ type GroupMessage struct {
 	DateCreation string `json:"datecreation"`
 }
 
-func (gm *GroupMessage) CreateGroupmesage(controllerDB *sql.DB) (int , error){
-	statement, err := controllerDB.Prepare("INSERT INTO groupmessage (user_id, group_id, content) VALUES (?,?,?)")
-	if err != nil {
-		return -1, err
-	}
+// func (gm *GroupMessage) CreateGroupmesage(controllerDB *sql.DB) (int , error){
+// 	statement, err := controllerDB.Prepare("INSERT INTO groupmessage (user_id, group_id, content) VALUES (?,?,?)")
+// 	if err != nil {
+// 		return -1, err
+// 	}
 
-	sqlResult, err := statement.Exec(gm.User_id, gm.Group_id, gm.Content)
-	if err != nil {
-		return -1, err
-	}
+// 	sqlResult, err := statement.Exec(gm.User_id, gm.Group_id, gm.Content)
+// 	if err != nil {
+// 		return -1, err
+// 	}
 
-	lastInsertedId, err := sqlResult.LastInsertId()
-	if err != nil {
-		return -1, err
-	}
-	var idmessage = int(lastInsertedId)
+// 	lastInsertedId, err := sqlResult.LastInsertId()
+// 	if err != nil {
+// 		return -1, err
+// 	}
+// 	var idmessage = int(lastInsertedId)
 
-	return idmessage, nil
-}
+// 	return idmessage, nil
+// }
 
 func GetGroupDiscussion(db *sql.DB, groupID int) ([]Message, error) {
 	stmt, err := db.Prepare(`
