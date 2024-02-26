@@ -71,20 +71,19 @@ func SendSocketNotification( notificationObject models.Notification,action strin
 	mutex.RUnlock()
 	if isOnline {
 
-		err:=receiver.conn.WriteMessage(websocket.TextMessage,toJSON(notificationObject,true,action))
+		err:=receiver.conn.WriteMessage(websocket.TextMessage,toJSON(notificationObject,true))
 		if err != nil {
 			fmt.Println("Error sending socket notification", err)
-			receiver.conn.WriteMessage(websocket.TextMessage,toJSON(models.Notification{},false,action))
+			receiver.conn.WriteMessage(websocket.TextMessage,toJSON(models.Notification{},false))
 			return
 		}
 	}
 }
 
-func toJSON(notificationObject models.Notification, success bool,action string) []byte {
+func toJSON(notificationObject models.Notification, success bool) []byte {
 	jsonData, _ := json.Marshal(map[string]interface{}{
 		"success": success,
 		"data":    notificationObject,
-		"action":action,
 	})
 	return jsonData
 }
