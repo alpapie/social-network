@@ -202,3 +202,18 @@ func GetGroupMemberCount(db *sql.DB, groupID int) (int, error) {
 
 	return count, nil
 }
+
+func (G *Group) GetUserOfGroup(DB *sql.DB)([]int,error){
+	users:=[]int{}
+	req:=`SELECT "User_id" FROM "Joinner" WHERE "Group_id"=?`
+	row,err:=DB.Query(req,G.ID)
+	if err!=nil {
+		return users,err
+	}
+	usr:=0
+	for row.Next(){
+		row.Scan(&usr)
+		users = append(users, usr)
+	}
+	return users,nil
+}

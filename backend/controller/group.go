@@ -164,6 +164,37 @@ func CreateEvent(w http.ResponseWriter, r *http.Request) {
 		helper.ErrorPage(w, 400)
 		return
 	}
+	group:=models.Group{ID: grId}
+	listUser,errr:=group.GetUserOfGroup(DB)
+	if errr !=nil {
+		helper.ErrorPage(w, 400)
+		return
+	}
+	for _, v := range listUser{
+		var user = models.User{}
+
+		errr := user.GetUserById(DB, v)
+		if errr != nil {
+			helper.ErrorPage(w,500)
+			return
+		}
+
+		var notification = models.Notification{}
+		notification.SenderID = user.ID
+		notification.User_id = event.Userid
+		notification.Type = "event-notf"
+		notification.Group_id = group.ID
+		notification.Status = "false"
+		notification.FirstName=user.FirstName
+		notification.LastName=user.LastName
+		notification.Avatar=user.Avatar
+		ern := notification.CreateNotification(DB)
+		if ern != nil {
+			helper.ErrorPage(w,500)
+			return
+		}
+		SendSocketNotification(notification,"notification")
+	}
 
 	helper.WriteJSON(w, 200, map[string]interface{}{"success": true}, nil)
 }
