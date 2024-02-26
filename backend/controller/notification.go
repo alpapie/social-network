@@ -57,6 +57,7 @@ func GetNotification(w http.ResponseWriter, r *http.Request) {
 		helper.ErrorPage(w, 500)
 		return
 	}
+
 	errjson := helper.WriteJSON(w, 200, map[string]interface{}{"success": true, "notifications": notifications}, nil)
 	if errjson != nil {
 		fmt.Println(errjson)
@@ -65,7 +66,7 @@ func GetNotification(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func SendSocketNotification( notificationObject models.Notification,action string) {
+func SendSocketNotification(notificationObject models.Notification, action string) {
 	mutex.RLock()
 	receiver, isOnline := UsersNotif[notificationObject.User_id]
 	mutex.RUnlock()

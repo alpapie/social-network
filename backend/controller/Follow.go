@@ -9,7 +9,6 @@ import (
 )
 
 func UnFollow(w http.ResponseWriter, r *http.Request) {
-
 	_, _, user_id := helper.Auth(DB, r)
 
 	user := models.User{ID: user_id}
@@ -18,6 +17,7 @@ func UnFollow(w http.ResponseWriter, r *http.Request) {
 		helper.ErrorPage(w, 500)
 		return
 	}
+
 	err = helper.WriteJSON(w, http.StatusOK, map[string]interface{}{"success": true, "listusers": listusers}, nil)
 	if err != nil {
 		helper.ErrorPage(w, 500)
@@ -57,16 +57,17 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 			helper.ErrorPage(w, 500)
 			return
 		}
+		notificationType = "followInfo"
 	} else {
 		notificationType = "follow"
-		newNotification := models.Notification{User_id: follower.ID, SenderID: current_user.ID, FirstName: current_user.FirstName, Status: "0", LastName: current_user.LastName, Avatar: current_user.Avatar, Type: notificationType}
-		errNotification := newNotification.CreateNotification(DB)
-		if errNotification != nil {
-			helper.ErrorPage(w, 500)
-			return
-		}
-		SendSocketNotification(newNotification, "notification")
 	}
+	newNotification := models.Notification{User_id: follower.ID, SenderID: current_user.ID, FirstName: current_user.FirstName, Status: "0", LastName: current_user.LastName, Avatar: current_user.Avatar, Type: notificationType}
+	errNotification := newNotification.CreateNotification(DB)
+	if errNotification != nil {
+		helper.ErrorPage(w, 500)
+		return
+	}
+	SendSocketNotification(newNotification, "notification")
 
 	err = helper.WriteJSON(w, http.StatusOK, map[string]interface{}{"success": true, "user_id": user_id}, nil)
 	if err != nil {
