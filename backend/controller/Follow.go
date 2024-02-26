@@ -49,6 +49,11 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 	if follower.IsPublic == 1 {
 		errreq := follower.AddFollower(DB, user_id)
 		if errreq != nil {
+			if errreq.Error() == "already followed" {
+				fmt.Println(errreq)
+				helper.ErrorPage(w, 400)
+				return
+			}
 			helper.ErrorPage(w, 500)
 			return
 		}
@@ -60,7 +65,7 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 			helper.ErrorPage(w, 500)
 			return
 		}
-		SendSocketNotification( newNotification, "notification")	
+		SendSocketNotification(newNotification, "notification")
 	}
 
 	err = helper.WriteJSON(w, http.StatusOK, map[string]interface{}{"success": true, "user_id": user_id}, nil)
@@ -73,42 +78,46 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 func NotificationRequestTraiment(w http.ResponseWriter, r *http.Request) {
 	follow_id, err := strconv.Atoi(r.URL.Query().Get("user_id"))
 	notificationId, errnotifid := strconv.Atoi(r.URL.Query().Get("notif_id"))
-	accept,erraccept:=strconv.Atoi(r.URL.Query().Get("accept"))
-	group_id,errgroup_id:=strconv.Atoi(r.URL.Query().Get("group_id"))
+	accept, erraccept := strconv.Atoi(r.URL.Query().Get("accept"))
+	group_id, errgroup_id := strconv.Atoi(r.URL.Query().Get("group_id"))
 
-	if err != nil || errnotifid!=nil || erraccept!=nil || errgroup_id!=nil{
-		fmt.Println(err , errnotifid, erraccept, errgroup_id)
+	if err != nil || errnotifid != nil || erraccept != nil || errgroup_id != nil {
+		fmt.Println(err, errnotifid, erraccept, errgroup_id)
 		helper.ErrorPage(w, 400)
 		return
 	}
 
 	_, _, user_id := helper.Auth(DB, r)
 
-	
 	newNotification := models.Notification{}
-	errGettingNotifs:=newNotification.GetNotificationByUserIDAndTypeAndnotifid(DB,notificationId ,follow_id, user_id,group_id)
-	
-	if errGettingNotifs != nil || newNotification.ID==0 {
-		fmt.Println("error get notif",errGettingNotifs)
+	errGettingNotifs := newNotification.GetNotificationByUserIDAndTypeAndnotifid(DB, notificationId, follow_id, user_id, group_id)
+
+	if errGettingNotifs != nil || newNotification.ID == 0 {
+		fmt.Println("error get notif", errGettingNotifs)
 		helper.ErrorPage(w, 500)
 		return
 	}
 
-	if accept==1 {
-		errTra := TraiteNotif(user_id, follow_id,group_id )
+	if accept == 1 {
+		errTra := TraiteNotif(user_id, follow_id, group_id)
 		if errTra != nil {
-			fmt.Println("error traitement",errTra)
+			if errTra.Error() == "already followed" {
+				fmt.Println(errTra)
+				helper.ErrorPage(w, 400)
+				return
+			}
+			fmt.Println("error traitement", errTra)
 			helper.ErrorPage(w, 500)
 			return
 		}
 
 		fmt.Println(newNotification)
-		newNotification.User_id=newNotification.SenderID
-		newNotification.SenderID=user_id
-		newNotification.Type="succesrequest"
+		newNotification.User_id = newNotification.SenderID
+		newNotification.SenderID = user_id
+		newNotification.Type = "succesrequest"
 		err = newNotification.CreateNotification(DB)
 		if err != nil {
-			fmt.Println("error create notif",err)
+			fmt.Println("error create notif", err)
 			helper.ErrorPage(w, 500)
 			return
 		}
@@ -116,11 +125,10 @@ func NotificationRequestTraiment(w http.ResponseWriter, r *http.Request) {
 
 	err = newNotification.MarkAsRead(DB)
 	if err != nil {
-		fmt.Println("error create mask notf",err)
+		fmt.Println("error create mask notf", err)
 		helper.ErrorPage(w, 500)
 		return
 	}
-
 
 	SendSocketNotification(newNotification, "notification")
 	err = helper.WriteJSON(w, http.StatusOK, map[string]interface{}{"success": true, "user_id": user_id}, nil)
@@ -130,14 +138,14 @@ func NotificationRequestTraiment(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func TraiteNotif(user_id , follow_id  ,group_id int) error {
-	if group_id>0 {
-		return models.JoinGroup(DB,follow_id,group_id)
+func TraiteNotif(user_id, follow_id, group_id int) error {
+	if group_id > 0 {
+		return models.JoinGroup(DB, follow_id, group_id)
 	}
 
 	current_user := models.User{ID: user_id}
 	return current_user.AddFollower(DB, follow_id)
-	
+
 }
 
 func MarkNotificationAsRead(w http.ResponseWriter, r *http.Request) {
@@ -179,4 +187,3 @@ func MarkNotificationAsRead(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
-

@@ -29,7 +29,7 @@ func (n *Notification) CreateNotification(db *sql.DB) error {
 	return nil
 }
 
-func (N *Notification)GetNotificationByUserIDAndTypeAndnotifid(db *sql.DB, notifid, SenderID , userID , groupID int) (error) {
+func (N *Notification) GetNotificationByUserIDAndTypeAndnotifid(db *sql.DB, notifid, SenderID, userID, groupID int) error {
 	stmt, err := db.Prepare(`
 	SELECT notif.id,notif.status, notif.type, notif.send_id , coalesce(g.id, 0), u."firstName", u."lastName",u.avatar, coalesce(g.title,"") from "User" as u INNER join "Notification" as notif on notif.send_id=u.id LEFT join "Group" as g on g.id=notif."Group_id" WHERE 
 	notif."User_id"=? and notif.id=? and notif.send_id=? and notif."Group_id"=?
@@ -38,7 +38,7 @@ func (N *Notification)GetNotificationByUserIDAndTypeAndnotifid(db *sql.DB, notif
 		return fmt.Errorf("failed to prepare get notification by user ID and type statement: %v", err)
 	}
 	defer stmt.Close()
-	return stmt.QueryRow(userID,notifid,SenderID,groupID).Scan(&N.ID, &N.Status, &N.Type, &N.SenderID, &N.Group_id, &N.FirstName, &N.LastName, &N.Avatar, &N.GroupTitle)
+	return stmt.QueryRow(userID, notifid, SenderID, groupID).Scan(&N.ID, &N.Status, &N.Type, &N.SenderID, &N.Group_id, &N.FirstName, &N.LastName, &N.Avatar, &N.GroupTitle)
 }
 
 func (n Notification) MarkAsRead(db *sql.DB) error {
@@ -95,8 +95,8 @@ func (N Notification) GetNotification(db *sql.DB, user_id int) ([]Notification, 
 	return notifications, nil
 }
 
-func (notif *Notification)GetNotifById(DB *sql.DB,id int) (error){
-	req:=`selec * from "Notification" where id=?`
-	err:=DB.QueryRow(req,id).Scan(&notif.ID,&notif.User_id,&notif.SenderID,&notif.Group_id,&notif.Type,&notif.Status)
+func (notif *Notification) GetNotifById(DB *sql.DB, id int) error {
+	req := `selec * from "Notification" where id=?`
+	err := DB.QueryRow(req, id).Scan(&notif.ID, &notif.User_id, &notif.SenderID, &notif.Group_id, &notif.Type, &notif.Status)
 	return err
 }

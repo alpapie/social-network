@@ -29,7 +29,7 @@ func (U *User) Folower(DB *sql.DB, user_id int) ([]User, error) {
 		WHERE f.User_id = ?`
 	row, err := DB.Query(req, user_id)
 	users := []User{}
-	
+
 	if err != nil {
 		return users, err
 	}
@@ -91,11 +91,11 @@ func (U *User) GetFollowerAndFollowing(DB *sql.DB, user_id int) ([]User, error) 
 	return ExtractUserData(row, U, users), nil
 }
 
-func Isfollower(DB *sql.DB, user_id,follow_id int) bool{
-	count:=0
-	req:=`select count(*) from Follow where "Follower_id"=? AND "User_id"=?`
-	err:=DB.QueryRow(req,follow_id,user_id).Scan(&count)
-	if err!=nil || count<1 {
+func Isfollower(DB *sql.DB, user_id, follow_id int) bool {
+	count := 0
+	req := `select count(*) from Follow where "Follower_id"=? AND "User_id"=?`
+	err := DB.QueryRow(req, follow_id, user_id).Scan(&count)
+	if err != nil || count < 1 {
 		return false
 	}
 	return true
