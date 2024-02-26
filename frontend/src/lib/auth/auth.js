@@ -1,7 +1,8 @@
 import { makeRequest } from '$lib/api'
-import { DB, localStorageObj } from '$lib/db'
+
 import { redirect } from '@sveltejs/kit'
 import axios from 'axios'
+import { DB ,localStorageObj} from '../../routes/db'
 
 
 export const authenticateUser =  async (Cookies) => {

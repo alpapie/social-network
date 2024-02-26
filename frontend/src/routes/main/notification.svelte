@@ -84,13 +84,12 @@
 		if (!NotifSocket) {
 			NotifSocket = new WebSocket("ws://localhost:8080/server/initnotifsocket");
 		}
+		console.log(NotifSocket);
 
 		NotifSocket.onmessage = function (event) {
 			let newEvent = JSON.parse(event.data);
-
-			if (newEvent?.action == "notification") {
-				data.notifications = [...data.notifications, newEvent.notification];
-			}
+			console.log(event.data);
+			data.notifications = [...data.notifications, newEvent.data];
 		};
 
 		NotifSocket.onclose = function (event) {
@@ -120,8 +119,10 @@
 	aria-labelledby="dropdownMenu3"
 >
 	<h4 class="fw-700 font-xss mb-4">Notifications</h4>
+{#if data}
+{#key data}
+		
 
-	
 	{#each data.notifications as notif}
 		<div class="card bg-transparent-card w-100 border-0 ps-5 mb-3">
 			<img
@@ -130,13 +131,13 @@
 					' ' +
 					notif.lastname}&size=100&rounded=true&color=fff&background=random"
 				width="50"
-				alt={notif.firstName + " " + notif.lastName}
+				alt={notif?.firstName + " " + notif?.lastName}
 			/>
 			<h5 class="font-xsss text-grey-900 mb-1 mt-0 fw-700 d-block">
-				{notif.firstname + " " + notif.lastname}
+				{notif?.firstname + " " + notif?.lastname}
 			</h5>
 			<h6 class="text-grey-500 fw-500 font-xssss lh-4">
-				{getNotifMessageSwitchType(notif.type,notif.firstname + " " + notif.lastname,notif.grouptitle)}
+				{getNotifMessageSwitchType(notif.type,notif?.firstname + " " + notif.lastname,notif.grouptitle)}
 			</h6>
 		</div>
 
@@ -162,6 +163,7 @@
             {/if}
         </div>
 	{/each}
-
+{/key}
+{/if}
 	<!-- {/if} -->
 </div>

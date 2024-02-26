@@ -1,8 +1,9 @@
 import { makeRequest } from "$lib/api.js";
 import { authenticateUser } from "$lib/auth/auth.js";
 import { redirect } from "@sveltejs/kit";
-import { DB, localStorageObj } from "$lib/db.js";
+
 import { error } from '@sveltejs/kit';
+import { DB ,localStorageObj} from "../db.js";
 
 export const load = async ({cookies})=>{
     if (localStorageObj?.data?.user) {

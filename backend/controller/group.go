@@ -182,7 +182,7 @@ func CreateEvent(w http.ResponseWriter, r *http.Request) {
 		var notification = models.Notification{}
 		notification.SenderID = user.ID
 		notification.User_id = event.Userid
-		notification.Type = "event-notf"
+		notification.Type = "event-notif"
 		notification.Group_id = group.ID
 		notification.Status = "false"
 		notification.FirstName=user.FirstName

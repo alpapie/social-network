@@ -3,8 +3,8 @@ import { authenticateUser } from "$lib/auth/auth"
 import { error, redirect } from "@sveltejs/kit"
 import { generateRandom, saveImage } from "$lib/index.js";
 import { fail } from '@sveltejs/kit';
-
 import { createGroup } from "$lib/groups/createGroup";
+import { localStorageObj } from "../db.js";
 
 export const load = async ({cookies})=>{
     const IsAuth=await authenticateUser(cookies)
