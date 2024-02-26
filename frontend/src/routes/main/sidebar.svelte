@@ -6,7 +6,6 @@
     $: closed = false
     export let data
     let user=JSON.parse(data)
-    console.log("current user",typeof user);
 </script>
 
 <nav class="navigation scroll-bar">
