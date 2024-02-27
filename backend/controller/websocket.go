@@ -89,7 +89,9 @@ func SendOnlineUsers() {
 
     for client, connected := range Clients {
         if connected {
+			clientsMutex.Lock()
             err := client.Conn.WriteJSON(message)
+			clientsMutex.Unlock()
             if err != nil {
                 fmt.Printf("Error sending online users to client %d: %v\n", client.ID, err)
                 DeleteUser(client.ID)
@@ -136,18 +138,23 @@ func PreventGroupMembers(message models.Message) {
     for c, connected := range Clients {
         if connected && Contain(c.Groups ,message.GroupId){
             byteMes, _ := json.Marshal(message)
+			clientsMutex.Lock()
             c.Conn.WriteMessage(websocket.TextMessage, byteMes)
+			clientsMutex.Unlock()
         } 
     }
 }
 
 func PreventSelectedUser(message models.Message) {
 	for c, connected := range Clients {
+		
 		if connected && (c.ID == message.Receiver_id || c.ID == message.Sender_id)  {
 			byteMes, _ := json.Marshal(message)
-
+			clientsMutex.Lock()
 			c.Conn.WriteMessage(websocket.TextMessage, byteMes)
+			clientsMutex.Unlock()
 		}
+		
 	}
 }
 

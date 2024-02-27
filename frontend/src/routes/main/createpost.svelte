@@ -66,8 +66,7 @@
 			cols="30"
 			rows="10"
 			placeholder="What's on your mind?"
-		>
-		</textarea>
+		></textarea>
 		{#if form?.missing}
 			<span class="font-xssss" style="color: red;">Empty post</span>
 		{/if}
