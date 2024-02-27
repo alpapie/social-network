@@ -6,6 +6,7 @@ import (
 )
 
 func Logout(w http.ResponseWriter, r *http.Request) {
+	_, _, UserID := helper.Auth(DB, r)
 	sess, err := r.Cookie("sessionId")
 	errdelete := helper.DeleteSessio(DB, sess.Value)
 
@@ -13,6 +14,9 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 		helper.ErrorPage(w, 500)
 		return
 	}
+
+	DeleteUser(UserID)
+	SendOnlineUsers()
 
 	helper.WriteJSON(w, http.StatusOK, map[string]interface{}{"data": "logout", "success": true}, nil)
 }
