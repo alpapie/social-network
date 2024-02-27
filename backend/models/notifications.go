@@ -22,11 +22,13 @@ type Notification struct {
 
 func (n *Notification) CreateNotification(db *sql.DB) error {
 	query := `INSERT INTO Notification (User_id, send_id, type, status, group_id) VALUES (?, ?, ?, ?, ?)`
-	_, err1 := db.Exec(query, n.User_id, n.SenderID, n.Type, "0", n.Group_id)
+	id, err1 := db.Exec(query, n.User_id, n.SenderID, n.Type, "0", n.Group_id)
 	if err1 != nil {
 		return fmt.Errorf("failed to create notification: %v", err1)
 	}
-	return nil
+	notifId,err:=id.LastInsertId()
+	n.ID=int(notifId)
+	return err
 }
 
 func (N *Notification) GetNotificationByUserIDAndTypeAndnotifid(db *sql.DB, notifid, SenderID, userID, groupID int) error {

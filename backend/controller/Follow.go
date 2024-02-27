@@ -36,6 +36,10 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 
 	follower := models.User{}
 	current_user := models.User{}
+	if models.HasNotifRequest(DB,user_id,follow_id) {
+		helper.ErrorPage(w, 400)
+		return
+	}
 	errfollow := follower.GetUserById(DB, follow_id)
 	erruser := current_user.GetUserById(DB, user_id)
 
@@ -93,7 +97,7 @@ func NotificationRequestTraiment(w http.ResponseWriter, r *http.Request) {
 	errGettingNotifs := newNotification.GetNotificationByUserIDAndTypeAndnotifid(DB, notificationId, follow_id, user_id, group_id)
 
 	if errGettingNotifs != nil || newNotification.ID == 0 {
-		fmt.Println("error get notif", errGettingNotifs)
+		fmt.Println("error get notif", errGettingNotifs,notificationId, follow_id, user_id, group_id)
 		helper.ErrorPage(w, 500)
 		return
 	}

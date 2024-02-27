@@ -12,8 +12,12 @@ func (u *User) GetUnFollow(DB *sql.DB, limit int) ([]User, error) {
 		FROM follow
 		WHERE follower_id = ?
 	)
+	AND
+	id NOT IN (
+	 select "User_id" from "Notification" WHERE "type"="follow" and send_id=?
+   )
 	and id!=? LIMIT ? `
-	row, err := DB.Query(req, u.ID, u.ID, limit)
+	row, err := DB.Query(req, u.ID, u.ID,u.ID, limit)
 	users := []User{}
 	if err != nil {
 		return users, err
@@ -95,6 +99,16 @@ func Isfollower(DB *sql.DB, user_id, follow_id int) bool {
 	count := 0
 	req := `select count(*) from Follow where "Follower_id"=? AND "User_id"=?`
 	err := DB.QueryRow(req, follow_id, user_id).Scan(&count)
+	if err != nil || count < 1 {
+		return false
+	}
+	return true
+}
+
+func HasNotifRequest(DB *sql.DB,user_id,senderId int) bool{
+	count := 0
+	req:=`select count(*) from "Notification" WHERE "type"="follow" and send_id=? and "User_id"=?`
+	err := DB.QueryRow(req, senderId, user_id).Scan(&count)
 	if err != nil || count < 1 {
 		return false
 	}
