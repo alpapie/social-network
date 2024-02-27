@@ -3,31 +3,49 @@
     import { enhance } from "$app/forms";
     import { page } from "$app/stores"
     import EmojiPicker from 'svelte-emoji-picker';
+    import { afterUpdate, tick } from 'svelte';
 
     import {WS} from "../../socket"
     export let data
+    let element;
+    
     $:console.log('data GUEYE receiver', data);
     $:allmessage = data?.res?.result?.messages
+    afterUpdate(() => {
+            console.log("afterUpdate");
+            if(allmessage) scrollToBottom(element);
+    });
+    $: if(allmessage && element) {
+		console.log("tick");
+		scrollToBottom(element);
+	}
     let socket
     $:receiver_id = $page.params.id
     $:console.log('RECEIVER ID', receiver_id);
     onMount(async () => { 
+        // scrollToBottom(element);
         WS.subscribe((val)=> socket = val)
         socket.addEventListener("open", ()=> {
             console.log("Opened")
         })
         socket.onmessage = (e) => {
-        var newMessage = JSON.parse(e.data);
-        console.log("receive new message ", newMessage)
-        if ((newMessage.sender_id == receiver_id || newMessage.receiver_id == receiver_id ) && newMessage.groupId == 0) {
-            if (allmessage) {
-                allmessage = [...allmessage , newMessage]
-            } else {
-                allmessage = [newMessage]
+            var newMessage = JSON.parse(e.data);
+            console.log("receive new message ", newMessage)
+            if ((newMessage.sender_id == receiver_id || newMessage.receiver_id == receiver_id ) && newMessage.groupId == 0) {
+                if (allmessage) {
+                    allmessage = [...allmessage , newMessage]
+                } else {
+                    allmessage = [newMessage]
+                }
+                
             }
+            // scrollToBottom(element);
+            
         }
-    }
     })
+    const scrollToBottom = async (node) => {
+        node.scroll({ top: node.scrollHeight, behavior: 'smooth' });
+    };
     let Message = ''
     let showEmojis = false;
 
@@ -42,7 +60,12 @@
         const messageJSON = JSON.stringify(mess);
         socket.send(messageJSON)
     }
-    
+    function Send(e) {
+        if (e.code == "Enter" ) {
+            SendMessage()
+        }
+    }
+    // let MessagesContainer
 </script>
 
 <div class="main-content right-chat-active">
@@ -53,13 +76,13 @@
                    
 
                 <div class="col-lg-12 position-relative">
-                    <div class="chat-wrapper pt-0 w-100 position-relative scroll-bar bg-white theme-dark-bg">
-                        <div class="chat-body p-3 ">
-                            <div class="messages-content pb-5">
+                    <div class="chat-wrapper pt-0 w-100 position-relative scroll-bar bg-white theme-dark-bg" bind:this={element} style="overflow:auto;">
+                        <div class="chat-body p-3 " >
+                            <div class="messages-content pb-5" >
                                 {#if allmessage?.length > 0}
                                     {#each allmessage as message }
                                     {#if message.receiver_id != receiver_id}
-                                        <div class="message-item">
+                                        <div class="message-item" >
                                             <div class="message-user">
                                                 <figure class="avatar">
                                                     <img src="/images/user-9.png" alt="display photo">
@@ -161,7 +184,7 @@
                             <button class="bg-current float-left" on:click={() => showEmojis = !showEmojis}>😀</button>
 
                             <div class="form-group">
-                                <input id="messageInput" type="text" placeholder="Start typing.."  bind:value={Message} style="color: black;">
+                                <input type="text" placeholder="Start typing.."  bind:value={Message} style="color: black;" on:keydown={Send}>
                             </div>          
                             <button class="bg-current" on:click={SendMessage}><i class="ti-arrow-right text-white" ></i></button>
                         </div>

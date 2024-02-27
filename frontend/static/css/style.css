@@ -14227,6 +14227,8 @@ select.sort {
   line-height: 24px;
   position: relative;
   z-index: 2;
+  word-wrap: break-word;
+
 }
 .chat-body .messages-content .message-item .message-wrap:after {
   background-color: var(--theme-color);

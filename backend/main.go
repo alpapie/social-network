@@ -1,4 +1,5 @@
 package main
+
 import (
 	"fmt"
 	"net/http"
@@ -6,10 +7,11 @@ import (
 	conf "social_network/config"
 	"social_network/controller"
 	migr "social_network/db/sqlite"
-	"social_network/global"
 	route "social_network/routes"
 )
+
 var port = ":8080"
+
 func init() {
 	var err error
 	controller.DB, err = conf.GetDB()
@@ -24,7 +26,6 @@ func init() {
 }
 func main() {
 	fmt.Println("Listening in http://localhost" + port)
-	global.Init(controller.DB)
 	route.Routes()
 	http.ListenAndServe(port, nil)
 }

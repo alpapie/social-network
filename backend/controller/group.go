@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"social_network/global"
 	helper "social_network/helper"
 	"social_network/models"
 	"strconv"
@@ -121,13 +120,7 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	roomId := strconv.FormatInt(lastInsertId, 10)
-	err = global.WS_HANDLER.CreateRoomFunc(roomId, newGroup.Title)
-	if err != nil {
-		http.Error(w, "Failed to create room", http.StatusInternalServerError)
-		fmt.Println(err)
-		return
-	}
+	
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)

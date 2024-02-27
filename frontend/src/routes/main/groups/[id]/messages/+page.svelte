@@ -2,11 +2,23 @@
     import {onMount} from "svelte"
     import { page } from "$app/stores"
     import {WS} from "../../../socket"
+    import EmojiPicker from 'svelte-emoji-picker';
+    import { afterUpdate, tick } from 'svelte';
     export let data
+    let element;
+    let showEmojis = false;
     $:console.log('les mess sont :', data);
 
     $:groupid = $page.params.id
     $:allmessage = data?.res?.result?.messages
+    afterUpdate(() => {
+            console.log("afterUpdate");
+            if(allmessage) scrollToBottom(element);
+    });
+    $: if(allmessage && element) {
+		console.log("tick");
+		scrollToBottom(element);
+	}
     $:currUserId = data?.res?.result?.userid
     $:console.log('les mess sont :', allmessage);
     $:console.log('les mess sont :', currUserId);
@@ -28,24 +40,36 @@
                 } else {
                     allmessage = [newMessage]
                 }
+                
             }
         }
        
     })
+    const scrollToBottom = async (node) => {
+        node.scroll({ top: node.scrollHeight, behavior: 'smooth' });
+    };
     let Message = ''
     function SendMessage() {
         console.log("THE NEW MESSAGE IS" , Message)
-        let mess = {
-            // sender_id: 9,
-            groupId : Number(groupid),
-            content : Message,
+        if (Message != '') {
+            let mess = {
+                // sender_id: 9,
+                groupId : Number(groupid),
+                content : Message,
+            }
+            Message = ''
+            const messageJSON = JSON.stringify(mess);
+            socket.send(messageJSON)
+            showEmojis = false
         }
-        Message = ''
-        const messageJSON = JSON.stringify(mess);
-        socket.send(messageJSON)
+    }
+     function Send(e) {
+        if (e.code == "Enter" ) {
+            SendMessage()
+        }
     }
 </script>
-
+<div class="notifications"></div>
 <div class="main-content right-chat-active">
             
     <div class="middle-sidebar-bottom">
@@ -54,7 +78,7 @@
                    
 
                 <div class="col-lg-12 position-relative">
-                    <div class="chat-wrapper pt-0 w-100 position-relative scroll-bar bg-white theme-dark-bg">
+                    <div class="chat-wrapper pt-0 w-100 position-relative scroll-bar bg-white theme-dark-bg" bind:this={element} style="overflow:auto;">
                         <div class="chat-body p-3 ">
                             <div class="messages-content pb-5">
                                 {#if allmessage?.length > 0}
@@ -154,12 +178,19 @@
                         </div>
                     </div>
                     <div class="chat-bottom dark-bg p-3 shadow-none theme-dark-bg" style="width: 98%;">
-                        <form class="chat-form">
-                            <button class="bg-grey float-left"><i class="ti-microphone text-grey-600"></i></button>
-                            <div class="form-group"><input type="text" placeholder="Start typing.." bind:value={Message}></div>          
-                            <button class="bg-current" on:click={SendMessage}><i class="ti-arrow-right text-white"></i></button>
-                        </form>
-                    </div> 
+                        <div class="chat-form">
+                            <div style="display: {showEmojis ? 'block' : 'none'};" >
+                                <EmojiPicker bind:value={Message} />
+                            </div>
+
+                            <button class="bg-current float-left" on:click={() => showEmojis = !showEmojis}>😀</button>
+
+                            <div class="form-group">
+                                <input type="text" placeholder="Start typing.."  bind:value={Message} style="color: black;" on:keydown={Send}>
+                            </div>          
+                            <button class="bg-current" on:click={SendMessage}><i class="ti-arrow-right text-white" ></i></button>
+                        </div>
+                    </div>
                 </div>
 
             </div>

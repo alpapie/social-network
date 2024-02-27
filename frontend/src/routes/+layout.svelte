@@ -13,7 +13,8 @@
 
 <body class="color-theme-blue">
   <slot />
-		<script>
+  <script src="/js/multiselect.js"></script>
+		<!-- <script>
 			new MultiSelectTag('allowed', {
     rounded: true,    // default true
     shadow: false,      // default false
@@ -26,6 +27,6 @@
     onChange: function(values) {
         console.log(values)
     }})
-		</script>
+		</script> -->
 
 </body>

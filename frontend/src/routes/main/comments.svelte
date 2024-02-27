@@ -2,12 +2,13 @@
 	export let CommSection;
 	import { enhance } from "$app/forms";
 	let inputField;
-
-	const onInput = (event) => {
-		if (event.key !== "Enter") return;
-		inputField = "";
-		console.log("comment content input field",inputField);
-	};
+	let UrlImage;
+	let files;
+	// const onInput = (event) => {
+	// 	if (event.key !== "Enter") return;
+	// 	inputField = "";
+	// 	console.log("comment content input field",inputField);
+	// };
 
 	function CloseComment() {
 		CommSection.display = "none"
@@ -42,7 +43,7 @@
 						>2 hour ago</span
 					>
 				</h4>
-				<a href="/" class="ms-auto"  on:click={CloseComment}
+				<a  class="ms-auto"  on:click={CloseComment}
 					><i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"
 					></i></a
 				>
@@ -70,8 +71,14 @@
 								CommSection.data.data.Comments = [result.data.data];
 							}
 						}
+						inputField = ''
+						files = null 
+						UrlImage.value = ''
+						console.log('IMAGE', formData.get("avatar"));
+						
 						// console.log("new POSTDETAIL", CommSection.data);
 						// CommSection?.data?.data?.Comment = [result?.data?.success , ...CommSection?.data?.data?.Comment]
+						// formData.set("avatar" , new File())
 					};
 				}}
 			> 
@@ -83,7 +90,7 @@
 					></i>
 				</button>
 				<!-- <div class="form-group mb-0 icon-input"> -->
-				<input
+				<input bind:value={inputField}
 					type="text"
 					placeholder="Add new Comment.."
 					name="comment"
@@ -95,7 +102,7 @@
 						<i class="font-md text-success feather-image me-2"></i>
 						<span class="d-none-xs" style="white-space: nowrap;">Insert an image</span>
 				   </label>
-					<input
+					<input bind:this={UrlImage} bind:files
 					name="avatar"
 					id="commimage"
 					style="display: none;"

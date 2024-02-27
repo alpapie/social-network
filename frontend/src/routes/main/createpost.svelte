@@ -11,8 +11,9 @@
 			modalDisplay = "none";
 		}
 	}
-	// console.log("HERE ARE USERS", users)
-
+	
+	console.log("HERE ARE USERS", users)
+	
 	//
 </script>
 
@@ -102,4 +103,19 @@
 			<!-- {/if} -->
 		</div>
 	</div>
+	<script src="/js/multiselect.js"></script>
+	<script>
+		new MultiSelectTag('allowed', {
+		rounded: true,    // default true
+		shadow: false,      // default false
+		placeholder: 'Search',  // default Search...
+		tagColor: {
+			textColor: '#030c16',
+			borderColor: '#bcd6f6',
+			bgColor: '#bcd6f6',
+		},
+		onChange: function(values) {
+			console.log(values)
+		}})
+	</script>
 </form>

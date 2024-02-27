@@ -72,7 +72,6 @@ export const actions = {
 
         const response = await makeRequest("addComment", "POST", comment, {}, cookies)
         console.log("comment value", comment);
-
         if (response.status == 200) {
             return {succes : true , data : comment}
         } else {
