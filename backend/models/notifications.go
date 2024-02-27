@@ -26,8 +26,8 @@ func (n *Notification) CreateNotification(db *sql.DB) error {
 	if err1 != nil {
 		return fmt.Errorf("failed to create notification: %v", err1)
 	}
-	notifId,err:=id.LastInsertId()
-	n.ID=int(notifId)
+	notifId, err := id.LastInsertId()
+	n.ID = int(notifId)
 	return err
 }
 
@@ -98,7 +98,13 @@ func (N Notification) GetNotification(db *sql.DB, user_id int) ([]Notification, 
 }
 
 func (notif *Notification) GetNotifById(DB *sql.DB, id int) error {
-	req := `selec * from "Notification" where id=?`
+	req := `select * from "Notification" where id=?`
 	err := DB.QueryRow(req, id).Scan(&notif.ID, &notif.User_id, &notif.SenderID, &notif.Group_id, &notif.Type, &notif.Status)
+	return err
+}
+
+func DeleteNotification(DB *sql.DB, id int) error {
+	req := `DELETE FROM Notification where id=?`
+	_, err := DB.Exec(req, id)
 	return err
 }

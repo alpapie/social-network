@@ -30,7 +30,7 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 		helper.ErrorMessage(w, "Enter at least 2 input characters")
 		return
 	}
-	user.IsPublic=1
+	user.IsPublic = 1
 	if !isEmailValid(user.Email) {
 		helper.ErrorMessage(w, "bad format of email")
 		return

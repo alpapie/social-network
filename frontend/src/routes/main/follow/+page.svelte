@@ -4,9 +4,6 @@
 	let erroralert = true;
 
 	import axios from "axios";
-	import { getContext } from "svelte";
-
-	console.log("current user", getContext("current-user"));
 
 	async function RequestFollow(id_user) {
 		try {

@@ -36,10 +36,11 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 
 	follower := models.User{}
 	current_user := models.User{}
-	if models.HasNotifRequest(DB,user_id,follow_id) {
+	if models.HasNotifRequest(DB, user_id, follow_id) {
 		helper.ErrorPage(w, 400)
 		return
 	}
+
 	errfollow := follower.GetUserById(DB, follow_id)
 	erruser := current_user.GetUserById(DB, user_id)
 
@@ -61,15 +62,16 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 			helper.ErrorPage(w, 500)
 			return
 		}
-		notificationType="succesrequest"
-	} 
-	
+		notificationType = "followInfo"
+	}
+
 	newNotification := models.Notification{User_id: follower.ID, SenderID: current_user.ID, FirstName: current_user.FirstName, Status: "0", LastName: current_user.LastName, Avatar: current_user.Avatar, Type: notificationType}
 	errNotification := newNotification.CreateNotification(DB)
 	if errNotification != nil {
 		helper.ErrorPage(w, 500)
 		return
 	}
+
 	SendSocketNotification(newNotification, "notification")
 
 	err = helper.WriteJSON(w, http.StatusOK, map[string]interface{}{"success": true, "user_id": user_id}, nil)
@@ -97,10 +99,13 @@ func NotificationRequestTraiment(w http.ResponseWriter, r *http.Request) {
 	errGettingNotifs := newNotification.GetNotificationByUserIDAndTypeAndnotifid(DB, notificationId, follow_id, user_id, group_id)
 
 	if errGettingNotifs != nil || newNotification.ID == 0 {
-		fmt.Println("error get notif", errGettingNotifs,notificationId, follow_id, user_id, group_id)
+		fmt.Println("error get notif", errGettingNotifs, notificationId, follow_id, user_id, group_id)
 		helper.ErrorPage(w, 500)
 		return
 	}
+
+	// will be used to respond to the follow request
+	respondNotification := models.Notification{}
 
 	if accept == 1 {
 		errTra := TraiteNotif(user_id, follow_id, group_id)
@@ -116,29 +121,40 @@ func NotificationRequestTraiment(w http.ResponseWriter, r *http.Request) {
 		}
 
 		fmt.Println(newNotification)
-		newNotification.User_id = newNotification.SenderID
-		newNotification.SenderID = user_id
-		newNotification.Type = "succesrequest"
-		err = newNotification.CreateNotification(DB)
+		respondNotification.User_id = newNotification.SenderID
+		respondNotification.FirstName = newNotification.FirstName
+		respondNotification.LastName = newNotification.LastName
+		respondNotification.Group_id = newNotification.Group_id
+		respondNotification.GroupTitle = newNotification.GroupTitle
+		respondNotification.SenderID = user_id
+		respondNotification.Type = "succesrequest"
+
+		err = respondNotification.CreateNotification(DB)
 		if err != nil {
 			fmt.Println("error create notif", err)
 			helper.ErrorPage(w, 500)
 			return
 		}
-	}
 
-	err = newNotification.MarkAsRead(DB)
-	if err != nil {
-		fmt.Println("error create mask notf", err)
-		helper.ErrorPage(w, 500)
-		return
-	}
+		err = newNotification.MarkAsRead(DB)
+		if err != nil {
+			fmt.Println("error create mask notf", err)
+			helper.ErrorPage(w, 500)
+			return
+		}
 
-	SendSocketNotification(newNotification, "notification")
-	err = helper.WriteJSON(w, http.StatusOK, map[string]interface{}{"success": true, "user_id": user_id}, nil)
-	if err != nil {
-		helper.ErrorPage(w, 400)
-		return
+		SendSocketNotification(respondNotification, "notification")
+		err = helper.WriteJSON(w, http.StatusOK, map[string]interface{}{"success": true, "user_id": user_id}, nil)
+		if err != nil {
+			helper.ErrorPage(w, 400)
+			return
+		}
+	} else {
+		if err := models.DeleteNotification(DB, newNotification.ID); err != nil {
+			fmt.Println("error deleting notif", err)
+			helper.ErrorPage(w, 500)
+			return
+		}
 	}
 }
 

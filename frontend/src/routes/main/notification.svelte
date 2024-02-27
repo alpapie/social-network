@@ -19,7 +19,7 @@
 				message = `${name} invite you to join ${group_title} group.`;
 				break;
 			case "join-Group":
-				message = `${name}equest to join ${group_title}  group.`;
+				message = `${name} request to join ${group_title}  group.`;
 				break;
 			case "succesrequest":
 				if (group_title != "") {
@@ -30,6 +30,9 @@
 				break;
 			case "followInfo":
 				message = `${name} is following you.`;
+				break;
+			case "event-notif":
+				message = `${name} created a new event.`;
 				break;
 			default:
 				message = "no message";
@@ -142,59 +145,61 @@
 	aria-labelledby="dropdownMenu3"
 >
 	<h4 class="fw-700 font-xss mb-4">Notifications</h4>
-{#if data}
-{#key data}
-		
+	{#if data}
+		{#key data}
+			{#each data.notifications as notif}
+				<div class="card bg-transparent-card w-100 border-0 ps-5 mb-3">
+					<img
+						class="w40 position-absolute left-0"
+						src="//ui-avatars.com/api/?name={notif.firstname +
+							' ' +
+							notif.lastname}&size=100&rounded=true&color=fff&background=random"
+						width="50"
+						alt={notif?.firstName + " " + notif?.lastName}
+					/>
+					<h5 class="font-xsss text-grey-900 mb-1 mt-0 fw-700 d-block">
+						{notif?.firstname + " " + notif?.lastname}
+					</h5>
+					<h6 class="text-grey-500 fw-500 font-xssss lh-4">
+						{getNotifMessageSwitchType(
+							notif.type,
+							notif?.firstname + " " + notif.lastname,
+							notif.grouptitle
+						)}
+					</h6>
+				</div>
 
-	{#each data.notifications as notif}
-		<div class="card bg-transparent-card w-100 border-0 ps-5 mb-3">
-			<img
-				class="w40 position-absolute left-0"
-				src="//ui-avatars.com/api/?name={notif.firstname +
-					' ' +
-					notif.lastname}&size=100&rounded=true&color=fff&background=random"
-				width="50"
-				alt={notif?.firstName + " " + notif?.lastName}
-			/>
-			<h5 class="font-xsss text-grey-900 mb-1 mt-0 fw-700 d-block">
-				{notif?.firstname + " " + notif?.lastname}
-			</h5>
-			<h6 class="text-grey-500 fw-500 font-xssss lh-4">
-				{getNotifMessageSwitchType(notif.type,notif?.firstname + " " + notif.lastname,notif.grouptitle)}
-			</h6>
-		</div>
-
-		<div class="card-body d-flex align-items-center pt-0 ps-4 pe-4 pb-4">
-			{#if notificationRequireConfirmation(notif.type)}
-				<a
-					href="#"
-					on:click={() => {
-						respondToRequest(1, notif.id, notif.sender_id, notif.group_id);
-					}}
-					class="p-2 lh-20 w100 bg-primary-gradiant me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl"
-					>Confirm</a
-				>
-				<a
-					href="#"
-					on:click={() => {
-						respondToRequest(0, notif.id, notif.sender_id, notif.group_id);
-					}}
-					class="p-2 lh-20 w100 bg-grey text-grey-800 text-center font-xssss fw-600 ls-1 rounded-xl"
-					>Decline</a
-				>
-			{:else}
-				<a
-					href="#"
-					on:click={() => {
-						markAsRead(notif.id, notif.sender_id);
-					}}
-					class="p-2 lh-20 w100 bg-grey text-grey-800 text-center font-xssss fw-600 ls-1 rounded-xl"
-					>Delete</a
-				>
-			{/if}
-		</div>
-	{/each}
-{/key}
-{/if}
+				<div class="card-body d-flex align-items-center pt-0 ps-4 pe-4 pb-4">
+					{#if notificationRequireConfirmation(notif.type)}
+						<a
+							href="#"
+							on:click={() => {
+								respondToRequest(1, notif.id, notif.sender_id, notif.group_id);
+							}}
+							class="p-2 lh-20 w100 bg-primary-gradiant me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl"
+							>Confirm</a
+						>
+						<a
+							href="#"
+							on:click={() => {
+								respondToRequest(0, notif.id, notif.sender_id, notif.group_id);
+							}}
+							class="p-2 lh-20 w100 bg-grey text-grey-800 text-center font-xssss fw-600 ls-1 rounded-xl"
+							>Decline</a
+						>
+					{:else}
+						<a
+							href="#"
+							on:click={() => {
+								markAsRead(notif.id, notif.sender_id);
+							}}
+							class="p-2 lh-20 w100 bg-grey text-grey-800 text-center font-xssss fw-600 ls-1 rounded-xl"
+							>Delete</a
+						>
+					{/if}
+				</div>
+			{/each}
+		{/key}
+	{/if}
 	<!-- {/if} -->
 </div>
