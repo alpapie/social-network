@@ -1,6 +1,5 @@
 import axios from "axios";
-
-import { GetCookies } from "./db";
+import { GetCookies } from "../routes/db";
 
 export async function makeRequest(endpoint, method, data = {}, headers = {}, cookies) {
   try {

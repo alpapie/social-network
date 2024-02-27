@@ -23,37 +23,36 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 	r.FormValue("email")
 	user := models.User{}
-	// user.
 
 	token := helper.LognToken(r.FormValue("email"), r.FormValue("password"))
 
 	err = user.GetUserByToken(DB, token)
 	if err != nil {
-		fmt.Println("no roww",err)
-		err_resp:= helper.ErrorMessage(w,"email or password incorect")
-		if err_resp!=nil {
-			helper.ErrorPage(w,500)
+		fmt.Println("no roww", err)
+		err_resp := helper.ErrorMessage(w, "email or password incorect")
+		if err_resp != nil {
+			helper.ErrorPage(w, 500)
 			return
 		}
 		return
 	}
-	if(user.Email==""){
-		err_resp:= helper.ErrorMessage(w,"email or password incorect")
-		if err_resp!=nil {
-			helper.ErrorPage(w,500)
+	if user.Email == "" {
+		err_resp := helper.ErrorMessage(w, "email or password incorect")
+		if err_resp != nil {
+			helper.ErrorPage(w, 500)
 			return
 		}
 		return
 	}
 	var u1 = uuid.Must(uuid.NewV4())
-	sssid := u1.String() + "-" +  strings.ReplaceAll(strings.ReplaceAll(time.Now().GoString()," ","-") ,",","_")
+	sssid := u1.String() + "-" + strings.ReplaceAll(strings.ReplaceAll(time.Now().GoString(), " ", "-"), ",", "_")
 
-	errss := helper.SessionAddOrUpdate(DB, sssid, user.Email,user.ID)
+	errss := helper.SessionAddOrUpdate(DB, sssid, user.Email, user.ID)
 	if errss != nil {
 		fmt.Println(errss)
 		helper.ErrorPage(w, 500)
 		return
 	}
 
-	helper.WriteJSON(w, 200, map[string]interface{}{"success": true, "data": sssid,"user":user}, nil)
+	helper.WriteJSON(w, 200, map[string]interface{}{"success": true, "data": sssid, "user": user}, nil)
 }

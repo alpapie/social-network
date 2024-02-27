@@ -90,10 +90,14 @@ func (u *User) GetUserByToken(db *sql.DB, token string) error {
 	return nil
 }
 
-func (u *User) AddFlow(db *sql.DB,follow_id int)(error){
-	req:=`insert INTO "Follow" ("User_id","Follower_id") VALUES(?,?)`
-	_,err:=db.Exec(req,u.ID,follow_id,)
-	return err
+func (u *User) AddFollower(db *sql.DB, follow_id int) error {
+	if Isfollower(db, u.ID, follow_id) {
+		return fmt.Errorf("already followed")
+	}
+
+	req := `insert INTO "Follow" ("User_id","Follower_id") VALUES(?,?)`
+	_, err := db.Exec(req, u.ID, follow_id)
+	return err 
 }
 
 func (u *User) GetFollowed(db *sql.DB) ([]User, error) {

@@ -26,7 +26,7 @@ func GetAllNotjoinedGroups(w http.ResponseWriter, r *http.Request) {
 	}
 	var groupss []NewGroup
 	for i := 0; i < len(groups); i++ {
-		not, errn := models.GetNotificationByUserIDAndType(DB, user.ID, groups[i].UserID, "follow-Group", groups[i].ID)
+		not, errn := models.GetNotificationByUserIDAndType(DB, user.ID, groups[i].UserID, "invited-to-join-Group", groups[i].ID)
 		if errn != nil {
 			helper.ErrorPage(w,500)
 			return
@@ -166,9 +166,17 @@ func CreateInvitationGroup(w http.ResponseWriter, r *http.Request) {
 		var notification = models.Notification{}
 		notification.SenderID = user.ID
 		notification.User_id = groupData.UserIDs[i]
-		notification.Type = "invite-Group"
+		notification.Type = "invited-to-join-Group"
 		notification.Group_id = groupID
 		notification.Status = "false"
+		currrentUser:=models.User{ } 
+        currrentUser.GetUserById(DB,groupData.UserIDs[i])
+
+		notification.FirstName=currrentUser.FirstName
+	    notification.LastName=currrentUser.LastName
+	    notification.Avatar=currrentUser.Avatar
+
+		SendSocketNotification(notification,"notification")
 		ern := notification.CreateNotification(DB)
 		if ern != nil {
 			fmt.Println(ern)

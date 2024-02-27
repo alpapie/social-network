@@ -3,8 +3,9 @@ import { authenticateUser } from "$lib/auth/auth"
 import { error, redirect } from "@sveltejs/kit"
 import { generateRandom, saveImage } from "$lib/index.js";
 import { fail } from '@sveltejs/kit';
-import { localStorageObj } from "$lib/db.js";
+
 import { createGroup } from "$lib/groups/createGroup";
+import { localStorageObj } from "../db.js";
 
 export const load = async ({cookies})=>{
     const IsAuth=await authenticateUser(cookies)
@@ -28,9 +29,9 @@ export const actions = {
         }
           try {
           const response = await createGroup(data,cookies);
-          console.log('Group created successfully:', response);
         } catch (error) {
           console.error('Failed to create group:', error);
+
         }
     },
     createPost: async ({ request, cookies }) => {
@@ -38,7 +39,6 @@ export const actions = {
         let data = await request.formData()
         let content = data.get('content')
         if (content == "") {
-            console.log("fail content")
             return fail(400, { content, missing: true })
         }
         let post = {
@@ -69,7 +69,6 @@ export const actions = {
         }
 
         const response = await makeRequest("addComment", "POST", comment, {}, cookies)
-        console.log("comment value", comment);
 
         if (response.status == 200) {
             return {succes : true , data : comment}

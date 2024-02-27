@@ -2,7 +2,6 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	helper "social_network/helper"
 	"social_network/models"
@@ -16,7 +15,6 @@ func AddCommentHandler(w http.ResponseWriter, r *http.Request) {
 		UserId: userId,
 	}
 	err := json.NewDecoder(r.Body).Decode(&newComment)
-	fmt.Println("here is the comment ", newComment)
 	if err != nil || !newComment.ValidateComment() {
 		helper.ErrorPage(w, 400)
 		return

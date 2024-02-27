@@ -2,7 +2,6 @@ package models
 
 import (
 	"database/sql"
-	"fmt"
 	"html"
 	"strings"
 	"time"
@@ -19,9 +18,9 @@ type Post struct {
 	Content      string `json:"content"`
 	Privacy      string `json:"privacy"`
 	CreationDate string `json:"creationDate"`
-	Avatar	string	`json:"groupe_title"`
+	Avatar       string `json:"groupe_title"`
 	// AllowedUsers []int
-	AllowedUsers []int  `json:allowedusers`
+	AllowedUsers []int `json:allowedusers`
 }
 
 type FeedPost struct {
@@ -107,8 +106,6 @@ func (U *User) GetPosts(controllerDB *sql.DB) ([]FeedPost, error) {
 	if err != nil {
 		return []FeedPost{}, err
 	}
-
-	fmt.Println("the user id", U.ID)
 
 	posts := []FeedPost{}
 
@@ -237,4 +234,3 @@ func (G *GroupeInfo) GetGroupPost(DB *sql.DB, userId int) error {
 	}
 	return nil
 }
-

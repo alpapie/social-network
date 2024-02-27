@@ -30,7 +30,7 @@ func Getmethode(r *http.Request, methode string) bool {
 func Log(next http.HandlerFunc) http.HandlerFunc {
 	
 	fn := func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+
 		if is, _,_ := helper.Auth(controller.DB, r); is {
 			next.ServeHTTP(w, r)
 		} else {
@@ -44,7 +44,6 @@ func Log(next http.HandlerFunc) http.HandlerFunc {
 func IsAuth(next http.HandlerFunc) http.HandlerFunc {
 	fnt := func(w http.ResponseWriter, r *http.Request) {
 		if is, _ ,_:= helper.Auth(controller.DB, r); is {
-			w.WriteHeader(302)
 			w.Write([]byte(`{"error":"Connected","success":false}`))
 		} else {
 			next.ServeHTTP(w, r)

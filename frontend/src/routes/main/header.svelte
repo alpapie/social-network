@@ -1,9 +1,9 @@
 <script>
- 
 
-// let logut=async (cookies)=>{
-
-  import Notification from "./notification.svelte";
+    export let data
+    import { logOutUser } from "$lib/auth/auth";
+    import Notification from "./notification.svelte";
+    logOutUser
 
 </script>
 
@@ -15,7 +15,7 @@
             <a href="#" class="me-2 menu-search-icon mob-menu"><i class="feather-search text-grey-900 font-sm btn-round-md bg-greylight"></i></a>
             <button class="nav-menu me-0 ms-2"></button>
         </div>
-        <Notification/>
+        <Notification data={data}/>
         
         <a href="#" class="p-2 text-center ms-3 menu-icon chat-active-btn"><i class="feather-message-square font-xl text-current"></i></a>
         <div class="p-2 text-center ms-3 position-relative dropdown-menu-icon menu-icon cursor-pointer">
@@ -120,7 +120,7 @@
                 
             </div>
         </div>
-        <a href="/main/logout"class="p-2 text-center ms-3 menu-icon "><i class="btn-round-md bg-red-gradiant text-white feather-lock font-md me-3"></i></a>
+        <a href="#" class="p-2 text-center ms-3 menu-icon "><i class="btn-round-md bg-red-gradiant text-white feather-lock font-md me-3"></i></a>
 
         <a href="/main/profile" class="p-0 ms-3 menu-icon"><img src="/images/profile-4.png" alt="user" class="w40 mt--1"></a>
         

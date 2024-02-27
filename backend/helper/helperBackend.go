@@ -8,12 +8,13 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+
 	"github.com/gofrs/uuid"
 )
 
 func LognToken(username, password string) string {
 
-	sum := sha256.Sum256([]byte(username+password))
+	sum := sha256.Sum256([]byte(username + password))
 	return fmt.Sprintf("%x", sum)
 }
 
@@ -32,7 +33,7 @@ func UploadImage(req *http.Request) string {
 		log.Println("❌ Invalid file type")
 		return ""
 	}
-	uploads := "/static/uploads" 
+	uploads := "/static/uploads"
 	imageURL := filepath.Join(uploads, generateUniqueFilename(header.Filename))
 	filePath := filepath.Join(".", imageURL) // Use "." to denote the current directory
 	// if filePath[0] != '/' {

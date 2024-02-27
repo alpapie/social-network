@@ -51,3 +51,40 @@ func UpdateProfil(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func FollowerProfil(w http.ResponseWriter, r *http.Request){
+	user_id,err:=strconv.Atoi(r.URL.Query().Get("user_id"))
+	user := models.User{ID: user_id}
+	if err!=nil || user_id<=0{
+		fmt.Println("user id profil follow error",user_id)
+		helper.ErrorPage(w, 400)
+		return
+	}
+	_,_,auth_user_id :=helper.Auth(DB,r)
+	err = user.GetUserById(DB, user.ID)
+	if err!=nil {
+		helper.ErrorPage(w, 400)
+		return
+	}
+	if user.IsPublic==1 || models.Isfollower(DB,user_id,auth_user_id){
+		currentUser := user
+	
+		follower, errFollow := user.Folower(DB, user_id)
+		following, errFollowing := user.Following(DB, user_id)
+		createdPost, errPost := user.CreatedPost(DB, user_id)
+	
+		if err != nil || errFollow != nil || errFollowing != nil || errPost != nil {
+			fmt.Println(err, errFollow, errFollowing, errPost)
+			helper.ErrorPage(w, 404)
+			return
+		}
+	
+		err = helper.WriteJSON(w, http.StatusOK, map[string]interface{}{"success": true, "user": currentUser, "follower": follower, "following": following, "createdPost": createdPost}, nil)
+		if err != nil {
+			helper.ErrorPage(w, 400)
+			return
+		}
+		return
+	}
+	helper.ErrorPage(w, http.StatusForbidden)
+}
