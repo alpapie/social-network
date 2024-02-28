@@ -160,6 +160,13 @@ func NotificationRequestTraiment(w http.ResponseWriter, r *http.Request) {
 
 func TraiteNotif(user_id, follow_id, group_id int) error {
 	if group_id > 0 {
+		group,err:= models.GetGroupByID(DB,group_id)
+		if err!=nil {
+			return err
+		}
+		if group.UserID!=user_id {
+			return models.JoinGroup(DB, user_id, group_id)
+		}
 		return models.JoinGroup(DB, follow_id, group_id)
 	}
 
