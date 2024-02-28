@@ -29,33 +29,38 @@
     $:offline = []
 
     onMount(async () => { 
-        WS.subscribe((val)=> socket = val)
-        socket.addEventListener("open", ()=> {
-            console.log("Opened")
-        })
-        socket.onmessage = (e) => {
-        var newMessage = JSON.parse(e.data);
-        console.log("receive papa new message ", newMessage.users)
-        if (newMessage.action == 'onlineUsers') {
-            
-            usersOnline = newMessage.users
-            // $: {
-                online = [];
-                offline = [];
-                for (let user of Users) {
-                    if (usersOnline.some(onlineUser => onlineUser.ID === user.ID)) {
-                        online.push(user);
-                    } else {
-                        offline.push(user);
-                    }
-                }    
-            // }
-        }else{
-            lastMesage = newMessage
-            showAlert = true;
-            setTimeout(() => showAlert = false,  5000);
+        if (!window.location.href.includes("main/chat") && !window.location.href.includes("main/groups")) {
+            console.log("WE ARE IN THE CHAT")
+            WS.subscribe((val)=> socket = val)
+            socket.addEventListener("open", ()=> {
+                console.log("Opened")
+            })
+            socket.onmessage = (e) => {
+                var newMessage = JSON.parse(e.data);
+                console.log("receive papa new message ", newMessage.users)
+                console.log("PATH OF THE PAGE " ,window.location.href)
+                if (newMessage.action == 'onlineUsers') {
+                    
+                    usersOnline = newMessage.users
+                    // $: {
+                        online = [];
+                        offline = [];
+                        for (let user of Users) {
+                            if (usersOnline.some(onlineUser => onlineUser.ID === user.ID)) {
+                                online.push(user);
+                            } else {
+                                offline.push(user);
+                            }
+                        }    
+                    // }
+                }else{
+                    lastMesage = newMessage
+                    showAlert = true;
+                    setTimeout(() => showAlert = false,  5000);
+                }
+            } 
+
         }
-    }
     })
     let lastmess = undefined;
     const unsuscribeLastMessage = LastMessage.subscribe((val)=>{ lastmess = val})
