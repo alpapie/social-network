@@ -1,6 +1,7 @@
 <script>
    import {onMount} from "svelte"
     import {WS } from "./socket"
+    import {darkMode} from "./stores"
 // let logut=async (cookies)=>{
     import { displayContacts } from "./stores";
     import Notification from "./notification.svelte";
@@ -13,6 +14,7 @@
 		WS.set(ws)
         
 	})
+    let active = true
 </script>
 
     <div class="nav-header bg-white shadow-xs border-0">
@@ -27,8 +29,8 @@
         
         <a href="#" class="p-2 text-center ms-3 menu-icon chat-active-btn"  on:click={toggleConstants}><i class="feather-message-square font-xl text-current"></i></a>
         <div class="p-2 text-center ms-3 position-relative dropdown-menu-icon menu-icon cursor-pointer">
-            <i class="feather-settings animation-spin d-inline-block font-xl text-current"></i>
-            <div class="dropdown-menu-settings switchcolor-wrap">
+            <i class="feather-settings animation-spin d-inline-block font-xl text-current" on:click={()=> active = !active}></i>
+            <div class="dropdown-menu-settings switchcolor-wrap " class:active={active}>
                 <h4 class="fw-700 font-sm mb-4">Settings</h4>
                 <h6 class="font-xssss text-grey-500 fw-700 mb-3 d-block">Choose Color Theme</h6>
                 <ul>
@@ -120,7 +122,7 @@
                     </div>
                 </div>
                 <div class="card bg-transparent-card border-0 d-block mt-3">
-                    <h4 class="d-inline font-xssss mont-font fw-700">Dark Mode</h4>
+                    <h4 class="d-inline font-xssss mont-font fw-700" >Dark Mode</h4>
                     <div class="d-inline float-right mt-1">
                         <label class="toggle toggle-dark"><input type="checkbox"><span class="toggle-icon"></span></label>
                     </div>

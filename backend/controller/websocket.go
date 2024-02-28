@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"social_network/models"
+	"strings"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -41,7 +42,12 @@ func (c *Client) Listen() {
 		newMessage.LastName = c.LastName
 		newMessage.Sender_id = c.ID
 		newMessage.CreationDate = time.Now().Format("Jan 2, 2006 at 3:04pm")
+
 		fmt.Println("new message: ", newMessage)
+		
+		if strings.TrimSpace(newMessage.Content) == "" {
+			continue
+		}
 		// fmt.Println("the error :", erro, "new message  ", newMessage.Action, newMessage.Content)
 		if newMessage.GroupId == 0 {
 			_ , Erm := newMessage.Create(DB)

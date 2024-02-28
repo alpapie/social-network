@@ -4,6 +4,9 @@
     import { page } from "$app/stores"
     import EmojiPicker from 'svelte-emoji-picker';
     import { afterUpdate, tick } from 'svelte';
+    import AlertContainer from '../../alert.svelte';
+    import {LastMessage} from "../../stores"
+    let showAlert = false;
 
     import {WS} from "../../socket"
     export let data
@@ -22,6 +25,7 @@
     let socket
     $:receiver_id = $page.params.id
     $:console.log('RECEIVER ID', receiver_id);
+    let lastMesage = ''
     onMount(async () => { 
         // scrollToBottom(element);
         WS.subscribe((val)=> socket = val)
@@ -37,9 +41,15 @@
                 } else {
                     allmessage = [newMessage]
                 }
+                // lastMesage = newMessage
+                // showAlert = true;
+                // setTimeout(() => showAlert = false,  50000);
                 
             }
-            // scrollToBottom(element);
+            if (newMessage.sender_id == receiver_id ) {
+                LastMessage.set(newMessage)
+            }
+            
             
         }
     })
@@ -47,6 +57,7 @@
         node.scroll({ top: node.scrollHeight, behavior: 'smooth' });
     };
     let Message = ''
+    
     let showEmojis = false;
 
     function SendMessage() {
@@ -67,6 +78,7 @@
     }
     // let MessagesContainer
 </script>
+<!-- <AlertContainer {showAlert} {lastMesage} /> -->
 
 <div class="main-content right-chat-active">
             

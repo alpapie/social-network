@@ -1,15 +1,21 @@
 <!-- right chat -->
 <script>
+    import { onDestroy } from 'svelte';
     import { displayContacts } from "./stores";
     import { contactsStore } from './stores';
     import { onMount } from "svelte";
+    import AlertContainer from './alert.svelte';
+    import {LastMessage} from "./stores"
     let show;
     let Users;
+    let lastMesage = ''
+    let showAlert = false;
     
-    contactsStore.subscribe(value => {
+    
+    const unsuscribe_contactsStore = contactsStore.subscribe(value => {
         Users = value;
     });
-    displayContacts.subscribe((value) =>{
+    const unsuscribe_displayContacts = displayContacts.subscribe((value) =>{
         show = value;
     });
 
@@ -33,7 +39,7 @@
         if (newMessage.action == 'onlineUsers') {
             
             usersOnline = newMessage.users
-            $: {
+            // $: {
                 online = [];
                 offline = [];
                 for (let user of Users) {
@@ -43,14 +49,29 @@
                         offline.push(user);
                     }
                 }    
-            }
+            // }
+        }else{
+            lastMesage = newMessage
+            showAlert = true;
+            setTimeout(() => showAlert = false,  5000);
         }
     }
     })
-    console.log("ONLINE", online);
-
-
+    let lastmess = undefined;
+    const unsuscribeLastMessage = LastMessage.subscribe((val)=>{ lastmess = val})
+    $: {
+        
+         if (lastmess.content !== undefined ) {
+             console.log("THE LASTMESS ", lastmess , lastmess == {})
+             lastMesage = lastmess
+             showAlert = true;
+             setTimeout(() => showAlert = false,  5000);
+         }
+        
+    }
+    onDestroy(unsuscribeLastMessage, unsuscribe_contactsStore, unsuscribe_displayContacts);
 </script>
+<AlertContainer {showAlert} {lastMesage} />
 <div class="right-chat nav-wrap mt-2 right-scroll-bar" class:active-sidebar={show}>
     <div class="middle-sidebar-right-content bg-white shadow-xss rounded-xxl">
   
@@ -94,7 +115,7 @@
                                 <img src="images/user-8.png" alt="display photo" class="w35">
                             </figure>
                             <h3 class="fw-700 mb-0 mt-0">
-                                <a class="font-xssss text-grey-600 d-block text-dark model-popup-chat" href="/main/chat/{user?.ID}">{user.FirstName} {user.LastName}</a>
+                                <a class="font-xssss text-grey-600 d-block text-dark model-popup-chat" href="/main/chat/{user?.ID}">{user?.FirstName} {user?.LastName}</a>
                             </h3>
                             <span class="bg-success ms-auto btn-round-xss"></span>
 
@@ -108,7 +129,7 @@
                             <img src="images/user-8.png" alt="display photo" class="w35">
                         </figure>
                         <h3 class="fw-700 mb-0 mt-0">
-                            <a class="font-xssss text-grey-600 d-block text-dark model-popup-chat" href="/main/chat/{user?.ID}">{user.FirstName} {user.LastName}</a>
+                            <a class="font-xssss text-grey-600 d-block text-dark model-popup-chat" href="/main/chat/{user?.ID}">{user?.FirstName} {user?.LastName}</a>
                         </h3>
 
                         <span class="bg-warning ms-auto btn-round-xss"></span>

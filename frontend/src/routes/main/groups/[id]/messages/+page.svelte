@@ -4,6 +4,7 @@
     import {WS} from "../../../socket"
     import EmojiPicker from 'svelte-emoji-picker';
     import { afterUpdate, tick } from 'svelte';
+    import {LastMessage} from "../../../stores"
     export let data
     let element;
     let showEmojis = false;
@@ -40,7 +41,9 @@
                 } else {
                     allmessage = [newMessage]
                 }
-                
+            }
+            if (newMessage.sender_id !== currUserId) {
+                LastMessage.set(newMessage)
             }
         }
        
