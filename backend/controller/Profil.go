@@ -88,3 +88,21 @@ func FollowerProfil(w http.ResponseWriter, r *http.Request){
 	}
 	helper.ErrorPage(w, http.StatusForbidden)
 }
+
+func GetContacts(w http.ResponseWriter, r *http.Request) {
+	_,_ ,user_id := helper.Auth(DB, r)
+	
+	user := models.User{ID: user_id}
+	user.GetUserById(DB,user_id)
+	contacts, errc := user.GetFollowerANDFollowed(DB)
+	if errc != nil {
+		helper.ErrorPage(w, 500)
+		return
+	}
+	err := helper.WriteJSON(w, http.StatusOK, map[string]interface{}{"success": true,"contacts" : contacts}, nil)
+	if err!=nil {
+		fmt.Println(err)
+		helper.ErrorPage(w, 400)
+		return
+	}
+}

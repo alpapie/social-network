@@ -8,7 +8,7 @@
     let user=JSON.parse(data)
 </script>
 
-<nav class="navigation scroll-bar">
+<nav class="navigation scroll-bar ">
     <div class="container ps-0 pe-0">
         <div class="nav-content">
           <div class="card" style="border-radius: 15px;margin-top:20px">

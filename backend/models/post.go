@@ -36,12 +36,6 @@ type PostDetails struct {
 	Comments    []Comment
 }
 
-type GroupeInfo struct {
-	Id          int
-	Title       string
-	Description string
-	Posts       []Post
-}
 
 func (P *PostDetails) GetPost(DB *sql.DB, UserID, post_id int) error {
 	statement, err := DB.Prepare(`
@@ -196,41 +190,27 @@ func (P *Post) CheckGroupMember(DB *sql.DB) (int, error) {
 	return num, nil
 }
 
-func (G *GroupeInfo) IsMember(DB *sql.DB, UserId int) (bool, error) {
-	statement, err := DB.Prepare(`
-	SELECT  G.title , G.description from Joinner as J JOIN "Group" as G 
-	on G.id = J.Group_id
-	WHERE J.Group_id = ? and J.User_id = ?
-	`)
-	if err != nil {
-		return false, err
-	}
-	Er := statement.QueryRow(G.Id, UserId).Scan(&G.Title, &G.Description)
-	if Er != nil {
-		return false, Er
-	}
-	return true, nil
-}
 
-func (G *GroupeInfo) GetGroupPost(DB *sql.DB, userId int) error {
+func GetGroupPost(DB *sql.DB, groupId int) ([]Post ,error) {
+	posts := []Post{}
 	statement, err := DB.Prepare(`
 	SELECT 
 	U.id , U.firstName , U.lastName , P.id , coalesce(P.Group_id , 0) as Group_id , P.titre ,coalesce(P.image, '') as image , P.content , P.privacy , coalesce(P.creationDate , '') as creationDate
 	from Post as P
 	JOIN User as U on U.id = P.User_id
-	where P.Group_id = ?
+	where P.Group_id = ? order by P.id desc;
 	`)
 	if err != nil {
-		return err
+		return posts , err
 	}
-	posts, Er := statement.Query(G.Id)
+	postsdata, Er := statement.Query(groupId)
 	if Er != nil && Er != sql.ErrNoRows {
-		return Er
+		return posts, Er
 	}
-	for posts.Next() {
+	for postsdata.Next() {
 		p := Post{}
-		posts.Scan(&p.User_id, &p.FirstName, &p.LastName, &p.Id, &p.Group_id, &p.Titre, &p.Image, &p.Content, &p.Privacy, &p.CreationDate)
-		G.Posts = append(G.Posts, p)
+		postsdata.Scan(&p.User_id, &p.FirstName, &p.LastName, &p.Id, &p.Group_id, &p.Titre, &p.Image, &p.Content, &p.Privacy, &p.CreationDate)
+		posts = append(posts, p)
 	}
-	return nil
+	return posts ,nil
 }

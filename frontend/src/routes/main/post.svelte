@@ -112,7 +112,7 @@
           class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"
           ><i
             class="feather-message-circle text-dark text-grey-900 btn-round-sm font-lg"
-          ></i><span class="d-none-xss">22 Comment</span></a
+          ></i><span class="d-none-xss">Comments</span></a
         >
       </div>
     </div>

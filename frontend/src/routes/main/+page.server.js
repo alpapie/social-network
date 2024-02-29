@@ -7,6 +7,7 @@ import { fail } from '@sveltejs/kit';
 import { createGroup } from "$lib/groups/createGroup";
 import { localStorageObj } from "../db.js";
 
+
 export const load = async ({cookies})=>{
     const IsAuth=await authenticateUser(cookies)
     if (!IsAuth) {
@@ -15,6 +16,7 @@ export const load = async ({cookies})=>{
 
     const response= await makeRequest("home","get",{},{},cookies)
     if (response?.data?.success) {
+        console.log("DATA FROM HOME" , response.data.user)
         return response?.data;
     }
     throw error(400,"bad request")
@@ -69,7 +71,6 @@ export const actions = {
         }
 
         const response = await makeRequest("addComment", "POST", comment, {}, cookies)
-
         if (response.status == 200) {
             return {succes : true , data : comment}
         } else {

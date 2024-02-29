@@ -50,21 +50,6 @@ func GetAllNotjoinedGroups(w http.ResponseWriter, r *http.Request) {
 		groupss = append(groupss, gr)
 	}
 
-	follower, err := user.GetFollowers(DB)
-	if err != nil {
-		fmt.Println(err)
-		helper.ErrorPage(w,500)
-		return
-	}
-
-	followed, err := user.GetFollowed(DB)
-	if err != nil {
-		fmt.Println(err)
-		helper.ErrorPage(w,500)
-		return
-	}
-	friends := append(follower, followed...)
-
 	groups2, err := models.GetMemberGroupsByUserID(DB, user.ID)
 	if err != nil {
 		helper.ErrorPage(w,500)
@@ -73,8 +58,16 @@ func GetAllNotjoinedGroups(w http.ResponseWriter, r *http.Request) {
 	var groupss2 []NewGroup
 	for i := 0; i < len(groups2); i++ {
 		var friendss []NewUser
-		for j := 0; j < len(friends); j++ {
-			notfollow, errn := models.GetNotificationByUserIDAndType(DB, user.ID, friends[j].ID, "invite-Group", groups2[i].ID)
+		
+		frs, er := user.GetFollowedAndFollowersNotInGroup(DB, groups2[i].ID)
+		if er != nil {
+			helper.ErrorPage(w,500)
+			return
+		}
+		for j := 0; j < len(frs); j++ {
+			
+
+			notfollow, errn := models.GetNotificationByUserIDAndType(DB, user.ID, frs[j].ID, "invite-Group", groups2[i].ID)
 			if errn != nil {
 				helper.ErrorPage(w,500)
 				return
@@ -87,11 +80,11 @@ func GetAllNotjoinedGroups(w http.ResponseWriter, r *http.Request) {
 				requested = true
 			}
 			var fr = NewUser{
-				ID:          friends[j].ID,
-				FirstName:   friends[j].FirstName,
-				LastName:    friends[j].LastName,
-				Email:       friends[j].Email,
-				Avatar:      friends[j].Avatar,
+				ID:          frs[j].ID,
+				FirstName:   frs[j].FirstName,
+				LastName:    frs[j].LastName,
+				Email:       frs[j].Email,
+				Avatar:      frs[j].Avatar,
 				Isrequested: requested,
 			}
 			friendss = append(friendss, fr)

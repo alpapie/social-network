@@ -2,12 +2,13 @@
 	export let CommSection;
 	import { enhance } from "$app/forms";
 	let inputField;
-
-	const onInput = (event) => {
-		if (event.key !== "Enter") return;
-		inputField = "";
-		console.log("comment content input field",inputField);
-	};
+	let UrlImage;
+	let files;
+	// const onInput = (event) => {
+	// 	if (event.key !== "Enter") return;
+	// 	inputField = "";
+	// 	console.log("comment content input field",inputField);
+	// };
 
 	function CloseComment() {
 		CommSection.display = "none"
@@ -30,7 +31,7 @@
 			<div class="card-body ps-2 pe-4 pb-0 d-flex">
 				<figure class="avatar me-3">
 					<img
-						src="images/user-8.png"
+						src="/images/user-8.png"
 						alt="display photo"
 						class="shadow-sm rounded-circle w45"
 					/>
@@ -42,9 +43,8 @@
 						>2 hour ago</span
 					>
 				</h4>
-				<a href="/" class="ms-auto"  on:click={CloseComment}
-					><i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"
-					></i></a
+				<a  class="ms-auto"  on:click={CloseComment}
+					><i class="ti-close text-grey-900 font-xssss btn-round-md bg-greylight"></i></a
 				>
 			</div>
 			<!-- input -->
@@ -70,8 +70,14 @@
 								CommSection.data.data.Comments = [result.data.data];
 							}
 						}
+						inputField = ''
+						files = null 
+						UrlImage.value = ''
+						console.log('IMAGE', formData.get("avatar"));
+						
 						// console.log("new POSTDETAIL", CommSection.data);
 						// CommSection?.data?.data?.Comment = [result?.data?.success , ...CommSection?.data?.data?.Comment]
+						// formData.set("avatar" , new File())
 					};
 				}}
 			> 
@@ -83,7 +89,7 @@
 					></i>
 				</button>
 				<!-- <div class="form-group mb-0 icon-input"> -->
-				<input
+				<input bind:value={inputField}
 					type="text"
 					placeholder="Add new Comment.."
 					name="comment"
@@ -95,7 +101,7 @@
 						<i class="font-md text-success feather-image me-2"></i>
 						<span class="d-none-xs" style="white-space: nowrap;">Insert an image</span>
 				   </label>
-					<input
+					<input bind:this={UrlImage} bind:files
 					name="avatar"
 					id="commimage"
 					style="display: none;"
@@ -126,7 +132,7 @@
 						<div class="card-body border-top-xs pt-4 pb-3 pe-4 d-block ps-5">
 							<figure class="avatar position-absolute left-0 ms-2 mt-1">
 								<img
-									src="images/user-6.png"
+									src="/images/user-6.png"
 									alt="display photo"
 									class="shadow-sm rounded-circle w35"
 								/>

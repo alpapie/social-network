@@ -19,6 +19,7 @@ type User struct {
 	AboutMe    string
 	IsPublic   int
 	TokenLogin string
+	Online bool
 }
 
 func (u *User) IsGroupmemeber(db *sql.DB, groupID int) (bool, error) {
@@ -34,6 +35,19 @@ func (u *User) IsGroupmemeber(db *sql.DB, groupID int) (bool, error) {
 	}
 	fmt.Println(count)
 
+	return true, nil
+}
+func AreFriend(db *sql.DB, userId1 int, userId2 int) (bool, error)  {
+	var count int
+	query := `SELECT count(F.id)from Follow as F  where (F.User_id = ? and F.Follower_id = ?) or
+		(F.Follower_id = ?  and F.User_id = ?)`
+	err := db.QueryRow(query, userId1, userId2 , userId1, userId2).Scan(&count)
+	if err != nil {
+		return false, fmt.Errorf("failed to check friendship: %v", err)
+	}
+	if count < 1 {
+		return false, nil
+	}
 	return true, nil
 }
 
@@ -152,4 +166,104 @@ func (u *User) GetFollowers(db *sql.DB) ([]User, error) {
 	}
 
 	return followed, nil
+}
+
+func (u *User) GetFollowerANDFollowed(db *sql.DB) ([]User, error) {
+    query := `
+        SELECT User_id AS id FROM Follow WHERE Follower_id = ?
+        UNION
+        SELECT Follower_id AS id FROM Follow WHERE User_id = ?
+    `
+    rows, err := db.Query(query, u.ID, u.ID)
+    if err != nil {
+        return nil, fmt.Errorf("GetFollowedAndFollowers: %v", err)
+    }
+    defer rows.Close()
+
+    var followedAndFollowers []User
+    for rows.Next() {
+        var userId int
+        if err := rows.Scan(&userId); err != nil {
+            return nil, fmt.Errorf("GetFollowedAndFollowers scan: %v", err)
+        }
+        user := User{Online: false}
+        if err := user.GetUserById(db, userId); err != nil {
+            return nil, fmt.Errorf("GetFollowedAndFollowers GetUserById: %v", err)
+        }
+        followedAndFollowers = append(followedAndFollowers, user)
+    }
+
+    if err := rows.Err(); err != nil {
+        return nil, fmt.Errorf("GetFollowedAndFollowers rows.Err: %v", err)
+    }
+
+    return followedAndFollowers, nil
+}
+
+func (u *User) GetFollowedAndFollowersNotInGroup(db *sql.DB, groupId int) ([]User, error) {
+    query := `
+        SELECT id FROM (
+            SELECT User_id AS id FROM Follow WHERE Follower_id = 9
+            UNION
+            SELECT Follower_id AS id FROM Follow WHERE User_id = 9
+        ) AS combined
+        WHERE id NOT IN (SELECT User_id FROM joinner WHERE Group_id = 6)
+    `
+    rows, err := db.Query(query, u.ID, u.ID, groupId)
+    if err != nil {
+        return nil, fmt.Errorf("GetFollowedAndFollowersNotInGroup: %v", err)
+    }
+    defer rows.Close()
+
+    var followedAndFollowers []User
+    for rows.Next() {
+        var userId int
+        if err := rows.Scan(&userId); err != nil {
+            return nil, fmt.Errorf("GetFollowedAndFollowersNotInGroup scan: %v", err)
+        }
+        user := User{}
+        if err := user.GetUserById(db, userId); err != nil {
+            return nil, fmt.Errorf("GetFollowedAndFollowersNotInGroup GetUserById: %v", err)
+        }
+        followedAndFollowers = append(followedAndFollowers, user)
+    }
+
+    if err := rows.Err(); err != nil {
+        return nil, fmt.Errorf("GetFollowedAndFollowersNotInGroup rows.Err: %v", err)
+    }
+
+    return followedAndFollowers, nil
+}
+
+func (u *User) GetFollowedAndFollowers(db *sql.DB) ([]User, error) {
+    query := `
+        SELECT id FROM 
+            SELECT User_id AS id FROM Follow WHERE Follower_id = ?
+            UNION
+            SELECT Follower_id AS id FROM Follow WHERE User_id = ?
+    `
+    rows, err := db.Query(query, u.ID, u.ID)
+    if err != nil {
+        return nil, fmt.Errorf("GetFollowedAndFollowersNotInGroup: %v", err)
+    }
+    defer rows.Close()
+
+    var followedAndFollowers []User
+    for rows.Next() {
+        var userId int
+        if err := rows.Scan(&userId); err != nil {
+            return nil, fmt.Errorf("GetFollowedAndFollowersNotInGroup scan: %v", err)
+        }
+        user := User{}
+        if err := user.GetUserById(db, userId); err != nil {
+            return nil, fmt.Errorf("GetFollowedAndFollowersNotInGroup GetUserById: %v", err)
+        }
+        followedAndFollowers = append(followedAndFollowers, user)
+    }
+
+    if err := rows.Err(); err != nil {
+        return nil, fmt.Errorf("GetFollowedAndFollowersNotInGroup rows.Err: %v", err)
+    }
+
+    return followedAndFollowers, nil
 }

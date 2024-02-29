@@ -33,6 +33,7 @@ func Routes() {
 	http.HandleFunc("/server/invitegroup", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.CreateInvitationGroup, "post"), "invitegroup")))
 	http.HandleFunc("/server/followgroup", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.CreateFollowGroup, "post"), "followgroup")))
 	http.HandleFunc("/server/createEvent", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.CreateEvent, "post"), "createEvent")))
+	http.HandleFunc("/server/getoption", middleware.Log(middleware.CheckMethod(controller.GetOption, "get")))
 	http.HandleFunc("/server/getgroupdetail/", middleware.Log(controller.GetGroupDetail))
 
 	// **********************************  NOTIFICATION ROUTE ********************************************************
@@ -40,4 +41,11 @@ func Routes() {
 	http.HandleFunc("/server/initnotifsocket", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.InitSocketNotification, "get"), "initnotifsocket")))
 	http.HandleFunc("/server/notiftraitement", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.NotificationRequestTraiment, "get"), "notiftraitement")))
 	http.HandleFunc("/server/notifAsRead", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.MarkNotificationAsRead, "get"), "notifAsRead")))
+
+	// ************************************** CHAT ROUTE**************************************************************
+	http.HandleFunc("/server/chat", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.GetChatMessageHandler, "get"), "chat")))
+	http.HandleFunc("/server/chatgroup", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.GetGroupMessageHandler, "get"), "chatgroup")))
+	http.HandleFunc("/server/getcontacts", middleware.Log(middleware.CheckMethod(controller.GetContacts, "get")))
+	http.HandleFunc("/server/ws", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.WsHandler, "get"), "ws")))
+
 }

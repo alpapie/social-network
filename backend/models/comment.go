@@ -24,7 +24,7 @@ func (C *Comment) Create(DB *sql.DB) (int, error) {
 	}
 	defer statement.Close()
 
-	sqlResult, err := statement.Exec(C.PostId, C.UserId, C.Comment,C.Image)
+	sqlResult, err := statement.Exec(C.PostId, C.UserId, C.Comment, C.Image)
 	if err != nil {
 		return -1, err
 	}
@@ -41,7 +41,7 @@ func (C *Comment) IsAllowedToComment(DB *sql.DB) (int, error) {
 	stmt, err := DB.Prepare(`SELECT count(P.id) 
 	FROM Post as P
    	LEFT JOIN "Group" as G on P.Group_id = G.id
-   	WHERE P.id = ? and ( P.privacy = "public" or (P.privacy = "private" and P.User_id in 
+   	WHERE P.id = ? and (P.User_id = ? or  P.privacy = "public" or (P.privacy = "private" and P.User_id in 
 	   (SELECT F.User_id from Follow F WHERE F.Follower_id = ? )) or
 	   		P.privacy = "almostprivate" and P.id in 
 		   (SELECT A.Post_id  from AllowedPost as A WHERE A.User_id = ? ) or
@@ -53,9 +53,9 @@ func (C *Comment) IsAllowedToComment(DB *sql.DB) (int, error) {
 	}
 
 	resultCount := 0
-	row := stmt.QueryRow(C.PostId, C.UserId, C.UserId, C.UserId)
-	err = row.Scan(&resultCount)
-	if err != nil {
+	row := stmt.QueryRow(C.PostId, C.UserId, C.UserId, C.UserId, C.UserId)
+	er := row.Scan(&resultCount)
+	if er != nil {
 		return 0, err
 	}
 	return resultCount, nil

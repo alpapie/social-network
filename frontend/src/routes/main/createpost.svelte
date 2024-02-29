@@ -11,9 +11,6 @@
 			modalDisplay = "none";
 		}
 	}
-	// console.log("HERE ARE USERS", users)
-
-	//
 </script>
 
 <form
@@ -39,7 +36,6 @@
 		</div>
 
 		<div>
-			<!-- <span  on:click={handleModal} style="visibility: {visibility};" class="font-xssss mr-4" >Edit</span> -->
 			<select
 				name="privacy"
 				on:change={handleSelect}
@@ -66,8 +62,7 @@
 			cols="30"
 			rows="10"
 			placeholder="What's on your mind?"
-		>
-		</textarea>
+		></textarea>
 		{#if form?.missing}
 			<span class="font-xssss" style="color: red;">Empty post</span>
 		{/if}
@@ -89,15 +84,32 @@
 				accept=".jpg, .jpeg, .png, .gif"
 				type="file"
 			/>
-			<!-- {#if modalDisplay == "block"} -->
 			<div style="display: {modalDisplay};">
 				<select name="allowedusers" id="allowed" multiple>
-					{#each users as user}
-						<option value={user.ID}>{user.FirstName} {user.LastName}</option>
-					{/each}
+					{#if users?.length > 0} 
+						{#each users as user}
+							<option value={user?.ID}>{user?.FirstName} {user?.LastName}</option>
+						{/each}
+					{/if}
+					
 				</select>
 			</div>
 			<!-- {/if} -->
 		</div>
 	</div>
+	<script src="/js/multiselect.js"></script>
+	<script>
+		new MultiSelectTag('allowed', {
+		rounded: true,    // default true
+		shadow: false,      // default false
+		placeholder: 'Search',  // default Search...
+		tagColor: {
+			textColor: '#030c16',
+			borderColor: '#bcd6f6',
+			bgColor: '#bcd6f6',
+		},
+		onChange: function(values) {
+			console.log(values)
+		}})
+	</script>
 </form>

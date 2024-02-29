@@ -6,6 +6,7 @@
 
   import Form from "./createpost.svelte";
   import Comment from "./comments.svelte";
+  // import Contacts from "./messagerie.svelte";
   import { onMount } from "svelte";
 
   export let form;
@@ -109,4 +110,6 @@
   </div>
 </div>
 <!-- main content -->
+<!-- <Contacts Users={data?.contacts}/> -->
+
 <Comment bind:CommSection />
