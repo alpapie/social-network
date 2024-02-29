@@ -4,7 +4,6 @@ import { localStorageObj } from "../db.js"
 
 import { error, redirect } from "@sveltejs/kit"
 
-
 export const load= async ({cookies})=>{
     const IsAuth=await authenticateUser(cookies)
     if (!IsAuth) {

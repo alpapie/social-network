@@ -61,8 +61,8 @@ func FollowerProfil(w http.ResponseWriter, r *http.Request){
 		return
 	}
 	_,_,auth_user_id :=helper.Auth(DB,r)
-	err = user.GetUserById(DB, user.ID)
-	if err!=nil {
+	erruser := user.GetUserById(DB, user.ID)
+	if erruser!=nil {
 		helper.ErrorPage(w, 400)
 		return
 	}
@@ -73,8 +73,8 @@ func FollowerProfil(w http.ResponseWriter, r *http.Request){
 		following, errFollowing := user.Following(DB, user_id)
 		createdPost, errPost := user.CreatedPost(DB, user_id)
 	
-		if err != nil || errFollow != nil || errFollowing != nil || errPost != nil {
-			fmt.Println(err, errFollow, errFollowing, errPost)
+		if  errFollow != nil || errFollowing != nil || errPost != nil {
+			fmt.Println( errFollow, errFollowing, errPost)
 			helper.ErrorPage(w, 404)
 			return
 		}

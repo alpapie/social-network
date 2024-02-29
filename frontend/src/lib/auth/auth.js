@@ -14,18 +14,3 @@ export const authenticateUser =  async (Cookies) => {
     // }
     return resp?.data?.isauth
 }
-
-export const logOutUser = async (cookie) => {
-    let url = `http://localhost:8080/server/logout`;
-    let header={
-        cookie:cookie
-    }
-    const config = { method:"get",withCredentials: true , header,mode: 'no-cors', }
-   
-    const response = await axios(url,config);
-    
-    if (response?.data?.success) {
-        // cookies.delete("sessionId", { path: '/' })
-        redirect(302,"/login")
-    }
-}

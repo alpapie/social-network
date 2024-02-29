@@ -188,9 +188,9 @@
             </div>
           </div>
           <div id="follow" class="tab-pane fade">
-            <UserList users={data.follower}/>
+            <UserList users={data.follower} />
           </div>
-          <div id="following" class="tab-pane fade"><UserList users={data.following}/></div>
+          <div id="following" class="tab-pane fade"><UserList users={data.following} isfollowing={true}/></div>
           
         </div>
       </div>

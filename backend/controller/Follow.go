@@ -82,6 +82,7 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 }
 
 func NotificationRequestTraiment(w http.ResponseWriter, r *http.Request) {
+
 	follow_id, err := strconv.Atoi(r.URL.Query().Get("user_id"))
 	notificationId, errnotifid := strconv.Atoi(r.URL.Query().Get("notif_id"))
 	accept, erraccept := strconv.Atoi(r.URL.Query().Get("accept"))
@@ -120,7 +121,6 @@ func NotificationRequestTraiment(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		fmt.Println(newNotification)
 		respondNotification.User_id = newNotification.SenderID
 		respondNotification.FirstName = newNotification.FirstName
 		respondNotification.LastName = newNotification.LastName
@@ -160,11 +160,11 @@ func NotificationRequestTraiment(w http.ResponseWriter, r *http.Request) {
 
 func TraiteNotif(user_id, follow_id, group_id int) error {
 	if group_id > 0 {
-		group,err:= models.GetGroupByID(DB,group_id)
-		if err!=nil {
+		group, err := models.GetGroupByID(DB, group_id)
+		if err != nil {
 			return err
 		}
-		if group.UserID!=user_id {
+		if group.UserID != user_id {
 			return models.JoinGroup(DB, user_id, group_id)
 		}
 		return models.JoinGroup(DB, follow_id, group_id)
@@ -176,7 +176,7 @@ func TraiteNotif(user_id, follow_id, group_id int) error {
 }
 
 func MarkNotificationAsRead(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("\nmarking as read\n")
+	
 	follow_id, err := strconv.Atoi(r.URL.Query().Get("user_id"))
 	if err != nil {
 		helper.ErrorPage(w, 400)

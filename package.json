@@ -1,0 +1,10 @@
+{
+  "name": "social-network",
+  "version": "0.1.0",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "docker": "docker build . -t social-network -f Dockerfile",
+    "docker-run": "open-cli http://localhost:8080 && docker run -p 8080:8080 --rm svelte-ts-go"
+   }
+}

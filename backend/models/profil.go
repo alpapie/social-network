@@ -5,7 +5,7 @@ import (
 )
 
 func (u *User) GetUnFollow(DB *sql.DB, limit int) ([]User, error) {
-	req := `SELECT id,"firstName","lastName", email,avatar 
+	req := `SELECT id,"firstName","lastName", email, avatar, ispublic
 	FROM user
 	WHERE id NOT IN (
 		SELECT user_id
@@ -27,7 +27,7 @@ func (u *User) GetUnFollow(DB *sql.DB, limit int) ([]User, error) {
 }
 
 func (U *User) Folower(DB *sql.DB, user_id int) ([]User, error) {
-	req := `SELECT  u.id,u."firstName",u."lastName", u.email,u.avatar
+	req := `SELECT  u.id,u."firstName",u."lastName", u.email,u.avatar,ispublic
 		FROM "User" u
 		JOIN "Follow" f ON u.id = f.Follower_id
 		WHERE f.User_id = ?`
@@ -41,7 +41,7 @@ func (U *User) Folower(DB *sql.DB, user_id int) ([]User, error) {
 
 func (U *User) Following(DB *sql.DB, user_id int) ([]User, error) {
 	req := ` 
-		SELECT u.id,u."firstName",u."lastName", u.email,u.avatar
+		SELECT u.id,u."firstName",u."lastName", u.email,u.avatar,ispublic
 		FROM "User" u
 		JOIN "Follow" f ON u.id = f.User_id
 		WHERE f.Follower_id =?
@@ -56,7 +56,7 @@ func (U *User) Following(DB *sql.DB, user_id int) ([]User, error) {
 
 func ExtractUserData(row *sql.Rows, u *User, users []User) []User {
 	for row.Next() {
-		row.Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.Avatar)
+		row.Scan(&u.ID, &u.FirstName, &u.LastName, &u.Email, &u.Avatar,&u.IsPublic)
 		users = append(users, *u)
 	}
 	return users

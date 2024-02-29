@@ -6,7 +6,7 @@ import { redirect } from "@sveltejs/kit";
 import { localStorageObj } from "../db.js";
 
 export const load = async ({ cookies }) => {
-
+    console.log(cookies);
     console.log(localStorageObj?.data);
     if (localStorageObj?.data?.user) {
         const IsAuth = await authenticateUser(cookies)
@@ -53,10 +53,10 @@ export const actions = {
             }
             if (errorMsg.length == 0) {
                 let response = await makeRequest("register", "POST", formDatas)
-                if (response.data.success == true) {
+                if (response?.data?.success == true) {
                     redirect(302, "/login")
                 }
-                errorMsg = response.data.error
+                errorMsg = response?.data?.error
             }
         } else {
             errorMsg = err.toUpperCase() + ' invalid. Veuillez verifier et reesayer.'

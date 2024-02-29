@@ -1,5 +1,6 @@
 <script>
     export let users
+    export let isfollowing
 </script>
 
 
@@ -23,13 +24,31 @@
                         <div class="card-body d-block w-100 ps-3 pe-3 pb-4 text-center">
                             <figure class="avatar ms-auto me-auto mb-0 position-relative w65 z-index-1">
                                 {#if user.Avatar }
-                                    <img src="/images/user-7.png" alt="{user.FirstName +" "+ user.LastName}" class="float-right p-0 bg-white rounded-circle w-100 shadow-xss">
+                                    <img src="{user.Avatar}" alt="{user.FirstName +" "+ user.LastName}" class="float-right p-0 bg-white rounded-circle w-100 shadow-xss">
                                 {:else}
                                     <img src="//ui-avatars.com/api/?name={user.FirstName +" "+ user.LastName}e&size=100&rounded=true&color=fff&background=random" alt="{user.FirstName +" "+ user.LastName}" />
                                 {/if}
                             </figure>
-                            <div class="clearfix"></div>
-                            <h4 class="fw-700 font-xsss mt-3 mb-1">{user.FirstName +" "+ user.LastName}</h4>
+
+                            {#if isfollowing}user.Avatar
+                                <a href="/main/profile/{user.ID}">
+                                    <h4 class="fw-700 font-xsss mt-3 mb-1">
+                                        {user.FirstName + " " + user.LastName}
+                                    </h4>
+                                </a>
+                            {:else}
+                                {#if user.IsPublic===1}
+                                    <a href="/main/profile/{user.ID}">
+                                        <h4 class="fw-700 font-xsss mt-3 mb-1">
+                                            {user.FirstName + " " + user.LastName}
+                                        </h4>
+                                    </a>
+                                {:else}
+                                    <h4 class="fw-700 font-xsss mt-3 mb-1">
+                                        {user.FirstName + " " + user.LastName}
+                                    </h4>
+                                {/if}
+                            {/if}
                             <p class="fw-500 font-xsssss text-grey-500 mt-0 mb-3">{user.Email}</p>
                         </div>
                     </div>

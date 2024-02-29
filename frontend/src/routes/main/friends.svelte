@@ -12,7 +12,7 @@
   {#if friends}
     {#each friends as friend}
     <div class="card-body d-flex pt-4 ps-4 pe-4 pb-0 border-top-xs bor-0">
-      <figure class="avatar me-3">
+      <figure class="avatar me-3 w60">
         {#if friend.Avatar }
         <img src="{friend.Avatar}" alt="{friend.FirstName +" "+ friend.LastName}" class="float-right p-0 bg-white rounded-circle w-100 shadow-xss">
         {:else}

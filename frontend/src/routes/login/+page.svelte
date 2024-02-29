@@ -4,11 +4,11 @@ import Login_header from "../login-header.svelte";
 
 export let form 
 </script>
-<style>
+<!-- <style>
 	.pbg-dark{
 		color: brown  !important;; 
 	}
-</style>
+</style> -->
 
 <!-- <div class="preloader"></div> -->
 
