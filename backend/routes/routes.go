@@ -36,6 +36,7 @@ func Routes() {
 
 	http.HandleFunc("/server/chat", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.GetChatMessageHandler, "get"), "chat")))
 	http.HandleFunc("/server/chatgroup", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.GetGroupMessageHandler, "get"), "chatgroup")))
+	http.HandleFunc("/server/getcontacts", middleware.Log(middleware.CheckMethod(controller.GetContacts, "get")))
 
 	//socket Handlers
 	http.HandleFunc("/server/ws", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.WsHandler, "get"), "ws")))

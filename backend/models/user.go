@@ -19,6 +19,7 @@ type User struct {
 	AboutMe    string
 	IsPublic   int
 	TokenLogin string
+	Online bool
 }
 
 func (u *User) IsGroupmemeber(db *sql.DB, groupID int) (bool, error) {
@@ -181,7 +182,7 @@ func (u *User) GetFollowerANDFollowed(db *sql.DB) ([]User, error) {
         if err := rows.Scan(&userId); err != nil {
             return nil, fmt.Errorf("GetFollowedAndFollowers scan: %v", err)
         }
-        user := User{}
+        user := User{Online: false}
         if err := user.GetUserById(db, userId); err != nil {
             return nil, fmt.Errorf("GetFollowedAndFollowers GetUserById: %v", err)
         }
@@ -205,6 +206,39 @@ func (u *User) GetFollowedAndFollowersNotInGroup(db *sql.DB, groupId int) ([]Use
         WHERE id NOT IN (SELECT User_id FROM joinner WHERE Group_id = 6)
     `
     rows, err := db.Query(query, u.ID, u.ID, groupId)
+    if err != nil {
+        return nil, fmt.Errorf("GetFollowedAndFollowersNotInGroup: %v", err)
+    }
+    defer rows.Close()
+
+    var followedAndFollowers []User
+    for rows.Next() {
+        var userId int
+        if err := rows.Scan(&userId); err != nil {
+            return nil, fmt.Errorf("GetFollowedAndFollowersNotInGroup scan: %v", err)
+        }
+        user := User{}
+        if err := user.GetUserById(db, userId); err != nil {
+            return nil, fmt.Errorf("GetFollowedAndFollowersNotInGroup GetUserById: %v", err)
+        }
+        followedAndFollowers = append(followedAndFollowers, user)
+    }
+
+    if err := rows.Err(); err != nil {
+        return nil, fmt.Errorf("GetFollowedAndFollowersNotInGroup rows.Err: %v", err)
+    }
+
+    return followedAndFollowers, nil
+}
+
+func (u *User) GetFollowedAndFollowers(db *sql.DB) ([]User, error) {
+    query := `
+        SELECT id FROM 
+            SELECT User_id AS id FROM Follow WHERE Follower_id = ?
+            UNION
+            SELECT Follower_id AS id FROM Follow WHERE User_id = ?
+    `
+    rows, err := db.Query(query, u.ID, u.ID)
     if err != nil {
         return nil, fmt.Errorf("GetFollowedAndFollowersNotInGroup: %v", err)
     }

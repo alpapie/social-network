@@ -1,5 +1,4 @@
 <script>
-    import { contactsStore } from '../stores';
     
     
     export let data
@@ -22,9 +21,6 @@
                 }, 2000); 
                 const newContact = data.listusers.find(user => user.ID === id_user);
 
-                contactsStore.update(contacts => {
-                    return [...contacts, newContact];
-                });
                 data.listusers= data.listusers.filter((user)=> user.ID!=id_user)
                 
             }else{

@@ -44,8 +44,7 @@
 					>
 				</h4>
 				<a  class="ms-auto"  on:click={CloseComment}
-					><i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"
-					></i></a
+					><i class="ti-close text-grey-900 font-xssss btn-round-md bg-greylight"></i></a
 				>
 			</div>
 			<!-- input -->

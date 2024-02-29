@@ -1,12 +1,13 @@
 <script>
     import {onMount} from "svelte"
-    import { enhance } from "$app/forms";
     import { page } from "$app/stores"
     import EmojiPicker from 'svelte-emoji-picker';
-    import { afterUpdate, tick } from 'svelte';
-    import AlertContainer from '../../alert.svelte';
+    import { afterUpdate } from 'svelte';
     import {LastMessage} from "../../stores"
-    let showAlert = false;
+    import {ContactsStore} from "../../stores"
+    let Users
+    let usersOnline
+    ContactsStore.subscribe((val) => {Users = val})
 
     import {WS} from "../../socket"
     export let data
@@ -27,24 +28,29 @@
     $:console.log('RECEIVER ID', receiver_id);
     let lastMesage = ''
     onMount(async () => { 
-        // scrollToBottom(element);
         WS.subscribe((val)=> socket = val)
         socket.addEventListener("open", ()=> {
             console.log("Opened")
         })
         socket.onmessage = (e) => {
             var newMessage = JSON.parse(e.data);
-            console.log("receive new message ", newMessage)
+            if (newMessage.action == 'onlineUsers') {
+                usersOnline = newMessage.users
+                for (let user of Users) {
+                    if (usersOnline.some(onlineUser => onlineUser.ID === user.ID)) {
+                        user.Online = true
+                    } else {
+                        user.Online = false
+                    }
+                }   
+                ContactsStore.set(Users)
+            }
             if ((newMessage.sender_id == receiver_id || newMessage.receiver_id == receiver_id ) && newMessage.groupId == 0) {
                 if (allmessage) {
                     allmessage = [...allmessage , newMessage]
                 } else {
                     allmessage = [newMessage]
                 }
-                // lastMesage = newMessage
-                // showAlert = true;
-                // setTimeout(() => showAlert = false,  50000);
-                
             }
             if (newMessage.sender_id == receiver_id ) {
                 LastMessage.set(newMessage)
@@ -61,9 +67,7 @@
     let showEmojis = false;
 
     function SendMessage() {
-        console.log("THE NEW MESSAGE IS" , Message)
         let mess = {
-            // sender_id: 9,
             receiver_id : Number(receiver_id),
             content : Message,
         }
@@ -76,9 +80,7 @@
             SendMessage()
         }
     }
-    // let MessagesContainer
 </script>
-<!-- <AlertContainer {showAlert} {lastMesage} /> -->
 
 <div class="main-content right-chat-active">
             
@@ -123,67 +125,7 @@
                                    
                                     {/each}
                                 {/if}
-                                    
-
-                                <!-- <div class="message-item">
-                                    <div class="message-user">
-                                        <figure class="avatar">
-                                            <img src="/images/user-9.png" alt="display photo">
-                                        </figure>
-                                        <div>
-                                            <h5>Byrom Guittet</h5>
-                                            <div class="time">01:35 PM</div>
-                                        </div>
-                                    </div>
-                                    <div class="message-wrap">I've found some cool photos for our travel app.</div>
-                                </div>
-
-                                <div class="message-item outgoing-message">
-                                    <div class="message-user">
-                                        <figure class="avatar">
-                                            <img src="/images/user-1.png" alt="display photo">
-                                        </figure>
-                                        <div>
-                                            <h5>Byrom Guittet</h5>
-                                            <div class="time">01:35 PM<i class="ti-double-check text-info"></i></div>
-                                        </div>
-                                    </div>
-                                    <div class="message-wrap">Hey mate! How are things going ?</div>
-                                </div>
-
-                                <div class="message-item">
-                                    <div class="message-user">
-                                        <figure class="avatar">
-                                            <img src="/images/user-9.png" alt="display photo">
-                                        </figure>
-                                        <div>
-                                            <h5>Byrom Guittet</h5>
-                                            <div class="time">01:35 PM</div>
-                                        </div>
-                                    </div>
-                                    <figure>
-                                        <img src="/images/bb-9.jpg" class="w-25 img-fluid rounded-3" alt="display photo">
-                                    </figure>
-                                    
-                                
-                                </div>
-
-                                <div class="message-item outgoing-message">
-                                    <div class="message-user">
-                                        <figure class="avatar">
-                                            <img src="/images/user-1.png" alt="display photo">
-                                        </figure>
-                                        <div>
-                                            <h5>Byrom Guittet</h5>
-                                            <div class="time">01:35 PM<i class="ti-double-check text-info"></i></div>
-                                        </div>
-                                    </div>
-                                    <div class="message-wrap" style="margin-bottom: 90px;">Hey mate! How are things going ?</div>
-
-                                </div> -->
                                 <div class="clearfix"></div>
-
-
                             </div>
                         </div>
                     </div>

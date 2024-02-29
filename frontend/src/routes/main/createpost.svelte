@@ -11,10 +11,6 @@
 			modalDisplay = "none";
 		}
 	}
-	
-	console.log("HERE ARE USERS", users)
-	
-	//
 </script>
 
 <form
@@ -40,7 +36,6 @@
 		</div>
 
 		<div>
-			<!-- <span  on:click={handleModal} style="visibility: {visibility};" class="font-xssss mr-4" >Edit</span> -->
 			<select
 				name="privacy"
 				on:change={handleSelect}
@@ -89,7 +84,6 @@
 				accept=".jpg, .jpeg, .png, .gif"
 				type="file"
 			/>
-			<!-- {#if modalDisplay == "block"} -->
 			<div style="display: {modalDisplay};">
 				<select name="allowedusers" id="allowed" multiple>
 					{#if users?.length > 0} 

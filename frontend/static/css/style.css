@@ -17163,7 +17163,7 @@ select.sort {
     font-weight: 500;
     line-height: 24px;
     position: relative;
-    z-index: 2
+    z-index: 0
 }
 
 .chat-body .messages-content .message-item .message-wrap:after {

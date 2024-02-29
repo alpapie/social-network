@@ -2,19 +2,22 @@
 <script>
     import { onDestroy } from 'svelte';
     import { displayContacts } from "./stores";
-    import { contactsStore } from './stores';
     import { onMount } from "svelte";
     import AlertContainer from './alert.svelte';
     import {LastMessage} from "./stores"
+    import {ContactsStore} from "./stores"
+    import {OnlineStore} from "./stores"
+    import {OfflineStore} from "./stores"
+    import { get } from 'svelte/store';
+    
     let show;
-    let Users;
+     let Users;
     let lastMesage = ''
     let showAlert = false;
+
+    ContactsStore.subscribe((val)=> Users = val)
+    $:console.log("UUUUUUSSSERRRS" , Users)
     
-    
-    const unsuscribe_contactsStore = contactsStore.subscribe(value => {
-        Users = value;
-    });
     const unsuscribe_displayContacts = displayContacts.subscribe((value) =>{
         show = value;
     });
@@ -25,11 +28,11 @@
     import {WS} from "./socket"
     let socket
     $:usersOnline = []
-    $:online = []
-    $:offline = []
+    // $:online = []
+    // $:offline = []
 
     onMount(async () => { 
-        if (!window.location.href.includes("main/chat") && !window.location.href.includes("main/groups")) {
+        if (!window.location.href.includes("main/chat") && !window.location.href.includes("/messages")) {
             console.log("WE ARE IN THE CHAT")
             WS.subscribe((val)=> socket = val)
             socket.addEventListener("open", ()=> {
@@ -43,16 +46,16 @@
                     
                     usersOnline = newMessage.users
                     // $: {
-                        online = [];
-                        offline = [];
+                        // online = [];
+                        // offline = [];
                         for (let user of Users) {
                             if (usersOnline.some(onlineUser => onlineUser.ID === user.ID)) {
-                                online.push(user);
+                                user.Online = true
                             } else {
-                                offline.push(user);
+                                user.Online = false
                             }
-                        }    
-                    // }
+                        }   
+                        ContactsStore.set(Users)
                 }else{
                     lastMesage = newMessage
                     showAlert = true;
@@ -62,6 +65,7 @@
 
         }
     })
+
     let lastmess = undefined;
     const unsuscribeLastMessage = LastMessage.subscribe((val)=>{ lastmess = val})
     $: {
@@ -74,7 +78,7 @@
          }
         
     }
-    onDestroy(unsuscribeLastMessage, unsuscribe_contactsStore, unsuscribe_displayContacts);
+    onDestroy(unsuscribeLastMessage, unsuscribe_displayContacts);
 </script>
 <AlertContainer {showAlert} {lastMesage} />
 <div class="right-chat nav-wrap mt-2 right-scroll-bar" class:active-sidebar={show}>
@@ -113,25 +117,28 @@
             <h4 class="font-xsssss text-grey-500 text-uppercase fw-700 ls-3">CONTACTS</h4>
             <ul class="list-group list-group-flush">
 
-                {#if online && online.length > 0}     
-                    {#each online as user}
+                {#if Users && Users.length > 0}     
+                    {#each Users as user}
                         <li class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center" on:click={toggleConstants}>
                             <figure class="avatar float-left mb-0 me-2">
-                                <img src="images/user-8.png" alt="display photo" class="w35">
+                                <img src="/images/user-8.png" alt="display photo" class="w35">
                             </figure>
                             <h3 class="fw-700 mb-0 mt-0">
                                 <a class="font-xssss text-grey-600 d-block text-dark model-popup-chat" href="/main/chat/{user?.ID}">{user?.FirstName} {user?.LastName}</a>
                             </h3>
-                            <span class="bg-success ms-auto btn-round-xss"></span>
-
+                            {#if user.Online == true}
+                                <span class="bg-success ms-auto btn-round-xss"></span>
+                            {:else}
+                                <span class="bg-warning ms-auto btn-round-xss"></span>
+                            {/if}
                         </li>
                     {/each}
                 {/if}
-                {#if offline && offline.length > 0}
+                <!-- {#if offline && offline.length > 0}
                 {#each offline as user}
                     <li class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center" on:click={toggleConstants}>
                         <figure class="avatar float-left mb-0 me-2">
-                            <img src="images/user-8.png" alt="display photo" class="w35">
+                            <img src="/images/user-8.png" alt="display photo" class="w35">
                         </figure>
                         <h3 class="fw-700 mb-0 mt-0">
                             <a class="font-xssss text-grey-600 d-block text-dark model-popup-chat" href="/main/chat/{user?.ID}">{user?.FirstName} {user?.LastName}</a>
@@ -140,7 +147,7 @@
                         <span class="bg-warning ms-auto btn-round-xss"></span>
                     </li>
                 {/each}
-                {/if}
+                {/if} -->
                 <!-- <li class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center">
                     <figure class="avatar float-left mb-0 me-2">
                         <img src="images/user-7.png" alt="display photo" class="w35">

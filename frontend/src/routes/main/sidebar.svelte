@@ -7,7 +7,7 @@
     $: closed = false
 </script>
 
-<nav class="navigation scroll-bar">
+<nav class="navigation scroll-bar ">
     <div class="container ps-0 pe-0">
         <div class="nav-content">
             <div class="nav-wrap bg-white bg-transparent-card rounded-xxl shadow-xss pt-3 pb-1 mb-2 mt-2">

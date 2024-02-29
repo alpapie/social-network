@@ -1,5 +1,4 @@
 <script>
-    import { onMount } from 'svelte';
     export let showAlert = false;
     export let lastMesage = {};
 
@@ -10,9 +9,18 @@
             return message;
         }
     }
+    let url = ''
+    $: {
+        if (lastMesage.groupId == 0) {
+            url = `/main/chat/${lastMesage.sender_id}`
+        } else {
+            url = `/main/groups/${lastMesage.groupId}/messages`
+    
+        }
+    }
 </script>
 
-<a class="alert-container" style="position: fixed; top:  15%; right:  0; z-index:  9999;">
+<a href={url} class="alert-container" style="position: fixed; top:  15%; right:  0; z-index:  9999;">
     {#if showAlert} 
         <div class="card bg-transparent-card w-100 ps-5 mb-3 alert alert-success" style="border-left: 4px solid green; min-width: 250px;">
             <img src="/images/newmessage.png" alt="user" class="w40 position-absolute left-0" style="padding-left: 10px;">

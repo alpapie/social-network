@@ -3,12 +3,16 @@
     import { page } from "$app/stores"
     import {WS} from "../../../socket"
     import EmojiPicker from 'svelte-emoji-picker';
-    import { afterUpdate, tick } from 'svelte';
+    import { afterUpdate } from 'svelte';
     import {LastMessage} from "../../../stores"
+    import {ContactsStore} from "../../../stores"
     export let data
     let element;
     let showEmojis = false;
-    $:console.log('les mess sont :', data);
+
+    let Users
+    let usersOnline
+    ContactsStore.subscribe((val) => {Users = val})
 
     $:groupid = $page.params.id
     $:allmessage = data?.res?.result?.messages
@@ -17,24 +21,28 @@
             if(allmessage) scrollToBottom(element);
     });
     $: if(allmessage && element) {
-		console.log("tick");
 		scrollToBottom(element);
 	}
     $:currUserId = data?.res?.result?.userid
-    $:console.log('les mess sont :', allmessage);
-    $:console.log('les mess sont :', currUserId);
     let socket
     onMount(async () => {
-        // if (!socket) {
-        //     socket = new WebSocket(`ws://localhost:8080/server/wss?groupId=${groupid}`)
-        // }
         WS.subscribe((val)=> socket = val)
         socket.addEventListener("open", ()=> {
             console.log("Opened")
         })
         socket.onmessage = (e) => {
             var newMessage = JSON.parse(e.data);
-            console.log("receive new message ", newMessage)
+            if (newMessage.action == 'onlineUsers') {
+                usersOnline = newMessage.users
+                for (let user of Users) {
+                    if (usersOnline.some(onlineUser => onlineUser.ID === user.ID)) {
+                        user.Online = true
+                    } else {
+                        user.Online = false
+                    }
+                }   
+                ContactsStore.set(Users)
+            }
             if (newMessage?.groupId == groupid) {
                 if (allmessage) {
                     allmessage = [...allmessage , newMessage]
@@ -53,10 +61,8 @@
     };
     let Message = ''
     function SendMessage() {
-        console.log("THE NEW MESSAGE IS" , Message)
         if (Message != '') {
             let mess = {
-                // sender_id: 9,
                 groupId : Number(groupid),
                 content : Message,
             }
@@ -116,67 +122,7 @@
                                    
                                     {/each}
                                 {/if}
-                                    
-
-                                <!-- <div class="message-item">
-                                    <div class="message-user">
-                                        <figure class="avatar">
-                                            <img src="/images/user-9.png" alt="display photo">
-                                        </figure>
-                                        <div>
-                                            <h5>Byrom Guittet</h5>
-                                            <div class="time">01:35 PM</div>
-                                        </div>
-                                    </div>
-                                    <div class="message-wrap">I've found some cool photos for our travel app.</div>
-                                </div>
-
-                                <div class="message-item outgoing-message">
-                                    <div class="message-user">
-                                        <figure class="avatar">
-                                            <img src="/images/user-1.png" alt="display photo">
-                                        </figure>
-                                        <div>
-                                            <h5>Byrom Guittet</h5>
-                                            <div class="time">01:35 PM<i class="ti-double-check text-info"></i></div>
-                                        </div>
-                                    </div>
-                                    <div class="message-wrap">Hey mate! How are things going ?</div>
-                                </div>
-
-                                <div class="message-item">
-                                    <div class="message-user">
-                                        <figure class="avatar">
-                                            <img src="/images/user-9.png" alt="display photo">
-                                        </figure>
-                                        <div>
-                                            <h5>Byrom Guittet</h5>
-                                            <div class="time">01:35 PM</div>
-                                        </div>
-                                    </div>
-                                    <figure>
-                                        <img src="/images/bb-9.jpg" class="w-25 img-fluid rounded-3" alt="display photo">
-                                    </figure>
-                                    
-                                
-                                </div>
-
-                                <div class="message-item outgoing-message">
-                                    <div class="message-user">
-                                        <figure class="avatar">
-                                            <img src="/images/user-1.png" alt="display photo">
-                                        </figure>
-                                        <div>
-                                            <h5>Byrom Guittet</h5>
-                                            <div class="time">01:35 PM<i class="ti-double-check text-info"></i></div>
-                                        </div>
-                                    </div>
-                                    <div class="message-wrap" style="margin-bottom: 90px;">Hey mate! How are things going ?</div>
-
-                                </div> -->
                                 <div class="clearfix"></div>
-
-
                             </div>
                         </div>
                     </div>

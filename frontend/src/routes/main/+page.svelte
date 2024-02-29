@@ -8,12 +8,9 @@
   import Comment from "./comments.svelte";
   // import Contacts from "./messagerie.svelte";
   import { onMount } from "svelte";
-  import { contactsStore } from './stores';
 
   export let form;
   export let data;
-  $contactsStore = data?.contacts || [];
-  console.log(data.posts);
 
   let CommSection = { display: "none", data: {} };
 
