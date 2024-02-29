@@ -30,7 +30,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	}
 	contacts := append(follower, followed...)
 
-	err = helper.WriteJSON(w, http.StatusOK, map[string]interface{}{"success": true,"folow_and_following":follower, "listesusers":listusers,"posts":posts , "contacts" : contacts , "user" :user}, nil)
+	err = helper.WriteJSON(w, http.StatusOK, map[string]interface{}{"success": true,"folow_and_following":follower, "listesusers":listusers,"posts":posts ,"notifications":notifications, "contacts" : contacts , "user" :user}, nil)
 	if err!=nil {
 		fmt.Println(err)
 		helper.ErrorPage(w, 400)

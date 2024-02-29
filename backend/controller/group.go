@@ -70,11 +70,11 @@ func CreateFollowGroup(w http.ResponseWriter, r *http.Request) {
 	notification.Type = "join-Group"
 	notification.Group_id = group.ID
 	notification.Status = "false"
-	notification.FirstName=user.FirstName
-	notification.LastName=user.LastName
-	notification.Avatar=user.Avatar
+	notification.FirstName = user.FirstName
+	notification.LastName = user.LastName
+	notification.Avatar = user.Avatar
 	ern := notification.CreateNotification(DB)
-	SendSocketNotification(notification,"notification")
+	SendSocketNotification(notification, "notification")
 	if ern != nil {
 		fmt.Println(ern)
 		helper.ErrorPage(w, 500)
@@ -85,7 +85,7 @@ func CreateFollowGroup(w http.ResponseWriter, r *http.Request) {
 
 func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 	_, userEmail, _ := helper.Auth(DB, r)
-	
+
 	var user = models.User{}
 	err := user.GetUserByEmail(DB, userEmail)
 	if err != nil {
@@ -119,8 +119,6 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	
-
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(map[string]interface{}{
@@ -128,83 +126,6 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 		"message": "Group created successfully",
 		"groupId": lastInsertId,
 	})
-}
-
-func CreateEvent(w http.ResponseWriter, r *http.Request) {
-	var user = models.User{}
-	_, userEmail ,_:= helper.Auth(DB, r)
-
-	err := user.GetUserByEmail(DB, userEmail)
-	if err != nil {
-		fmt.Println("1")
-		fmt.Println(err)
-		helper.ErrorPage(w,500)
-		return
-	}
-	fmt.Println("======------======")
-	fmt.Println(user)
-	groupId := r.FormValue("groupId")
-	title := html.EscapeString(strings.TrimSpace(r.FormValue("title")))
-	des := html.EscapeString(strings.TrimSpace(r.FormValue("description")))
-	date := r.FormValue("date")
-	time := r.FormValue("time")
-	var event = models.Event{}
-	event.Userid = user.ID
-	event.Title = title
-	event.Description = des
-	event.Date = date
-	event.Time = time
-	grId, errGrid := strconv.Atoi(groupId)
-	if errGrid != nil {
-		helper.ErrorPage(w,500)
-		return
-	}
-
-	event.GroupId = grId
-
-	errc := event.CreateEvent(DB)
-	if errc != nil {
-		fmt.Println(errc)
-		helper.ErrorPage(w,500)
-		return
-	}
-	group:=models.Group{ID: grId}
-	listUser,errr:=group.GetUserOfGroup(DB)
-	if errr !=nil {
-		helper.ErrorPage(w, 400)
-		return
-	}
-	for _, v := range listUser{
-		if v!= event.Userid{
-			var user = models.User{}
-	
-			errr := user.GetUserById(DB, v)
-			if errr != nil {
-				helper.ErrorPage(w,500)
-				return
-			}
-	
-			var notification = models.Notification{}
-			// notification.GroupTitle
-			notification.SenderID = event.Userid
-			notification.User_id = user.ID
-			notification.Type = "event-notif"
-			notification.Group_id = group.ID
-
-			notification.Status = "false"
-			notification.FirstName=user.FirstName
-			notification.LastName=user.LastName
-			notification.Avatar=user.Avatar
-			ern := notification.CreateNotification(DB)
-			if ern != nil {
-				helper.ErrorPage(w,500)
-				return
-			}
-			SendSocketNotification(notification,"notification")
-		}
-	}
-
-	helper.WriteJSON(w, 200, map[string]interface{}{"success": true}, nil)
 }
 
 func GetGroupDetail(w http.ResponseWriter, r *http.Request) {

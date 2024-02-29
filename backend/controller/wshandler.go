@@ -10,7 +10,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-var upgrader = websocket.Upgrader{
+var upgraders = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
 	CheckOrigin: func(r *http.Request) bool {
@@ -35,7 +35,7 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	
 	fmt.Println("received a request YYYYYYYYYYYYYEEEEEEEEEESSSSSSSSSSSS")
-	conn, err := upgrader.Upgrade(w, r, nil)
+	conn, err := upgraders.Upgrade(w, r, nil)
 	if err != nil {
 		fmt.Println(err)
 		return
