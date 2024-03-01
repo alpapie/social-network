@@ -4,6 +4,8 @@
 	let success = true;
 	let erroralert = true;
 
+	console.log("url to backenck",PUBLIC_BACKEND_URL);
+
 	import axios from "axios";
 
 	async function RequestFollow(id_user) {
