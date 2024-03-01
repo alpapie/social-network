@@ -1,6 +1,7 @@
 <script>
   import Comment from "./comments.svelte";
   import { makeRequest } from "$lib/api.js";
+  import { PUBLIC_BACKEND_URL,PUBLIC_SOCKET_URL } from '$env/static/public';
   import axios from "axios";
 
 	export let data;
@@ -30,7 +31,7 @@
   }
 
   async function getPostDetails(postId) {
-    let url = `http://localhost:8080/server/getPost?postid=${postId}`;
+    let url = `${PUBLIC_BACKEND_URL}/getPost?postid=${postId}`;
     try {
            let header={
                 cookie:document.cookie

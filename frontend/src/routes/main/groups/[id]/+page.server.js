@@ -125,30 +125,3 @@ export const load = async ({cookies, params}) => {
         return{ res }
     }
 };
-// export const load = async ({cookies, params}) => {
-//     const groupId = params.id;
-//     let data;
-//     try {
-//         const response = await axios.get(`http://localhost:8080/server/groupdetail/${groupId}`);
-//         data = response.data; 
-//     } catch (error) {
-//         console.error('Error fetching data:', error);
-
-//     }
-//     return { data };
-// };
-// export const load = async ({cookies, params}) => {
-//     const groupId = params.id;
-//     let data;
-//     try {
-//         const response = await axios.get(`http://your-api-url/endpoint/${groupId}`, {
-//             headers: {
-//                 Cookie: `session=${cookies.session}`
-//             }
-//         });
-//         data = response.data;
-//     } catch (error) {
-//         console.error('Error fetching data:', error);
-//     }
-//     return { data };
-// };

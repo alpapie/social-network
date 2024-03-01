@@ -1,7 +1,5 @@
 import { makeRequest } from '$lib/api'
 
-import { redirect } from '@sveltejs/kit'
-import axios from 'axios'
 import { DB ,localStorageObj} from '../../routes/db'
 
 

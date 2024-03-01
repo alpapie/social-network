@@ -1,10 +1,11 @@
 <script>
     
     export let data    
-   import {onMount} from "svelte"
+    import {onMount} from "svelte"
     import {WS } from "./socket"
     import {darkMode} from "./stores"
     import Contacts from "./messagerie.svelte";
+    import { PUBLIC_SOCKET_URL } from '$env/static/public';
     let Users = []
     
 // let logut=async (cookies)=>{
@@ -14,7 +15,7 @@
         displayContacts.update((show) => !show)
     }
 	onMount(async () => {
-		let ws = new WebSocket("ws://localhost:8080/server/ws")
+		let ws = new WebSocket(PUBLIC_SOCKET_URL+"/ws")
 		console.log("sennd the request" , ws)
 		WS.set(ws)
         

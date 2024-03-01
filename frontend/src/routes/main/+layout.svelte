@@ -1,6 +1,6 @@
 <script>
 	export let data
-
+	import { PUBLIC_BACKEND_URL } from '$env/static/public';
 	let activateSide = false
 	import Header from "./header.svelte";
 	import SideBar from "./sidebar.svelte";
@@ -11,7 +11,7 @@
 	let Users = [];
 	onMount(async () => { 
 		console.log('Mounted');
-		let url = `http://localhost:8080/server/getcontacts`;
+		let url = `h${PUBLIC_BACKEND_URL}/getcontacts`;
 		try {
 			let header={
 					cookie:document.cookie

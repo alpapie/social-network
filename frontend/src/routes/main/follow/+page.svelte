@@ -1,5 +1,6 @@
 <script>
 	export let data;
+	import { PUBLIC_BACKEND_URL } from '$env/static/public';
 	let success = true;
 	let erroralert = true;
 
@@ -17,7 +18,7 @@
 				mode: "no-cors",
 				params: { user_id: id_user },
 			};
-			let response = await axios("http://localhost:8080/server/follow", config);
+			let response = await axios(PUBLIC_BACKEND_URL+"/follow", config);
 			if (response?.data?.success) {
 				success = false;
 				setTimeout(() => {

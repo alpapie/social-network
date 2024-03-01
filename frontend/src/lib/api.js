@@ -1,10 +1,11 @@
 import axios from "axios";
 import { GetCookies } from "../routes/db";
+import { PUBLIC_BACKEND_URL } from '$env/static/public';
 
 export async function makeRequest(endpoint, method, data = {}, headers = {}, cookies) {
   try {
     
-    let url = `http://localhost:8080/server/${endpoint}`;
+    let url = `${PUBLIC_BACKEND_URL}/${endpoint}`;
     if (cookies){
       headers.Cookie=GetCookies(cookies)
     }
