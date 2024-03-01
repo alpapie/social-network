@@ -124,7 +124,7 @@
                   <a
                     class="fw-700 font-xssss text-grey-500 pt-3 pb-3 ls-1 d-inline-block"
                     href="#follow"
-                    data-bs-toggle="pill">follow</a
+                    data-bs-toggle="pill">follower</a
                   >
                 </li>
                 <li class="list-inline-item me-5">

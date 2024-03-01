@@ -17,8 +17,10 @@ func Home(w http.ResponseWriter, r *http.Request) {
 
 	user.GetUserById(DB,user_id)
 	listusers, err := user.GetUnFollow(DB, 4)
+	user = models.User{ID: user_id}
 	follower, errfolow := user.GetFollowers(DB)
-	followed, errfolowed := user.GetFollowed(DB)
+	user = models.User{ID: user_id}
+	followed, errfolowed := user.Folower(DB,user_id)
 
 	user.ID = user_id
 	posts, errpost := user.GetPosts(DB)
@@ -29,7 +31,6 @@ func Home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	contacts := append(follower, followed...)
-
 	err = helper.WriteJSON(w, http.StatusOK, map[string]interface{}{"success": true,"folow_and_following":follower, "listesusers":listusers,"posts":posts ,"notifications":notifications, "contacts" : contacts , "user" :user}, nil)
 	if err!=nil {
 		fmt.Println(err)

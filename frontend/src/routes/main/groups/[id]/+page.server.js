@@ -1,7 +1,7 @@
 import { makeRequest } from "$lib/api";
 import { saveImage } from "../../../../lib/index.js";
 import axios from 'axios';
-import { localStorageObj } from "$lib/db.js";
+import { localStorageObj } from "../../../db.js";
 
 
 export const actions = {
