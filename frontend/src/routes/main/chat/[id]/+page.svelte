@@ -99,7 +99,7 @@
                                         <div class="message-item" >
                                             <div class="message-user">
                                                 <figure class="avatar">
-                                                    <img src="/images/user-9.png" alt="display photo">
+                                                    <img src="/images/user-9.png" alt="{message.receiver_id }">
                                                 </figure>
                                                 <div>
                                                     <h5>{message.firstName} {message.lastName}</h5>
@@ -112,7 +112,7 @@
                                         <div class="message-item outgoing-message">
                                             <div class="message-user">
                                                 <figure class="avatar">
-                                                    <img src="/images/user-1.png" alt="display photo">
+                                                    <img src="/images/user-1.png" alt="display p{message.receiver_id }">
                                                 </figure>
                                                 <div>
                                                     <h5>{message.firstName} {message.lastName}</h5>

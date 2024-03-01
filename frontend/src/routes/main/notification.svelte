@@ -1,8 +1,7 @@
 <script>
 	import axios from "axios";
 	import { onMount } from "svelte";
-	import { PUBLIC_BACKEND_URL,PUBLIC_SOCKET_URL } from '$env/static/public';
-
+	import { PUBLIC_BACKEND_URL,PUBLIC_SOCKET_URL } from '$env/static/public'; 
 	let NotifSocket;
 	export let data;
 

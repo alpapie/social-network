@@ -11,7 +11,7 @@
 	let Users = [];
 	onMount(async () => { 
 		console.log('Mounted');
-		let url = `h${PUBLIC_BACKEND_URL}/getcontacts`;
+		let url = `${PUBLIC_BACKEND_URL}/getcontacts`;
 		try {
 			let header={
 					cookie:document.cookie
