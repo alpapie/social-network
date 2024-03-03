@@ -17,7 +17,6 @@
     $:groupid = $page.params.id
     $:allmessage = data?.res?.result?.messages
     afterUpdate(() => {
-            console.log("afterUpdate");
             if(allmessage) scrollToBottom(element);
     });
     $: if(allmessage && element) {

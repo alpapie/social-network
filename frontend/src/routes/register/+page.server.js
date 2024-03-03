@@ -6,8 +6,6 @@ import { redirect } from "@sveltejs/kit";
 import { localStorageObj } from "../db.js";
 
 export const load = async ({ cookies }) => {
-    console.log(cookies);
-    console.log(localStorageObj?.data);
     if (localStorageObj?.data?.user) {
         const IsAuth = await authenticateUser(cookies)
         if (IsAuth) {

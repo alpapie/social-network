@@ -9,14 +9,12 @@
     import { PUBLIC_BACKEND_URL,PUBLIC_SOCKET_URL } from '$env/static/public';
 
     export let data;
-    console.log('data received GET', data);
     let grpInfo = data?.res?.result?.groupDetail?.groupdata;
     let evts = data?.res?.result?.groupDetail?.events
     console.log('event', evts);
     let nbrFollower = data?.res?.result?.groupDetail?.nbrfollowers
     export let form;
     $: closed =false
-    $: console.log('data received', form);
 
     $: if (form?.error === 'no') {
         closed = true;
@@ -42,7 +40,6 @@
             }
             const config = { method:"get",withCredentials: true , header,mode: 'no-cors' };
             let responsess = await axios(url, config)
-            console.log("SUCCES",  responsess.data);
             responses[eventId] = response;
 
             // return response.data

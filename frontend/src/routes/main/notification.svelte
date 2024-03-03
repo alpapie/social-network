@@ -1,7 +1,7 @@
 <script>
 	import axios from "axios";
 	import { onMount } from "svelte";
-	import { PUBLIC_BACKEND_URL,PUBLIC_SOCKET_URL } from '$env/static/public'; 
+	import { PUBLIC_BACKEND_URL, PUBLIC_SOCKET_URL } from "$env/static/public";
 	let NotifSocket;
 	export let data;
 
@@ -38,7 +38,6 @@
 				message = "no message";
 				break;
 		}
-		console.log("notification type:", type);
 		return message;
 	};
 
@@ -56,10 +55,7 @@
 				params: { user_id: receiverId, notif_id: notifId },
 			};
 
-			let response = await axios(
-				`${PUBLIC_BACKEND_URL}/notifAsRead`,
-				config
-			);
+			let response = await axios(`${PUBLIC_BACKEND_URL}/notifAsRead`, config);
 			if (response?.data?.success) {
 				data.notifications = data.notifications.filter(
 					(notif) => notif.id !== notifId
@@ -93,11 +89,9 @@
 				config
 			);
 			if (response?.data?.success) {
-				console.log(data.notifications);
 				data.notifications = data.notifications.filter(
 					(notif) => notif.id !== notifId
 				);
-				console.log(data.notifications);
 			}
 		} catch (error) {
 			console.log(error);
@@ -106,9 +100,8 @@
 
 	onMount(async () => {
 		if (!NotifSocket) {
-			NotifSocket = new WebSocket(PUBLIC_SOCKET_URL+"/initnotifsocket");
+			NotifSocket = new WebSocket(PUBLIC_SOCKET_URL + "/initnotifsocket");
 		}
-		console.log(NotifSocket);
 
 		NotifSocket.onmessage = function (event) {
 			let newEvent = JSON.parse(event.data);
