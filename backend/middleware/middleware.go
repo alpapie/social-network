@@ -67,11 +67,28 @@ func Ispath(next http.HandlerFunc, path string) http.HandlerFunc {
 
 func CheckMethod(next http.HandlerFunc, methode string) http.HandlerFunc {
 	fnt := func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println(r.Method)
+		remotehost:=r.Header.Get("Origin")
+		fmt.Println("host client",remotehost)
+		if remotehost =="" {
+			remotehost="*"
+		}
+
+		w.Header().Set("Access-Control-Allow-Origin",  remotehost)
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		
+		if strings.ToLower(r.Method) == "options" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+		fmt.Println(r)
 		if strings.ToLower(r.Method) == methode {
 			next.ServeHTTP(w, r)
 			return
 		}
+
 		w.WriteHeader(405)
 		w.Write([]byte(`{"error":"Wrong methode","success":false}`))
 	}

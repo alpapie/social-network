@@ -23,7 +23,7 @@
 				ContactsStore.set(Users)
             // return response .data.contacts
         } catch (err) {
-           console.log("ERORR CONtacts",  err);
+          throw console.log("ERORR CONtacts",  err);
         }
       })
 </script>
