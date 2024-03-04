@@ -38,6 +38,12 @@ func UnFollowUserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if errDeleteNotif := models.DeleteNotificationByUsers(DB, userToUnfollowId, currentUserId); errDeleteNotif != nil {
+		fmt.Println("error deleting notif by users", err)
+		helper.ErrorPage(w, 500)
+		return
+	}
+
 	err = helper.WriteJSON(w, http.StatusOK, map[string]interface{}{"success": true, "user_id": userToUnfollowId}, nil)
 	if err != nil {
 		fmt.Println("5")
