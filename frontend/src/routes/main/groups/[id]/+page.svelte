@@ -6,7 +6,7 @@
     import CreatePost from "./createpost.svelte"
     import Comment from "../../comments.svelte"
     
-    import { PUBLIC_BACKEND_URL,PUBLIC_SOCKET_URL } from '$env/static/public';
+    import { PUBLIC_BACKEND_URL_FRONTEND,PUBLIC_SOCKET_URL } from '$env/static/public';
 
     export let data;
     console.log('data received GET', data);
@@ -35,7 +35,7 @@
     let responses = {}; 
 
     async function handleResponse(eventId, response) {
-        let url = `${PUBLIC_BACKEND_URL}/getoption?eventid=${eventId}&response=${response}`;
+        let url = `${PUBLIC_BACKEND_URL_FRONTEND}/getoption?eventid=${eventId}&response=${response}`;
         try {
             let header={
                 cookie:document.cookie

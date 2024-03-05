@@ -4,7 +4,7 @@
   import Posts from "../post.svelte";
   import axios from "axios";
   import UserList from "./userList.svelte";
-  import { PUBLIC_BACKEND_URL } from '$env/static/public';
+  import { PUBLIC_BACKEND_URL_FRONTEND } from '$env/static/public';
   export let data;
 
   export let toprivate;
@@ -30,7 +30,7 @@
       params: { ispublic: privatestatus ? 1 : 0 },
     };
     let response = await axios(
-      PUBLIC_BACKEND_URL+"/changestatus",
+      PUBLIC_BACKEND_URL_FRONTEND+"/changestatus",
       config
     );
     if (!response?.data?.success) {

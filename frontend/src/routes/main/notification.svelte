@@ -1,7 +1,7 @@
 <script>
 	import axios from "axios";
 	import { onMount } from "svelte";
-	import { PUBLIC_BACKEND_URL,PUBLIC_SOCKET_URL } from '$env/static/public'; 
+	import { PUBLIC_BACKEND_URL_FRONTEND,PUBLIC_SOCKET_URL } from '$env/static/public'; 
 	let NotifSocket;
 	export let data;
 
@@ -57,7 +57,7 @@
 			};
 
 			let response = await axios(
-				`${PUBLIC_BACKEND_URL}/notifAsRead`,
+				`${PUBLIC_BACKEND_URL_FRONTEND}/notifAsRead`,
 				config
 			);
 			if (response?.data?.success) {
@@ -89,7 +89,7 @@
 				params: { user_id: receiverId, notif_id: notifId, group_id, accept },
 			};
 			let response = await axios(
-				`${PUBLIC_BACKEND_URL}/notiftraitement`,
+				`${PUBLIC_BACKEND_URL_FRONTEND}/notiftraitement`,
 				config
 			);
 			if (response?.data?.success) {

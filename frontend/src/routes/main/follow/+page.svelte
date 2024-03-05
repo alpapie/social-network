@@ -1,10 +1,8 @@
 <script>
 	export let data;
-	import { PUBLIC_BACKEND_URL } from '$env/static/public';
+	import { PUBLIC_BACKEND_URL_FRONTEND } from '$env/static/public';
 	let success = true;
 	let erroralert = true;
-
-	console.log("url to backenck",PUBLIC_BACKEND_URL);
 
 	import axios from "axios";
 
@@ -20,7 +18,7 @@
 				mode: "no-cors",
 				params: { user_id: id_user },
 			};
-			let response = await axios(PUBLIC_BACKEND_URL+"/follow", config);
+			let response = await axios(PUBLIC_BACKEND_URL_FRONTEND+"/follow", config);
 			if (response?.data?.success) {
 				success = false;
 				setTimeout(() => {

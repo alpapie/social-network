@@ -46,6 +46,6 @@ func Routes() {
 	http.HandleFunc("/server/chat", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.GetChatMessageHandler, "get"), "chat")))
 	http.HandleFunc("/server/chatgroup", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.GetGroupMessageHandler, "get"), "chatgroup")))
 	http.HandleFunc("/server/getcontacts", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.GetContacts, "get"),"getcontacts")))
-	http.HandleFunc("/server/ws", middleware.Log(middleware.Ispath(middleware.CheckMethod(controller.WsHandler, "get"), "ws")))
+	http.HandleFunc("/server/ws", middleware.Log(middleware.Ispath(controller.WsHandler, "ws")))
 
 }
