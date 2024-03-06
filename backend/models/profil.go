@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"fmt"
 )
 
 func (u *User) GetUnFollow(DB *sql.DB, limit int) ([]User, error) {
@@ -63,7 +64,7 @@ func ExtractUserData(row *sql.Rows, u *User, users []User) []User {
 }
 
 func (U *User) CreatedPost(DB *sql.DB, user_id int) ([]FeedPost, error) {
-	req := `SELECT p.id,p.titre,p.image,p.content,p.privacy ,p."Group_id",g.title,u."firstName",u."lastName",u.avatar,p."creationDate" FROM "Post" "p" LEFT JOIN "Group" "g" ON p."Group_id"=g.id  join user "u" on p."User_id"=u.id  where p."User_id"=? `
+	req := `SELECT p.id,p.titre,p.image,p.content,p.privacy ,coalesce( p."Group_id",0) ,coalesce( g.title,""),u."firstName",u."lastName",u.avatar, coalesce(P.creationDate,"") as creationDate FROM "Post" "p" LEFT JOIN "Group" "g" ON p."Group_id"=g.id  join user "u" on p."User_id"=u.id  where p."User_id"=? `
 	row, err := DB.Query(req, user_id)
 	posts := []FeedPost{}
 	if err != nil {
@@ -73,6 +74,7 @@ func (U *User) CreatedPost(DB *sql.DB, user_id int) ([]FeedPost, error) {
 		post := FeedPost{}
 		row.Scan(&post.Id, &post.Titre, &post.Image, &post.Content, &post.Privacy, &post.Group_id, &post.GroupName, &post.FirstName, &post.LastName, &post.Avatar, &post.CreationDate)
 		posts = append(posts, post)
+		fmt.Println("creation date",post)
 	}
 	return posts, nil
 }

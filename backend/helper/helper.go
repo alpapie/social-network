@@ -119,7 +119,7 @@ func WriteJSON(w http.ResponseWriter, status int, data map[string]interface{}, h
 	for key, value := range headers {
 		w.Header()[key] = value
 	}
-	fmt.Println(w.Header())
+	// fmt.Println(w.Header())
 	w.Write(js)
 	return nil
 }

@@ -5,7 +5,7 @@
   import axios from "axios";
 
 	export let data;
-
+	
 	function calculateAgo(dateString) {
 		// Convert the date string to a Date object
 		const date = new Date(dateString.split(".")[0]);

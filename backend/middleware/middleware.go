@@ -83,7 +83,7 @@ func CheckMethod(next http.HandlerFunc, methode string) http.HandlerFunc {
 			w.WriteHeader(http.StatusOK)
 			return
 		}
-		fmt.Println(r)
+
 		if strings.ToLower(r.Method) == methode {
 			next.ServeHTTP(w, r)
 			return

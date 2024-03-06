@@ -17,7 +17,7 @@ func Profil(w http.ResponseWriter, r *http.Request) {
 	follower, errFollow := user.Folower(DB, user_id)
 	following, errFollowing := user.Following(DB, user_id)
 	createdPost, errPost := user.CreatedPost(DB, user_id)
-	fmt.Println("dreated post",len(createdPost))
+	// fmt.Println("dreated post",createdPost)
 	if err != nil || errFollow != nil || errFollowing != nil || errPost != nil {
 		fmt.Println(err, errFollow, errFollowing, errPost)
 		helper.ErrorPage(w, 500)
