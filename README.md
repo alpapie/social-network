@@ -1,2 +1,70 @@
+# Social Network
+![alt text](./buzzhub.gif)
+This project is a social network similar to Facebook, featuring functionalities such as profile creation, message posting, private messaging, group management, notifications, and more.
 
-&{OPTIONS /server/follow HTTP/1.1 1 1 map[Accept:[*/*] Accept-Encoding:[gzip, deflate, br] Accept-Language:[en-US,en;q=0.9,fr-FR;q=0.8,fr-SN;q=0.7,fr;q=0.6] Access-Control-Request-Headers:[content-type] Access-Control-Request-Method:[POST] Cache-Control:[no-cache] Connection:[keep-alive] Origin:[http://localhost:5173] Pragma:[no-cache] Referer:[http://localhost:5173/] Sec-Fetch-Dest:[empty] Sec-Fetch-Mode:[cors] Sec-Fetch-Site:[same-site] User-Agent:[Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36]] {} <nil> 0 [] false localhost:8080 map[] map[] <nil> map[] [::1]:47460 /server/follow <nil> <nil> <nil> 0xc00013bac0} 
+# Features
+
+## Frontend (Svelte & SvelteKit)
+
+- User profile creation
+- Message posting
+- Private messaging
+- Group management
+- Real-time notifications
+- Dynamic and responsive user interface
+
+## Backend (Go)
+
+- Routing and API management
+- User authentication
+- Data storage in SQLite database
+- Real-time notification management with WebSocket
+
+
+## Installation and Configuration
+
+1. **Frontend (Svelte & SvelteKit)**:
+   - Install dependencies:
+     ```bash
+     cd frontend
+     npm install
+     ```
+
+2. **Backend (Go)**:
+   - Install dependencies:
+     ```bash
+     cd backend
+     go mod tidy
+     ```
+
+3. **SQLite Database**:
+   - The SQLite database will be created automatically on the first startup of the backend application.
+
+4. **Environment Variables**:
+   - Create a `.env` file to specify necessary environment variables, such as secret keys, database parameters, etc.
+
+## Usage
+
+1. **Frontend (Svelte & SvelteKit)**:
+   - Launch the application in development mode:
+     ```bash
+     cd frontend
+     npm run dev
+     ```
+
+2. **Backend (Go)**:
+   - Launch the backend application:
+     ```bash
+     cd backend
+     go run .
+     ```
+
+# Participants
+
+Here is the list of participants along with their Gitea profiles:
+
+1. mamoundiaye - [gitea.com/mamoundiaye](https://learn.zone01dakar.sn/git/mamoundiaye)
+2. papgueye - [gitea.com/papgueye](https://learn.zone01dakar.sn/git/papgueye)
+3. pndione - [gitea.com/pndione](https://learn.zone01dakar.sn/git/pndione)
+4. papaabddiop - [gitea.com/papaabddiop](https://learn.zone01dakar.sn/git/papaabddiop)
+5. abdouksow - [gitea.com/abdouksow](https://learn.zone01dakar.sn/git/abdouksow)
