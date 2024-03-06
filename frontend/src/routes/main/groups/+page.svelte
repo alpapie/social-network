@@ -62,7 +62,6 @@
 
     // let copiedGroups = {...groups};
     async function handleFollowClick(groupId, userId) {
-        console.log('CLICKED');
         const requestData = {
             groupId: groupId,
             userId: userId
@@ -74,7 +73,6 @@
             if (response) {
                 throw new Error(`HTTP error! status:`);
             }
-            console.log('REQUEST SENDED');
             copiedGroups.Notjoined = copiedGroups.Notjoined.map(group => {
                 if (group.id === groupId) {
                     return {...group, notif_type: true};

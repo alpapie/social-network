@@ -8,7 +8,6 @@ export const  generateRandom = () =>
   Math.random().toString(23).substring(2, 5);
 
   export const saveImage = async (image) => {
-    console.log("here is the image", image);
     if (image.name == 'undefined' || image.size ===  0) return "";
     let extension = image.name.split(".").pop().toLowerCase();
     if (!['jpeg', 'jpg', 'png', 'gif'].includes(extension)) {

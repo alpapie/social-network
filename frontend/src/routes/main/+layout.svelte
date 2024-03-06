@@ -18,7 +18,6 @@
 				}
 				const config = { method:"get",withCredentials: true , header,mode: 'no-cors' };
 				let response= await axios(url,config)
-			    console.log("SUCCES CONTACTS",  response.data.contacts);
 				Users = response?.data?.contacts
 				ContactsStore.set(Users)
             // return response .data.contacts

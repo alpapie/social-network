@@ -86,12 +86,13 @@
 			/>
 			<div style="display: {modalDisplay};">
 				<select name="allowedusers" id="allowed" multiple>
-					{#if users?.length > 0} 
+					{#if users?.length > 0}
 						{#each users as user}
-							<option value={user?.ID}>{user?.FirstName} {user?.LastName}</option>
+							<option value={user?.ID}
+								>{user?.FirstName} {user?.LastName}</option
+							>
 						{/each}
 					{/if}
-					
 				</select>
 			</div>
 			<!-- {/if} -->
@@ -99,17 +100,18 @@
 	</div>
 	<script src="/js/multiselect.js"></script>
 	<script>
-		new MultiSelectTag('allowed', {
-		rounded: true,    // default true
-		shadow: false,      // default false
-		placeholder: 'Search',  // default Search...
-		tagColor: {
-			textColor: '#030c16',
-			borderColor: '#bcd6f6',
-			bgColor: '#bcd6f6',
-		},
-		onChange: function(values) {
-			console.log(values)
-		}})
+		new MultiSelectTag("allowed", {
+			rounded: true, // default true
+			shadow: false, // default false
+			placeholder: "Search", // default Search...
+			tagColor: {
+				textColor: "#030c16",
+				borderColor: "#bcd6f6",
+				bgColor: "#bcd6f6",
+			},
+			// onChange: function(values) {
+			// 	console.log(values)
+			// }})
+		});
 	</script>
 </form>

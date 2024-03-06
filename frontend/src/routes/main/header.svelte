@@ -16,7 +16,6 @@
     }
 	onMount(async () => {
 		let ws = new WebSocket(PUBLIC_SOCKET_URL+"/ws")
-		console.log("sennd the request" , ws)
 		WS.set(ws)
         
 	})

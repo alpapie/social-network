@@ -76,7 +76,7 @@ func Follow(w http.ResponseWriter, r *http.Request) {
 
 	err = helper.WriteJSON(w, http.StatusOK, map[string]interface{}{"success": true, "user_id": user_id}, nil)
 	if err != nil {
-		helper.ErrorPage(w, 400)
+		helper.ErrorPage(w, 500)
 		return
 	}
 }

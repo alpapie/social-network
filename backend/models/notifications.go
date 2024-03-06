@@ -108,3 +108,9 @@ func DeleteNotification(DB *sql.DB, id int) error {
 	_, err := DB.Exec(req, id)
 	return err
 }
+
+func DeleteNotificationByUsers(DB *sql.DB, receiverId, senderId int) error {
+	req := `DELETE FROM Notification where User_id=? and send_id=? and type="follow"`
+	_, err := DB.Exec(req, receiverId, senderId)
+	return err
+}

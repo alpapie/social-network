@@ -38,7 +38,6 @@
 				message = "no message";
 				break;
 		}
-		console.log("notification type:", type);
 		return message;
 	};
 
@@ -93,11 +92,9 @@
 				config
 			);
 			if (response?.data?.success) {
-				console.log(data.notifications);
 				data.notifications = data.notifications.filter(
 					(notif) => notif.id !== notifId
 				);
-				console.log(data.notifications);
 			}
 		} catch (error) {
 			console.log(error);
@@ -106,9 +103,8 @@
 
 	onMount(async () => {
 		if (!NotifSocket) {
-			NotifSocket = new WebSocket(PUBLIC_SOCKET_URL+"/initnotifsocket");
+			NotifSocket = new WebSocket(PUBLIC_SOCKET_URL + "/initnotifsocket");
 		}
-		console.log(NotifSocket);
 
 		NotifSocket.onmessage = function (event) {
 			let newEvent = JSON.parse(event.data);

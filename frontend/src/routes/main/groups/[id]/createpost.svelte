@@ -10,9 +10,6 @@
 			modalDisplay = "none";
 		}
 	}
-	// console.log("HERE ARE USERS", users)
-
-	//
 </script>
 
 <form
@@ -36,7 +33,6 @@
 				></i>Create Post
 			</button>
 		</div>
-
 	</div>
 	<div class="card-body p-0 mt-3 position-relative">
 		<figure class="avatar position-absolute ms-2 mt-1 top-5">
@@ -74,7 +70,6 @@
 				accept=".jpg, .jpeg, .png, .gif"
 				type="file"
 			/>
-			
 		</div>
 	</div>
 </form>

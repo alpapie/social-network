@@ -73,7 +73,6 @@
 						inputField = ''
 						files = null 
 						UrlImage.value = ''
-						console.log('IMAGE', formData.get("avatar"));
 						
 						// console.log("new POSTDETAIL", CommSection.data);
 						// CommSection?.data?.data?.Comment = [result?.data?.success , ...CommSection?.data?.data?.Comment]
